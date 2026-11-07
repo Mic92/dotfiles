@@ -1,7 +1,13 @@
 //! Pause whatever is playing while we listen and talk, so whisper hears the
 //! user rather than the song, and resume it afterwards.
 
-use crate::skills::{media, output};
+use std::env;
+use std::io::{BufRead, BufReader, Write};
+use std::os::unix::net::UnixStream;
+use std::path::PathBuf;
+use std::time::Duration;
+
+use crate::exec::output;
 
 #[derive(Debug, Default)]
 pub struct Hushed {
@@ -22,6 +28,36 @@ fn playing(listing: &str) -> Vec<String> {
         .collect()
 }
 
+fn radio_socket() -> Option<PathBuf> {
+    env::var_os("XDG_RUNTIME_DIR").map(|d| PathBuf::from(d).join("voice-assistant-radio.sock"))
+}
+
+/// One request over mpv's JSON IPC; returns its reply line.
+fn mpv_ipc(cmd: &str) -> Option<String> {
+    let mut sock = UnixStream::connect(radio_socket()?).ok()?;
+    let timeout = Some(Duration::from_millis(300));
+    sock.set_read_timeout(timeout).ok()?;
+    sock.set_write_timeout(timeout).ok()?;
+    writeln!(sock, "{{\"command\": {cmd}, \"request_id\": 1}}").ok()?;
+    // Event lines may come first.
+    BufReader::new(sock)
+        .lines()
+        .map_while(Result::ok)
+        .take(20)
+        .find(|l| l.contains("\"request_id\":1"))
+}
+
+/// Pause or resume our radio. When pausing, true if it was playing.
+fn radio_pause(pause: bool) -> bool {
+    if pause {
+        let playing =
+            mpv_ipc(r#"["get_property", "pause"]"#).is_some_and(|r| r.contains("\"data\":false"));
+        playing && mpv_ipc(r#"["set_property", "pause", true]"#).is_some()
+    } else {
+        mpv_ipc(r#"["set_property", "pause", false]"#).is_some()
+    }
+}
+
 pub fn hush() -> Hushed {
     let listing = output(
         "playerctl",
@@ -34,7 +70,7 @@ pub fn hush() -> Hushed {
     }
     Hushed {
         players,
-        radio: media::radio_pause(true),
+        radio: radio_pause(true),
     }
 }
 
@@ -49,7 +85,7 @@ impl Hushed {
             output("playerctl", &["-p", p, "play"]);
         }
         if self.radio {
-            media::radio_pause(false);
+            radio_pause(false);
         }
     }
 }

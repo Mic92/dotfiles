@@ -3,13 +3,6 @@
 use std::process::{Command, Stdio};
 use std::thread;
 
-/// noctalia's IPC; shows its OSD for volume, brightness and friends.
-pub fn noctalia(args: &[&str]) {
-    let mut full = vec!["msg"];
-    full.extend_from_slice(args);
-    spawn("noctalia", &full);
-}
-
 /// Stdout of a command that must finish quickly, trimmed; `None` on failure.
 pub fn output(cmd: &str, args: &[&str]) -> Option<String> {
     let out = Command::new(cmd)
@@ -27,22 +20,5 @@ pub fn spawn(cmd: &str, args: &[&str]) {
         // Reaped by a detached thread so finished children never pile up.
         Ok(mut child) => drop(thread::spawn(move || child.wait())),
         Err(e) => eprintln!("voice-assistant: {cmd}: {e}"),
-    }
-}
-
-/// Run to completion, quietly; whether it exited successfully.
-pub fn succeeds(cmd: &str, args: &[&str]) -> bool {
-    match Command::new(cmd)
-        .args(args)
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-    {
-        Ok(s) => s.success(),
-        Err(e) => {
-            eprintln!("voice-assistant: {cmd}: {e}");
-            false
-        }
     }
 }

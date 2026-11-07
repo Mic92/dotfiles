@@ -8,6 +8,7 @@ use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 use std::process::{self, Child, Command, Stdio};
+use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::{Arc, Mutex, OnceLock, PoisonError};
 use std::thread;
 use std::time::{Duration, Instant};
@@ -15,7 +16,8 @@ use std::time::{Duration, Instant};
 use tinyjson::JsonValue;
 
 use crate::classify::Nearest;
-use crate::skills::{Context, SoundAlikes};
+use crate::clock::Clock;
+use crate::rescore::SoundAlikes;
 
 pub const VERSION: f64 = 1.0;
 
@@ -53,7 +55,9 @@ impl Brain {
         if let Ok(s) = UnixStream::connect(live_socket()) {
             return Self::over(s);
         }
-        let sock = env::temp_dir().join(format!("va-brain-{}.sock", process::id()));
+        static CONNECTIONS: AtomicU32 = AtomicU32::new(0);
+        let n = CONNECTIONS.fetch_add(1, Ordering::Relaxed);
+        let sock = env::temp_dir().join(format!("va-brain-{}-{n}.sock", process::id()));
         let mut child = Command::new(brain_program())
             .arg("--socket")
             .arg(&sock)
@@ -152,7 +156,7 @@ impl Brain {
     }
 
     /// (text, kind) for the classifier to learn from.
-    pub fn examples(&mut self, ctx: &Context) -> Result<Vec<(String, String)>, String> {
+    pub fn examples(&mut self, ctx: &Clock) -> Result<Vec<(String, String)>, String> {
         let reply = self.request("examples", context_fields(ctx))?;
         let Some(JsonValue::Array(a)) = reply.get("examples") else {
             return Err("examples: no examples".into());
@@ -178,7 +182,7 @@ impl Brain {
         &mut self,
         text: &str,
         n: &Nearest,
-        ctx: &Context,
+        ctx: &Clock,
     ) -> Result<(Option<String>, bool), String> {
         let mut fields = context_fields(ctx);
         fields.extend(guess(n));
@@ -207,7 +211,7 @@ impl Brain {
         }
     }
 
-    pub fn parse(&mut self, texts: &[String], ctx: &Context) -> Result<Vec<Parses>, String> {
+    pub fn parse(&mut self, texts: &[String], ctx: &Clock) -> Result<Vec<Parses>, String> {
         let reply = self.request("parse", parse_fields(texts, ctx))?;
         parses(&reply)
     }
@@ -270,7 +274,7 @@ fn guess(n: &Nearest) -> [(String, JsonValue); 3] {
     ]
 }
 
-fn context_fields(ctx: &Context) -> HashMap<String, JsonValue> {
+fn context_fields(ctx: &Clock) -> HashMap<String, JsonValue> {
     HashMap::from([
         ("now".into(), f64::from(ctx.now).into()),
         ("today".into(), (ctx.today as f64).into()),
@@ -357,7 +361,7 @@ impl Shared {
     }
 
     /// Both readings of each text, nothing when the brain is away.
-    pub fn parses(&self, texts: &[String], ctx: &Context) -> Vec<Parses> {
+    pub fn parses(&self, texts: &[String], ctx: &Clock) -> Vec<Parses> {
         let mut guard = self.brain.lock().unwrap_or_else(PoisonError::into_inner);
         let parsed = match guard.as_mut() {
             Some(b) => b.parse(texts, ctx),
@@ -392,7 +396,7 @@ impl Shared {
         }
     }
 
-    pub fn examples(&self, ctx: &Context) -> Result<Vec<(String, String)>, String> {
+    pub fn examples(&self, ctx: &Clock) -> Result<Vec<(String, String)>, String> {
         self.with(|b| b.examples(ctx))
     }
 
@@ -400,13 +404,13 @@ impl Shared {
         &self,
         text: &str,
         n: &Nearest,
-        ctx: &Context,
+        ctx: &Clock,
     ) -> Result<(Option<String>, bool), String> {
         self.with(|b| b.classified(text, n, ctx))
     }
 
     /// The strict reading of each text.
-    pub fn parse(&self, texts: &[String], ctx: &Context) -> Vec<Option<String>> {
+    pub fn parse(&self, texts: &[String], ctx: &Clock) -> Vec<Option<String>> {
         self.parses(texts, ctx)
             .into_iter()
             .map(|p| p.strict)
@@ -431,7 +435,7 @@ fn decode(line: &str) -> Result<HashMap<String, JsonValue>, String> {
     Ok(o)
 }
 
-fn parse_fields(texts: &[String], ctx: &Context) -> HashMap<String, JsonValue> {
+fn parse_fields(texts: &[String], ctx: &Clock) -> HashMap<String, JsonValue> {
     HashMap::from([
         ("now".into(), f64::from(ctx.now).into()),
         ("today".into(), (ctx.today as f64).into()),
@@ -497,7 +501,7 @@ mod tests {
     #[test]
     fn requests_match_the_fixtures() {
         let req = part(&fixture("parse"), "request");
-        let mut fields = parse_fields(&texts(&req), &Context::at(9 * 3600));
+        let mut fields = parse_fields(&texts(&req), &Clock::at(9 * 3600));
         for k in ["id", "type"] {
             fields.insert(k.into(), req.get(k).cloned().unwrap_or(JsonValue::Null));
         }
@@ -597,7 +601,7 @@ mod tests {
         };
         let mut b = Brain::over(s).unwrap_or_else(|e| panic!("{e}"));
         b.next_id = 2;
-        let got = b.parse(&["tell me a joke".into()], &Context::at(9 * 3600));
+        let got = b.parse(&["tell me a joke".into()], &Clock::at(9 * 3600));
         assert_eq!(got.map(|p| p.len()), Ok(3));
         let _ = server.join();
         let _ = fs::remove_dir_all(&dir);

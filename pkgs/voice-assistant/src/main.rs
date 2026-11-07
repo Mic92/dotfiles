@@ -4,17 +4,12 @@ mod asr;
 mod brain;
 mod classify;
 mod clock;
-mod date;
-mod duration;
-mod grammar;
-mod holiday;
-mod http;
+mod exec;
 mod hush;
 mod onnx;
 mod phonetic;
 mod replay;
 mod rescore;
-mod skills;
 mod store;
 mod tts;
 mod wakelog;
@@ -59,9 +54,6 @@ struct Config {
     transcribe: Vec<PathBuf>,
     /// Texts to run through the grammar, then exit.
     parse: Vec<String>,
-    golden: bool,
-    /// Let the Lisp brain answer.
-    lisp: bool,
 }
 
 fn default_path(build_env: Option<&str>) -> PathBuf {
@@ -73,12 +65,9 @@ fn usage() -> ! {
         "usage: voice-assistant [--wake-model F] [--threshold P] [--vad-model F] [--asr-model DIR]\n\
          \x20                      [--intent-model DIR] [--threads N] [--sounds DIR] [--tts-model DIR]\n\
          \x20                      [--voice N] [--speed X] [--no-tts] [--verbose] [--stdin]\n\
-         \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-] [--golden]\n\
-         \x20                      [--brain rust|lisp]\n\
+         \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-]\n\
          --say speaks TEXT with the configured voice and exits.\n\
          --parse shows how TEXT (or each stdin line for -) is understood and exits.\n\
-         --brain lisp lets the Lisp brain answer, and --parse diffs both brains.\n\
-         --golden prints the grammar's reading of each stdin line at a fixed clock.\n\
          --replay re-checks every logged utterance against the current build.\n\
          --debug-dir saves the audio around each wake word and command as WAV.\n\
          --stdin processes raw 16 kHz s16le mono from stdin instead of PipeWire."
@@ -106,8 +95,6 @@ fn parse_args() -> Config {
         replay: false,
         transcribe: Vec::new(),
         parse: Vec::new(),
-        golden: false,
-        lisp: false,
     };
     let mut args = env::args().skip(1);
     while let Some(a) = args.next() {
@@ -131,12 +118,6 @@ fn parse_args() -> Config {
             "--replay" => c.replay = true,
             "--transcribe" => c.transcribe.push(val().into()),
             "--parse" => c.parse.push(val()),
-            "--golden" => c.golden = true,
-            "--brain" => match val().as_str() {
-                "rust" => c.lisp = false,
-                "lisp" => c.lisp = true,
-                _ => usage(),
-            },
             _ => usage(),
         }
     }
@@ -167,7 +148,6 @@ enum State {
 /// What a command running in the background sends back.
 enum Done {
     Filler(String),
-    Skill(skills::Action, skills::Reply),
     Brain(Box<BrainAnswer>),
 }
 
@@ -187,26 +167,15 @@ struct Assistant {
     state: State,
     /// The mic hears our own replies; ignore it until playback has ended.
     speaking: bool,
-    /// Answer to a question we asked, heard without a wake word.
-    question: Option<Box<dyn skills::dialogue::Question>>,
     /// Players paused for this conversation.
     hushed: Option<hush::Hushed>,
     /// Resume them once the reply has been spoken.
     resume_after_speech: bool,
-    /// Misunderstandings in a row.
-    misses: u32,
-    /// Ignoring everything but "wake up"; `None` inside means until then.
-    asleep: Option<Option<Instant>>,
-    /// For "repeat that".
-    last_speech: String,
     /// An action running in the background.
     pending: Option<mpsc::Receiver<Done>>,
-    /// The Lisp brain, with `--brain lisp`.
-    brain: Option<brain::Shared>,
+    brain: brain::Shared,
     /// The brain asked a question and waits for the answer.
     brain_asked: bool,
-    /// For "and tomorrow?"; forgotten after `CARRY_OVER`.
-    previous: Option<(skills::Action, Instant)>,
     wakelog: wakelog::WakeLog,
     /// Last seconds of audio, for the wake word log and --debug-dir.
     history: VecDeque<i16>,
@@ -229,7 +198,6 @@ const SPEECH_PROB: f32 = 0.5;
 const WAKE_CLIP: usize = 2 * RATE;
 /// pw-play startup plus room echo.
 const ECHO: Duration = Duration::from_millis(700);
-const CARRY_OVER: Duration = Duration::from_secs(120);
 /// About 0.3 s; a click or the tail of a chime is shorter than any command.
 const MIN_SPEECH_FRAMES: usize = 10;
 /// The wake chime (0.36 s) plus pw-play startup; the mic must not hear it.
@@ -241,7 +209,7 @@ impl Assistant {
             return;
         }
         let path = self.cfg.sounds.join(format!("{name}.ogg"));
-        skills::spawn("pw-play", &[&path.to_string_lossy()]);
+        exec::spawn("pw-play", &[&path.to_string_lossy()]);
     }
 
     fn log(&self, msg: &str) {
@@ -303,10 +271,6 @@ impl Assistant {
         while let Some(rx) = &self.pending {
             match rx.try_recv() {
                 Ok(Done::Filler(line)) => self.say(&line, true),
-                Ok(Done::Skill(action, reply)) => {
-                    self.pending = None;
-                    self.finish(action, reply);
-                }
                 Ok(Done::Brain(done)) => {
                     self.pending = None;
                     self.carry_out(*done);
@@ -333,7 +297,7 @@ impl Assistant {
             }
             self.speaking = false;
             self.reset_wake();
-            if self.question.is_some() || self.brain_asked {
+            if self.brain_asked {
                 self.start_listening(Vec::new());
             } else if mem::take(&mut self.resume_after_speech) {
                 self.unhush();
@@ -420,7 +384,6 @@ impl Assistant {
                 } else {
                     self.log("no speech");
                     self.wakelog.outcome("no-speech", "");
-                    self.question = None;
                     self.brain_asked = false;
                     self.sound("cancel");
                     self.unhush();
@@ -488,7 +451,7 @@ impl Assistant {
         ));
         let (said_before, text) = if wake.is_empty() {
             ("", raw.as_str())
-        } else if let Some(rest) = skills::strip_wake_word(&raw) {
+        } else if let Some(rest) = wakeword::strip_wake_word(&raw) {
             // Just "Alexa?" is a command of its own.
             if rest.is_empty() {
                 ("", raw.as_str())
@@ -504,31 +467,8 @@ impl Assistant {
             return;
         };
         let (said_before, text) = (said_before.to_owned(), text.to_owned());
-        let mut ctx = skills::Context::local();
-        ctx.focus.previous = self
-            .previous
-            .as_ref()
-            .filter(|(_, at)| at.elapsed() < CARRY_OVER)
-            .map(|(a, _)| a.clone());
-        ctx.focus.music = self.hushed.as_ref().is_some_and(hush::Hushed::any);
-        if let Some(Some(end)) = self.asleep
-            && Instant::now() >= end
-        {
-            self.asleep = None;
-        }
-        if self.brain.is_none()
-            && self.asleep.is_some()
-            && skills::parse_at(&text, &ctx) != Some(skills::Action::Listen(true))
-        {
-            // Only "wake up" gets through; the rest stays quiet.
-            self.log("asleep, ignoring");
-            self.wakelog.outcome("asleep", &text);
-            self.sound("cancel");
-            self.end_conversation(false);
-            return;
-        }
-        // Chatter that ran into the time limit answers no question.
-        let question = self.question.take().filter(|_| !cut_off);
+        let ctx = clock::Clock::local();
+        let music = self.hushed.as_ref().is_some_and(hush::Hushed::any);
         if text.is_empty() {
             self.log("heard no speech");
             self.wakelog.outcome("no-speech", "");
@@ -536,13 +476,14 @@ impl Assistant {
             self.end_conversation(false);
             return;
         }
-        if let Some(brain) = self.brain.clone() {
+        let brain = self.brain.clone();
+        {
             let answering = mem::take(&mut self.brain_asked) && !cut_off;
             let mut hearing = brain::Hearing {
                 text: text.clone(),
                 now: ctx.now,
                 today: ctx.today,
-                music: ctx.focus.music,
+                music,
                 answering,
                 cut_off,
                 dry: true,
@@ -583,58 +524,7 @@ impl Assistant {
             hearing.dry = self.cfg.stdin;
             hearing.unsure = false;
             self.ask_brain(&brain, hearing, &text, audio);
-            return;
         }
-        // Rescoring against the audio comes before the catch-all web
-        // questions, which would happily take any mangled command.
-        let strict = skills::dialogue::respond(&text, &ctx, question.as_deref());
-        if strict.is_none() && cut_off {
-            // Endless background talk transcribes into some sentence.
-            // Only an exact command gets through.
-            self.log(&format!(
-                "no pause in {}s, treating {text:?} as noise",
-                MAX_LISTEN_SECS
-            ));
-            self.log_heard(&text, None, audio);
-            self.wakelog.outcome("noise", &text);
-            self.sound("cancel");
-            self.end_conversation(false);
-            return;
-        }
-        let action = strict
-            .or_else(|| self.rescore(&said_before, &text, &ctx))
-            .or_else(|| self.classify(&text, &ctx))
-            .or_else(|| skills::parse_tier(&text, &ctx, true));
-        let Some(action) = action else {
-            self.misses += 1;
-            let speech = skills::not_understood(&text, self.misses);
-            self.log_heard(&text, None, audio);
-            self.wakelog.outcome("miss", &text);
-            self.last_speech.clone_from(&speech);
-            self.notify("Didn't understand", &speech);
-            self.sound("error");
-            // Quotes the transcript, so caching would only fill the disk.
-            self.say(&speech, false);
-            self.end_conversation(false);
-            return;
-        };
-        self.log(&format!("action {action:?}"));
-        self.log_heard(&text, Some(replay::kind(&action)), audio);
-        self.wakelog.outcome("command", &text);
-        if self.cfg.stdin {
-            return;
-        }
-        self.misses = 0;
-        if let Some(line) = skills::filler(&action) {
-            self.say(&line, true);
-        }
-        // Network lookups take seconds; the wake word keeps listening meanwhile.
-        let (tx, rx) = mpsc::channel();
-        thread::spawn(move || {
-            let reply = skills::run(&action, &ctx);
-            let _ = tx.send(Done::Skill(action, reply));
-        });
-        self.pending = Some(rx);
     }
 
     /// Tells the brain what was heard and lets it answer in the background, as commands may take
@@ -717,92 +607,6 @@ impl Assistant {
         }
     }
 
-    fn rescore(
-        &mut self,
-        said_before: &str,
-        text: &str,
-        ctx: &skills::Context,
-    ) -> Option<skills::Action> {
-        if self.cfg.stdin {
-            return None;
-        }
-        let r = rescore::run(&mut self.asr, said_before, text, &skills::NAMED, |cs| {
-            cs.iter()
-                .map(|c| skills::parse_tier(c, ctx, false))
-                .collect()
-        })?;
-        self.log(&r.to_string());
-        r.accepted.then_some(r.action)
-    }
-
-    fn classify(&mut self, text: &str, ctx: &skills::Context) -> Option<skills::Action> {
-        let hit = classify_text(self.classifier.as_mut()?, text, ctx)?;
-        self.log(&hit.to_string());
-        hit.action.filter(|_| hit.accepted)
-    }
-
-    fn finish(&mut self, action: skills::Action, mut reply: skills::Reply) {
-        // Media commands decide about the music themselves.
-        let media_handled =
-            matches!(&action, skills::Action::Media(m) if *m != skills::media::Media::NowPlaying);
-        if action == skills::Action::Repeat {
-            reply.speech = if self.last_speech.is_empty() {
-                "I haven't said anything yet. Shy?".into()
-            } else {
-                self.last_speech.clone()
-            };
-        }
-        match &action {
-            skills::Action::Listen(on) => self.asleep = (!*on).then_some(None),
-            skills::Action::Nap(secs) => {
-                self.asleep = Some(Some(Instant::now() + Duration::from_secs(u64::from(*secs))));
-            }
-            _ => {}
-        }
-        let title = if reply.title.is_empty() {
-            "Assistant"
-        } else {
-            &reply.title
-        };
-        let body = [reply.body.as_str(), reply.speech.as_str()]
-            .into_iter()
-            .filter(|s| !s.is_empty())
-            .collect::<Vec<_>>()
-            .join("\n");
-        self.notify(title, &body);
-        self.sound(if action == skills::Action::Dismiss {
-            "cancel"
-        } else {
-            "success"
-        });
-        if action == skills::Action::Voice(true) {
-            self.cfg.speak = true;
-        }
-        self.say(&reply.speech, reply.cache);
-        self.last_speech.clone_from(&reply.speech);
-        if action == skills::Action::Voice(false) {
-            self.cfg.speak = false;
-        }
-        if !matches!(
-            action,
-            skills::Action::Repeat
-                | skills::Action::Dismiss
-                | skills::Action::Say(_)
-                | skills::Action::Voice(_)
-                | skills::Action::Listen(_)
-        ) {
-            self.previous = Some((action, Instant::now()));
-        }
-        self.question = reply.question;
-        if self.question.is_none() {
-            self.end_conversation(media_handled);
-        }
-        // Without a spoken question there is no playback to wait for.
-        if self.question.is_some() && !self.speaking {
-            self.start_listening(Vec::new());
-        }
-    }
-
     /// The conversation is over: resume the music, after any reply.
     fn end_conversation(&mut self, leave_paused: bool) {
         if leave_paused {
@@ -839,7 +643,7 @@ impl Assistant {
     fn notify(&self, title: &str, body: &str) {
         if !self.cfg.stdin {
             let ms = notify_ms(body).to_string();
-            skills::spawn(
+            exec::spawn(
                 "notify-send",
                 &["-a", "Voice assistant", "-t", &ms, title, body],
             );
@@ -932,87 +736,61 @@ fn run_pipewire(tx: mpsc::Sender<Vec<i16>>) -> Result<(), Box<dyn error::Error>>
     Ok(())
 }
 
-/// The classifier learning from `brain`'s examples, or the Rust grammar's.
-fn classifier(
-    dir: &std::path::Path,
-    brain: Option<&brain::Shared>,
-) -> Option<classify::Classifier> {
-    match brain {
-        Some(b) => b
-            .examples(&skills::Context::local())
-            .and_then(|ex| classify::Classifier::from_examples(dir, ex)),
-        None => classify::Classifier::new(dir),
-    }
-    .inspect_err(|e| eprintln!("voice-assistant: intent classifier: {e}"))
-    .ok()
-}
-
-fn classify_text(
-    c: &mut classify::Classifier,
-    text: &str,
-    ctx: &skills::Context,
-) -> Option<classify::Hit> {
-    c.classify(text, ctx)
-        .inspect_err(|e| eprintln!("voice-assistant: classifying: {e}"))
+/// The classifier learning from the brain's examples.
+fn classifier(dir: &std::path::Path, brain: &brain::Shared) -> Option<classify::Classifier> {
+    brain
+        .examples(&clock::Clock::local())
+        .and_then(|ex| classify::Classifier::new(dir, ex))
+        .inspect_err(|e| eprintln!("voice-assistant: intent classifier: {e}"))
         .ok()
-        .flatten()
 }
 
 /// Exit code 1 when any text matched nothing, so it can gate scripts.
-fn parse_texts(texts: &[String], mut classifier: Option<classify::Classifier>, lisp: bool) -> i32 {
-    let ctx = skills::Context::local();
+fn parse_texts(
+    texts: &[String],
+    brain: &brain::Shared,
+    mut classifier: Option<classify::Classifier>,
+) -> i32 {
+    let ctx = clock::Clock::local();
     let mut texts: Vec<String> = texts.to_vec();
     if let Some(i) = texts.iter().position(|t| t == "-") {
         let lines = io::stdin().lines().map_while(Result::ok);
         texts.splice(i..=i, lines.filter(|l| !l.trim().is_empty()));
     }
-    let lisp = lisp.then(|| {
-        brain::Brain::connect()
-            .and_then(|mut b| b.parse(&texts, &ctx))
-            .unwrap_or_else(|e| die(e))
-    });
     let mut missed = false;
-    let mut differ = 0;
-    for (i, t) in texts.iter().enumerate() {
-        let mut hit = || classifier.as_mut().and_then(|c| classify_text(c, t, &ctx));
-        let (tier, action) = match skills::parse_tier(t, &ctx, false) {
+    for (t, p) in texts.iter().zip(brain.parses(&texts, &ctx)) {
+        let mut classified = || {
+            let n = classifier.as_mut()?.nearest(t).ok()??;
+            let (action, accepted) = brain.classified(t, &n, &ctx).ok()?;
+            println!(
+                "          {n}, {}",
+                if accepted { "accepted" } else { "rejected" }
+            );
+            action.filter(|_| accepted)
+        };
+        let (tier, action) = match p.strict {
             Some(a) => ("intent  ", Some(a)),
-            None => match hit() {
-                Some(h) if h.accepted => ("classify", h.action),
-                h => {
-                    if let Some(h) = h {
-                        println!("          {h}");
-                    }
-                    ("fallback", skills::parse_tier(t, &ctx, true))
-                }
+            None => match classified() {
+                Some(a) => ("classify", Some(a)),
+                None => ("fallback", p.fallback),
             },
         };
         match action {
-            Some(a) => println!("{tier}  {t}\n          {a:?}"),
+            Some(a) => println!("{tier}  {t}\n          {a}"),
             None => {
                 missed = true;
                 println!("MISS      {t}");
             }
         }
-        if let Some(l) = lisp.as_ref().and_then(|l| l.get(i)) {
-            let strict = skills::parse_tier(t, &ctx, false).map(|a| format!("{a:?}"));
-            let fallback = skills::parse_tier(t, &ctx, true).map(|a| format!("{a:?}"));
-            let same = strict == l.strict && (strict.is_some() || fallback == l.fallback);
-            if !same {
-                differ += 1;
-                let show = |s: &Option<String>| s.clone().unwrap_or_else(|| "-".into());
-                println!(
-                    "LISP      {} / fallback {}",
-                    show(&l.strict),
-                    show(&l.fallback)
-                );
-            }
-        }
     }
-    if lisp.is_some() {
-        eprintln!("{differ} of {} differ between the brains", texts.len());
-    }
-    i32::from(missed || differ > 0)
+    i32::from(missed)
+}
+
+/// The running brain, or a private one.
+fn connect() -> brain::Shared {
+    brain::Brain::connect()
+        .map(brain::Shared::new)
+        .unwrap_or_else(|e| die(e))
 }
 
 fn main() {
@@ -1025,18 +803,10 @@ fn main() {
         }
         return;
     }
-    if cfg.golden {
-        for line in io::stdin().lines().map_while(Result::ok) {
-            println!("{}", replay::golden_line(&line));
-        }
-        return;
-    }
     if !cfg.parse.is_empty() {
-        process::exit(parse_texts(
-            &cfg.parse,
-            classifier(&cfg.intent_model, None),
-            cfg.lisp,
-        ));
+        let brain = connect();
+        let c = classifier(&cfg.intent_model, &brain);
+        process::exit(parse_texts(&cfg.parse, &brain, c));
     }
     let mut asr = asr::Asr::new(cfg.asr_model.clone(), cfg.threads);
     if !cfg.transcribe.is_empty() {
@@ -1053,32 +823,16 @@ fn main() {
         let log = store::state_dir()
             .unwrap_or_else(|| die("no state directory"))
             .join("heard.tsv");
-        let reader = if cfg.lisp {
-            replay::Reader::Brain(
-                brain::Brain::connect()
-                    .map(brain::Shared::new)
-                    .unwrap_or_else(|e| die(e)),
-            )
-        } else {
-            replay::Reader::Rust
-        };
-        let brain = match &reader {
-            replay::Reader::Brain(b) => Some(b),
-            replay::Reader::Rust => None,
-        };
-        let mut c = classifier(&cfg.intent_model, brain);
-        process::exit(replay::run(&log, &reader, Some(&mut asr), c.as_mut()));
+        let brain = connect();
+        let mut c = classifier(&cfg.intent_model, &brain);
+        process::exit(replay::run(&log, &brain, Some(&mut asr), c.as_mut()));
     }
     let wake =
         wakeword::WakeWord::new(&cfg.wake_model, cfg.threshold, 5).unwrap_or_else(|e| die(e));
     let vad = asr::Vad::new(&cfg.vad_model).unwrap_or_else(|e| die(e));
     let tts = tts::Tts::new(cfg.tts_model.clone(), cfg.voice, cfg.speed);
-    let brain = cfg.lisp.then(|| {
-        brain::Brain::connect()
-            .map(brain::Shared::new)
-            .unwrap_or_else(|e| die(e))
-    });
-    let classifier = classifier(&cfg.intent_model, brain.as_ref());
+    let brain = connect();
+    let classifier = classifier(&cfg.intent_model, &brain);
     let stdin = cfg.stdin;
     let threshold = cfg.threshold;
     let mut assistant = Assistant {
@@ -1090,13 +844,8 @@ fn main() {
         tts,
         state: State::Idle,
         speaking: false,
-        question: None,
         hushed: None,
         resume_after_speech: false,
-        misses: 0,
-        asleep: None,
-        last_speech: String::new(),
-        previous: None,
         pending: None,
         brain,
         brain_asked: false,
@@ -1126,12 +875,10 @@ fn main() {
     }
 
     // Phonemizing every command takes a quarter second; not on the first miss.
-    match assistant.brain.clone() {
-        Some(b) => drop(thread::spawn(move || {
-            b.sound_alikes();
-        })),
-        None => drop(thread::spawn(skills::warm_sound_alikes)),
-    }
+    let b = assistant.brain.clone();
+    drop(thread::spawn(move || {
+        b.sound_alikes();
+    }));
     let (tx, rx) = mpsc::channel();
     let worker = thread::spawn(move || run_worker(assistant, &rx));
     if let Err(e) = run_pipewire(tx) {

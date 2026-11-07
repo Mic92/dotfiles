@@ -1,22 +1,18 @@
 //! `--replay`: re-run everything logged in heard.tsv through the current
-//! grammar (and speech recogniser, where audio was kept) and report what
+//! brain (and speech recogniser, where audio was kept) and report what
 //! changed.
 
 use crate::asr::Asr;
-use crate::brain::{self, Parses};
+use crate::brain::{Parses, Shared};
 use crate::classify::Classifier;
+use crate::clock::Clock;
 use crate::rescore;
-use crate::skills::{self, Context};
 use std::fs;
 use std::path::Path;
 
-/// "Info(Weather", "Fun(Joke)": the action without its slot values, which
-/// may legitimately differ between runs (timestamps, random picks).
-pub fn kind(a: &skills::Action) -> String {
-    kind_of(&format!("{a:?}"))
-}
-
-/// `kind` of an action as `Debug` prints it.
+/// "Info(Weather", "Fun(Joke)": an action as the brain shows it, without
+/// its slot values, which may legitimately differ between runs
+/// (timestamps, random picks).
 pub fn kind_of(d: &str) -> String {
     let mut end = d.len();
     for (n, (i, _)) in d.match_indices(['(', ' ', '{', '"']).enumerate() {
@@ -28,80 +24,25 @@ pub fn kind_of(d: &str) -> String {
     d[..end].to_owned()
 }
 
-/// `--golden`: what the grammar alone makes of `text`, from the regular
-/// intents and from the fallback ones, as `text\tintent\tfallback` with
-/// `-` for nothing. The clock
-/// is fixed so dates don't drift between runs.
-pub fn golden_line(text: &str) -> String {
-    let ctx = Context::at(9 * 3600);
-    let show = |a: Option<skills::Action>| a.map_or_else(|| "-".to_owned(), |a| format!("{a:?}"));
-    format!(
-        "{text}\t{}\t{}",
-        show(skills::parse_tier(text, &ctx, false)),
-        show(skills::parse_tier(text, &ctx, true))
-    )
+/// The kind of action the classifier stands for, if sure.
+fn classify(b: &Shared, c: &mut Classifier, text: &str, ctx: &Clock) -> Option<String> {
+    let n = c.nearest(text).ok()??;
+    let (action, accepted) = b.classified(text, &n, ctx).ok()?;
+    println!(
+        "        classified as {} ({:.3}, lead {:.3}, like {:?}), {}",
+        action
+            .clone()
+            .unwrap_or_else(|| format!("{} without slots", n.intent)),
+        n.score,
+        n.lead,
+        n.example,
+        if accepted { "accepted" } else { "rejected" }
+    );
+    action.filter(|_| accepted).map(|a| kind_of(&a))
 }
 
-/// Which brain reads the replayed sentences.
-pub enum Reader {
-    Rust,
-    Brain(brain::Shared),
-}
-
-impl Reader {
-    pub fn read(&self, texts: &[String], ctx: &Context) -> Vec<Parses> {
-        match self {
-            Reader::Rust => texts
-                .iter()
-                .map(|t| {
-                    let show =
-                        |fallback| skills::parse_tier(t, ctx, fallback).map(|a| format!("{a:?}"));
-                    Parses {
-                        strict: show(false),
-                        fallback: show(true),
-                    }
-                })
-                .collect(),
-            Reader::Brain(b) => b.parses(texts, ctx),
-        }
-    }
-
-    fn sound_alikes(&self) -> &skills::SoundAlikes {
-        match self {
-            Reader::Rust => &skills::NAMED,
-            Reader::Brain(b) => b.sound_alikes(),
-        }
-    }
-
-    /// The kind of action the classifier stands for, if sure.
-    fn classify(&self, c: &mut Classifier, text: &str, ctx: &Context) -> Option<String> {
-        match self {
-            Reader::Rust => {
-                let hit = c.classify(text, ctx).ok()??;
-                println!("        {hit}");
-                hit.action.filter(|_| hit.accepted).map(|a| kind(&a))
-            }
-            Reader::Brain(b) => {
-                let n = c.nearest(text).ok()??;
-                let (action, accepted) = b.classified(text, &n, ctx).ok()?;
-                println!(
-                    "        classified as {} ({:.3}, lead {:.3}, like {:?}), {}",
-                    action
-                        .clone()
-                        .unwrap_or_else(|| format!("{} without slots", n.intent)),
-                    n.score,
-                    n.lead,
-                    n.example,
-                    if accepted { "accepted" } else { "rejected" }
-                );
-                action.filter(|_| accepted).map(|a| kind_of(&a))
-            }
-        }
-    }
-
-    fn read_one(&self, text: &str, ctx: &Context) -> Parses {
-        self.read(&[text.to_owned()], ctx).pop().unwrap_or_default()
-    }
+fn read_one(b: &Shared, text: &str, ctx: &Clock) -> Parses {
+    b.parses(&[text.to_owned()], ctx).pop().unwrap_or_default()
 }
 
 /// 16-bit mono PCM from a WAV file, as written by `write_wav`.
@@ -139,7 +80,7 @@ fn compare(old: &str, new: Option<&str>) -> Outcome {
 /// Returns the process exit code: 1 when something that used to work broke.
 pub fn run(
     log: &Path,
-    reader: &Reader,
+    brain: &Shared,
     mut asr: Option<&mut Asr>,
     mut classifier: Option<&mut Classifier>,
 ) -> i32 {
@@ -147,7 +88,7 @@ pub fn run(
         eprintln!("voice-assistant: nothing to replay in {}", log.display());
         return 1;
     };
-    let ctx = Context::local();
+    let ctx = Clock::local();
     let (mut same, mut fixed, mut broken, mut changed) = (0, 0, 0, 0);
     for line in text.lines() {
         let mut f = line.split('\t');
@@ -161,13 +102,9 @@ pub fn run(
                 match read_wav(Path::new(w)).and_then(|a| asr.transcribe(&a).ok()) {
                     Some(t) => {
                         // Same order as live: real intents, the audio, catch-alls.
-                        if reader.read_one(&t, &ctx).strict.is_none() {
-                            rescored = rescore::run(asr, "", &t, reader.sound_alikes(), |cs| {
-                                reader
-                                    .read(cs, &ctx)
-                                    .into_iter()
-                                    .map(|p| p.strict)
-                                    .collect()
+                        if read_one(brain, &t, &ctx).strict.is_none() {
+                            rescored = rescore::run(asr, "", &t, brain.sound_alikes(), |cs| {
+                                brain.parse(cs, &ctx)
                             });
                         }
                         t
@@ -180,12 +117,12 @@ pub fn run(
         if let Some(r) = &rescored {
             println!("        {r}");
         }
-        let read = reader.read_one(&heard_now, &ctx);
+        let read = read_one(brain, &heard_now, &ctx);
         let new = read
             .strict
             .or_else(|| rescored.filter(|r| r.accepted).map(|r| r.action))
             .map(|a| kind_of(&a))
-            .or_else(|| reader.classify(classifier.as_deref_mut()?, &heard_now, &ctx))
+            .or_else(|| classify(brain, classifier.as_deref_mut()?, &heard_now, &ctx))
             .or_else(|| read.fallback.map(|a| kind_of(&a)));
         let outcome = compare(old, new.as_deref());
         let label = match outcome {
@@ -224,49 +161,21 @@ pub fn run(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::skills::Action;
-    use crate::skills::fun::Fun;
-    use crate::skills::info::Info;
-    use crate::skills::kagi::Query;
-    use crate::skills::media::Media;
     use crate::store;
     use std::env;
     use std::fs;
     use std::process;
 
     #[test]
-    fn golden_lines_use_a_fixed_clock() {
-        assert_eq!(golden_line("tell a joke"), "tell a joke\tFun(Joke)\t-");
-        assert_eq!(golden_line("tell a joke"), golden_line("tell a joke"));
-        // Wednesday, so Friday is two days ahead.
-        let line = golden_line("what's on my calendar on friday");
-        assert!(line.contains("day: 2,"), "{line}");
-        assert_eq!(golden_line("blorp"), "blorp\t-\t-");
-    }
-
-    #[test]
     fn kinds() {
-        assert_eq!(kind(&Action::Fun(Fun::Joke)), "Fun(Joke)");
-        assert_eq!(kind(&Action::Media(Media::Radio(3))), "Media(Radio");
+        assert_eq!(kind_of("Fun(Joke)"), "Fun(Joke)");
+        assert_eq!(kind_of("Media(Radio(3))"), "Media(Radio");
         assert_eq!(
-            kind(&Action::Info(Info::Weather {
-                day: 1,
-                place: None,
-                part: None
-            })),
+            kind_of("Info(Weather { day: 1, place: None, part: None })"),
             "Info(Weather"
         );
-        assert_eq!(kind(&Action::Kagi(Query("who".into()))), "Kagi(Query");
-        assert_eq!(kind(&Action::Repeat), "Repeat");
-    }
-
-    #[test]
-    fn rust_reader_reads_both_tiers() {
-        let ctx = Context::at(9 * 3600);
-        let got = Reader::Rust.read(&["tell a joke".into(), "blorp".into()], &ctx);
-        assert_eq!(got[0].strict.as_deref(), Some("Fun(Joke)"));
-        assert_eq!(got[1], Parses::default());
-        assert_eq!(kind_of("Media(Radio(3))"), "Media(Radio");
+        assert_eq!(kind_of("Kagi(Query(\"who\"))"), "Kagi(Query");
+        assert_eq!(kind_of("Repeat"), "Repeat");
     }
 
     #[test]

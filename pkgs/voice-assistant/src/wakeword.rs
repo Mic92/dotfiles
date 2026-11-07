@@ -345,3 +345,89 @@ impl WakeWord {
         Ok(())
     }
 }
+
+/// What follows the wake word at the start of `heard` ("Alexa, play
+/// music." -> "play music."), or `None` if it does not start with one.
+pub fn strip_wake_word(heard: &str) -> Option<&str> {
+    let target = skeleton("alexa");
+    let mut rest = heard;
+    for _ in 0..2 {
+        let trimmed = rest.trim_start_matches(|c: char| !c.is_alphanumeric());
+        let end = trimmed
+            .find(|c: char| !c.is_alphanumeric() && c != '\'')
+            .unwrap_or(trimmed.len());
+        let (word, after) = trimmed.split_at(end);
+        let after = after.trim_start_matches(|c: char| !c.is_alphanumeric());
+        // "Alexis", "Alexei", "Elexa" are her too.
+        if distance(&skeleton(word), &target) <= 1 {
+            return Some(after);
+        }
+        if !["hey", "hi", "ok", "okay", "oh"].contains(&word.to_lowercase().as_str()) {
+            return None;
+        }
+        rest = after;
+    }
+    None
+}
+
+/// Lowercase letters and digits, every vowel the same, voiced and
+/// voiceless consonants merged, hissing sounds merged, no doubled letters.
+fn skeleton(s: &str) -> Vec<char> {
+    // "joke" comes out as "chalk" or "shrog".
+    let s = s
+        .to_ascii_lowercase()
+        .replace("sch", "s")
+        .replace("sh", "s")
+        .replace("ch", "s")
+        .replace('j', "s");
+    let mut out: Vec<char> = Vec::new();
+    for c in s.chars().filter(char::is_ascii_alphanumeric) {
+        let c = match c.to_ascii_lowercase() {
+            'a' | 'e' | 'i' | 'o' | 'u' | 'y' => 'a',
+            // Voiced and voiceless twins sound alike through a headset.
+            'f' => 'v',
+            'p' => 'b',
+            't' => 'd',
+            'k' | 'c' | 'q' => 'g',
+            's' => 'z',
+            c => c,
+        };
+        if out.last() != Some(&c) {
+            out.push(c);
+        }
+    }
+    out
+}
+
+fn distance(a: &[char], b: &[char]) -> usize {
+    let mut prev: Vec<usize> = (0..=b.len()).collect();
+    for (i, ca) in a.iter().enumerate() {
+        let mut cur = vec![i + 1];
+        for (j, cb) in b.iter().enumerate() {
+            let sub = prev[j] + usize::from(ca != cb);
+            cur.push(sub.min(prev[j + 1] + 1).min(cur[j] + 1));
+        }
+        prev = cur;
+    }
+    prev[b.len()]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn wake_word_is_stripped() {
+        assert_eq!(strip_wake_word("Alexa, play music."), Some("play music."));
+        assert_eq!(strip_wake_word("Alexa play music"), Some("play music"));
+        assert_eq!(
+            strip_wake_word("Hey Alexa. What time is it?"),
+            Some("What time is it?")
+        );
+        assert_eq!(strip_wake_word("Alexis, stop."), Some("stop."));
+        assert_eq!(strip_wake_word("Alexa?"), Some(""));
+        assert_eq!(strip_wake_word("That makes sense. Now's the time."), None);
+        assert_eq!(strip_wake_word("All right, all right."), None);
+        assert_eq!(strip_wake_word(""), None);
+    }
+}

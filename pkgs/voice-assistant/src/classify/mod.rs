@@ -3,8 +3,8 @@
 
 mod wordpiece;
 
+use std::collections::HashSet;
 use std::collections::hash_map::DefaultHasher;
-use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fmt;
 use std::fs;
@@ -14,12 +14,8 @@ use std::path::{Path, PathBuf};
 use ort::session::Session;
 
 use crate::onnx;
-use crate::skills::{self, Action};
 use wordpiece::WordPiece;
 
-/// Tuned on CLINC validation for at most 0.5 % false accepts.
-const THRESHOLD: f32 = 0.91;
-const MARGIN: f32 = 0.02;
 const BATCH: usize = 64;
 const CLINC: &str = include_str!("clinc.tsv");
 
@@ -111,46 +107,12 @@ impl fmt::Display for Nearest {
     }
 }
 
-pub struct Hit {
-    /// What the nearest example asks for, e.g. "Timer(Start".
-    pub intent: String,
-    /// `None` when its slots are not in the sentence.
-    pub action: Option<Action>,
-    pub score: f32,
-    pub lead: f32,
-    pub nearest: String,
-    pub accepted: bool,
-}
-
-impl fmt::Display for Hit {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "classified as {} ({:.3}, lead {:.3}, like {:?}), {}",
-            self.action.as_ref().map_or_else(
-                || format!("{} without slots", self.intent),
-                |a| format!("{a:?}")
-            ),
-            self.score,
-            self.lead,
-            self.nearest,
-            if self.accepted {
-                "accepted"
-            } else {
-                "rejected"
-            }
-        )
-    }
-}
-
 pub struct Classifier {
     embedder: Embedder,
     texts: Vec<String>,
     /// Index into `kinds` per example.
     labels: Vec<usize>,
     kinds: Vec<String>,
-    /// What each kind means when the sentence has no slot values.
-    plain: HashMap<String, Action>,
     vectors: Vec<f32>,
     dim: usize,
 }
@@ -176,31 +138,8 @@ fn read_vectors(path: &Path) -> Option<Vec<f32>> {
 }
 
 impl Classifier {
-    /// Learns from the Rust grammar.
-    pub fn new(dir: &Path) -> Result<Self, String> {
-        let mut examples: Vec<(String, String)> = Vec::new();
-        let mut plain = HashMap::new();
-        for (text, action, slotted) in skills::classifier_examples() {
-            let kind = crate::replay::kind(&action);
-            if !slotted {
-                plain.entry(kind.clone()).or_insert(action);
-            }
-            examples.push((text, kind));
-        }
-        Self::learn(dir, examples, plain)
-    }
-
-    /// Learns from (text, kind) examples, as the Lisp brain lists them.
-    /// Only `nearest` makes sense then.
-    pub fn from_examples(dir: &Path, examples: Vec<(String, String)>) -> Result<Self, String> {
-        Self::learn(dir, examples, HashMap::new())
-    }
-
-    fn learn(
-        dir: &Path,
-        mut examples: Vec<(String, String)>,
-        plain: HashMap<String, Action>,
-    ) -> Result<Self, String> {
+    /// Learns from (text, kind) examples, as the brain lists them.
+    pub fn new(dir: &Path, mut examples: Vec<(String, String)>) -> Result<Self, String> {
         let mut embedder = Embedder::load(dir)?;
         let known: HashSet<String> = examples.iter().map(|(_, k)| k.clone()).collect();
         examples.extend(
@@ -238,7 +177,6 @@ impl Classifier {
             texts,
             labels,
             kinds,
-            plain,
             vectors,
             dim,
         })
@@ -267,99 +205,43 @@ impl Classifier {
             example: self.texts[example].clone(),
         }))
     }
-
-    pub fn classify(&mut self, text: &str, ctx: &skills::Context) -> Result<Option<Hit>, String> {
-        let Some(n) = self.nearest(text)? else {
-            return Ok(None);
-        };
-        let action =
-            skills::fill(text, &n.intent, ctx).or_else(|| self.plain.get(&n.intent).cloned());
-        Ok(Some(Hit {
-            accepted: action.is_some()
-                && n.score >= THRESHOLD
-                && n.lead >= MARGIN
-                && !skills::vetoed(&n.intent, text),
-            intent: n.intent,
-            action,
-            score: n.score,
-            lead: n.lead,
-            nearest: n.example,
-        }))
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::brain::{Brain, Shared};
+    use crate::clock::Clock;
 
-    fn classifier() -> Option<Classifier> {
+    fn setup() -> Option<(Classifier, Shared)> {
         let dir = option_env!("VA_INTENT_MODEL")?;
-        Classifier::new(Path::new(dir)).ok()
-    }
-
-    #[test]
-    fn fills_slots_of_paraphrased_commands() -> Result<(), String> {
-        let Some(mut c) = classifier() else {
-            return Ok(());
-        };
-        let ctx = skills::Context::local();
-        let hit = c.classify("could you start a countdown of five minutes", &ctx)?;
-        let action = hit.filter(|h| h.accepted).and_then(|h| h.action);
-        assert!(
-            matches!(
-                action,
-                Some(Action::Timer(skills::timer::Timer::Start {
-                    seconds: 300,
-                    ..
-                }))
-            ),
-            "{action:?}"
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn changing_a_list_is_not_showing_it() -> Result<(), String> {
-        let Some(mut c) = classifier() else {
-            return Ok(());
-        };
-        let ctx = skills::Context::local();
-        for text in [
-            "add eggs to my shopping list and remove cheese",
-            "please add milk on my shopping list, if it is not already on it",
-            "take carrots off my list for shopping",
-        ] {
-            let hit = c.classify(text, &ctx)?;
-            assert!(
-                !hit.as_ref().is_some_and(|h| h.accepted),
-                "{text}: {}",
-                hit.map(|h| h.to_string()).unwrap_or_default()
-            );
-        }
-        let hit = c.classify("did i remember to put oatmeal on my list", &ctx)?;
-        assert!(hit.is_some_and(|h| h.accepted && h.intent.starts_with("Notes(")));
-        Ok(())
+        let b = Shared::new(Brain::connect().ok()?);
+        let c = Classifier::new(Path::new(dir), b.examples(&Clock::at(9 * 3600)).ok()?).ok()?;
+        Some((c, b))
     }
 
     /// `-` marks sentences that ask for nothing we do.
     #[test]
     fn recovers_paraphrases_without_false_accepts() -> Result<(), String> {
-        let Some(mut c) = classifier() else {
+        let Some((mut c, b)) = setup() else {
             return Ok(());
         };
-        let ctx = skills::Context::local();
+        let ctx = Clock::at(9 * 3600);
         let (mut right, mut wrong, mut false_accepts) = (Vec::new(), Vec::new(), Vec::new());
         for line in include_str!("eval.tsv").lines() {
             let Some((want, text)) = line.split_once('\t') else {
                 continue;
             };
-            if skills::parse_tier(text, &ctx, false).is_some() {
+            if b.parse(&[text.to_owned()], &ctx)[0].is_some() {
                 continue;
             }
-            let Some(hit) = c.classify(text, &ctx)?.filter(|h| h.accepted) else {
+            let Some(n) = c.nearest(text)? else {
                 continue;
             };
-            let got = hit.intent;
+            if !b.classified(text, &n, &ctx)?.1 {
+                continue;
+            }
+            let got = n.intent;
             match want {
                 "-" => false_accepts.push(format!("{text} -> {got}")),
                 w if w == got => right.push(text),
