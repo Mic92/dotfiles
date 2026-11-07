@@ -11,10 +11,12 @@
 (defparameter *ones*
   #("zero" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine" "ten"
     "eleven" "twelve" "thirteen" "fourteen" "fifteen" "sixteen" "seventeen"
-    "eighteen" "nineteen"))
+    "eighteen" "nineteen")
+  "Number words indexed by value.")
 
 (defparameter *tens*
-  #("twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"))
+  #("twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety")
+  "Tens from twenty, indexed by value / 10 - 2.")
 
 (defn comma-p ((w t)) boolean (equal w +comma+))
 
@@ -47,9 +49,12 @@
 (defn number-words ((ws words)) (or null double-float)
   "A spoken number of one or more words: \"42\", \"twenty five\", \"one hundred
 and five\", \"two thousand\", \"minus three\", \"3.5\"."
-  (let* ((neg (in (first ws) "minus" "negative"))
-         (ws (if neg (rest ws) ws))
-         (total 0d0) (current 0d0) (seen nil))
+  (if (in (first ws) "minus" "negative")
+      (let ((n (unsigned-number-words (rest ws)))) (and n (- n)))
+      (unsigned-number-words ws)))
+
+(defn unsigned-number-words ((ws words)) (or null double-float)
+  (let ((total 0d0) (current 0d0) (seen nil))
     (loop for w in ws
           for first = t then nil
           for v = (or (decimal w) (number w))
@@ -60,8 +65,8 @@ and five\", \"two thousand\", \"minus three\", \"3.5\"."
                     (setf current 0d0 seen t))
                    ((and first (string= w "a")))
                    ((and seen (string= w "and")))
-                   (t (return-from number-words nil))))
-    (and seen (* (if neg -1 1) (+ total current)))))
+                   (t (return-from unsigned-number-words nil))))
+    (and seen (+ total current))))
 
 (defn spell-symbols ((text string)) string
   "Arithmetic symbols as words and commas as their own token. \"1,000\" and

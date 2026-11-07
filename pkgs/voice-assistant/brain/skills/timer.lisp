@@ -217,10 +217,10 @@
   "~a left, paused. It's been waiting longer than your last delivery driver."
   "Paused at ~a. Say resume, or it'll stay frozen like your inbox.")
 
-;; What we last told the plugin, which has no query IPC: (:running
-;; deadline alarm) or (:paused left alarm), deadlines in internal real time.
-;; Timers set by hand in the panel are invisible to us, good enough for voice.
-(defvar *timer* nil)
+(defvar *timer* nil
+  "What we last told the plugin, which has no query IPC. (:running deadline
+alarm) or (:paused left alarm), deadlines in internal real time. Timers set by
+hand in the panel are invisible to us, good enough for voice.")
 
 (defn clock-now () (integer 0)
   (floor (get-internal-real-time) internal-time-units-per-second))

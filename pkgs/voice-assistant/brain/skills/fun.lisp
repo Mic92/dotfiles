@@ -109,7 +109,8 @@
 (defparameter *joke-api*
   (concatenate 'string "https://v2.jokeapi.dev/joke/Any?type=single&format=txt"
                ;; The categories nobody wants read aloud.
-               "&blacklistFlags=racist,sexist,religious,political"))
+               "&blacklistFlags=racist,sexist,religious,political")
+  "Single-line jokes, without the categories nobody wants read aloud.")
 
 (defn online-joke ((dad boolean)) (or null string)
   (flet ((dad () (fetch-joke "https://icanhazdadjoke.com/"))

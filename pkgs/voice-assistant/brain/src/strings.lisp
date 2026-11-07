@@ -10,7 +10,8 @@
   "The first N elements of XS, or all of them."
   (subseq xs 0 (min n (length xs))))
 
-(defparameter *whitespace* '(#\Space #\Tab #\Newline #\Return))
+(defparameter *whitespace* '(#\Space #\Tab #\Newline #\Return)
+  "What trim and split-words treat as space.")
 
 (defn trim ((s string)) string
   (string-trim *whitespace* s))

@@ -17,7 +17,8 @@
 
 (defparameter *question-words*
   '("who" "who's" "whom" "whose" "what" "what's" "when" "where" "where's" "why" "how" "how's"
-    "which"))
+    "which")
+  "Words that start a question worth asking the web.")
 
 ;; A whole question: a question word and at least two more words, so "what?"
 ;; or "how are you" style fragments stay with chat.

@@ -21,7 +21,8 @@
 
 (defparameter *entities*
   '(("&amp;" . "&") ("&quot;" . "\"") ("&#39;" . "'") ("&apos;" . "'") ("&lt;" . "<")
-    ("&gt;" . ">")))
+    ("&gt;" . ">"))
+  "The HTML entities feeds put into titles.")
 
 (defn unescape ((s string)) string
   (let ((s (trim s)))

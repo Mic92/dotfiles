@@ -3,7 +3,9 @@
 (defvar *late* nil
   "Whether it is late at night, 23:00 to 5:00. Bound per request.")
 
-(defstruct replies (lines #() :type vector) (late #() :type vector))
+(defstruct replies
+  "Lines to say, and the ones replacing them late at night."
+  (lines #() :type vector) (late #() :type vector))
 
 (defmacro defreplies (name &body lines)
   "Lines to pick from. A trailing (:late ...) adds late-night lines."

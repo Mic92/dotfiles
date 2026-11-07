@@ -32,14 +32,8 @@
          (h (find-if (lambda (h) (> (car h) today)) (append (holidays y) (holidays (1+ y))))))
     (if h (values (car h) (cdr h)) (values today "nothing"))))
 
-(defparameter *day-names*
-  #("Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"))
-(defparameter *month-names*
-  #("January" "February" "March" "April" "May" "June" "July" "August" "September" "October"
-    "November" "December"))
-
 (defn spoken-day ((n integer)) string
   "\"Thursday, November 1\"."
   (multiple-value-bind (y m d) (civil n)
     (declare (ignore y))
-    (format nil "~a, ~a ~d" (aref *day-names* (weekday n)) (aref *month-names* (1- m)) d)))
+    (format nil "~:(~a~), ~:(~a~) ~d" (aref *weekdays* (weekday n)) (aref *months* (1- m)) d)))

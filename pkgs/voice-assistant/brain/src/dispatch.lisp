@@ -12,7 +12,8 @@ music played when we started listening."
   (timer nil :type boolean)
   (music nil :type boolean))
 
-(defvar *context* (make-context (* 9 3600) (day-number 2025 10 22)))
+(defvar *context* (make-context (* 9 3600) (day-number 2025 10 22))
+  "The request being handled. Tests bind their own.")
 
 (defn now () (integer 0) (context-now *context*))
 
@@ -33,10 +34,12 @@ music played when we started listening."
   (<= 5 (hour) 7))
 
 (defstruct (action (:constructor make-action (command fields)))
+  "A command and the field values to run it with."
   (command nil :type command)
   (fields nil :type list))
 
-(defvar *slot-parsers* (make-hash-table :test #'equal))
+(defvar *slot-parsers* (make-hash-table :test #'equal)
+  "Slot name to its slot-parser, filled by defslot.")
 
 (defmacro defslot (names (words next) &body body)
   "A slot parser for each of NAMES: WORDS, and the word after them, to a value
@@ -83,7 +86,8 @@ or nil."
   "Ways of asking that wrap the actual question.")
 
 (defparameter *tails*
-  '(("for" "me") ("please") (",") ("," "i" "need" "to" "know") ("," "can" "you" "tell" "me")))
+  '(("for" "me") ("please") (",") ("," "i" "need" "to" "know") ("," "can" "you" "tell" "me"))
+  "Endings that wrap the actual question, as in \", can you tell me\".")
 
 (defn unwrap-request ((ws words)) words
   "\"can you tell me what time it is, please\" -> \"what time it is\"."

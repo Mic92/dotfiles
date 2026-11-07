@@ -4,16 +4,19 @@
 ;;; Parsed without knowing today and resolved against it later.
 
 (defparameter *weekdays*
-  #("sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday"))
+  #("sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday")
+  "Indexed by weekday, 0 is Sunday.")
 
 (defparameter *months*
   #("january" "february" "march" "april" "may" "june" "july" "august" "september"
-    "october" "november" "december"))
+    "october" "november" "december")
+  "Indexed by month, 0 is January.")
 
 (defparameter *ordinals*
   #("first" "second" "third" "fourth" "fifth" "sixth" "seventh" "eighth" "ninth" "tenth"
     "eleventh" "twelfth" "thirteenth" "fourteenth" "fifteenth" "sixteenth" "seventeenth"
-    "eighteenth" "nineteenth"))
+    "eighteenth" "nineteenth")
+  "Spoken days of the month, 0 is the first.")
 
 (defn day-number ((y integer) (m (integer 1 12)) (d (integer 1 31))) integer
   "Days since 1970-01-01."

@@ -95,17 +95,20 @@ there was one."
   (trivia:match ws
                 ((list (or "noon" "midday")) (va.types:Clock (* 12 3600) nil t))
                 ((list "midnight") (va.types:Clock 0 nil t))
-                (_
-                 (multiple-value-bind (core half qualified) (qualifier ws)
-                   (multiple-value-bind (rh rm) (relative-time core)
-                     (multiple-value-bind (h m) (if rh (values rh rm) (hour-minute core))
-                       (when (and h (not (and half (or (zerop h) (> h 12)))))
-                         (let ((h (cond ((and (eq half :pm) (< h 12)) (+ h 12))
-                                        ((and (eq half :am) (= h 12)) 0)
-                                        (t h))))
-                           (va.types:Clock (+ (* h 3600) (* m 60))
-                                           (and (null half) (<= 1 h 12))
-                                           (or qualified (and rh t)))))))))))
+                (_ (spoken-clock ws))))
+
+(defn spoken-clock ((ws words)) (or null va.types:Clock)
+  "\"half past seven\", \"7:30 pm\", \"ten in the evening\"."
+  (multiple-value-bind (core half qualified) (qualifier ws)
+    (multiple-value-bind (rh rm) (relative-time core)
+      (multiple-value-bind (h m) (if rh (values rh rm) (hour-minute core))
+        (when (and h (not (and half (or (zerop h) (> h 12)))))
+          (let ((h (cond ((and (eq half :pm) (< h 12)) (+ h 12))
+                         ((and (eq half :am) (= h 12)) 0)
+                         (t h))))
+            (va.types:Clock (+ (* h 3600) (* m 60))
+                            (and (null half) (<= 1 h 12))
+                            (or qualified (and rh t)))))))))
 
 (defn format-hm ((secs (integer 0))) string
   "\"7:30 PM\", \"12 PM\"."

@@ -1,4 +1,5 @@
 (defpackage #:va
+  (:documentation "The voice assistant's brain: grammar, skills and dialogue.")
   (:use #:cl)
   (:shadow #:number)
   (:local-nicknames (#:a #:alexandria) (#:jzon #:com.inuoe.jzon))

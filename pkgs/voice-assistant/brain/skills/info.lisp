@@ -300,15 +300,23 @@ high and low and the chance of rain."
   "wttr.in wraps texts as [{\"value\": ...}]."
   (let ((s (json-get v key 0 "value"))) (and (stringp s) (trim s))))
 
+(defn weather-source ((v t) (hourly vector) (day (integer 0)) (slot t)) t
+  "A day part's slot, the current conditions today, the midday forecast otherwise."
+  (cond (slot)
+        ((= day 0) (json-get v "current_condition" 0))
+        (t (aref hourly (min 4 (1- (length hourly)))))))
+
+(defn max-rain ((hours list)) (integer 0)
+  (reduce #'max (mapcar (lambda (h) (or (json-int h "chanceofrain") 0)) hours) :initial-value 0))
+
 (defn parse-weather ((json string) (day (integer 0)) (part (or null (integer 0))))
     (or null forecast)
   (let* ((v (parse-json json))
          (fc (json-get v "weather" day))
          (hourly (json-get fc "hourly")))
     (when (and (vectorp hourly) (plusp (length hourly)))
-      (let* ((noon (if (> (length hourly) 4) (aref hourly 4) (aref hourly (1- (length hourly)))))
-             (slot (and part (json-get hourly part)))
-             (src (cond (slot) ((= day 0) (json-get v "current_condition" 0)) (t noon)))
+      (let* ((slot (and part (json-get hourly part)))
+             (src (weather-source v hourly day slot))
              (desc (first-value src "weatherDesc"))
              (temp (json-int src "temp_C"))
              (feels (json-int src "FeelsLikeC"))
@@ -317,9 +325,7 @@ high and low and the chance of rain."
         (and desc temp feels high low
              (forecast (or (first-value (json-get v "nearest_area" 0) "areaName") "")
                        desc temp feels high low
-                       (reduce #'max (mapcar (lambda (h) (or (json-int h "chanceofrain") 0))
-                                             (if slot (list slot) (coerce hourly 'list)))
-                               :initial-value 0)))))))
+                       (max-rain (if slot (list slot) (coerce hourly 'list)))))))))
 
 (defn weather-text ((w forecast) (day (integer 0)) (place (or null string))
                     (part (or null (integer 0))))

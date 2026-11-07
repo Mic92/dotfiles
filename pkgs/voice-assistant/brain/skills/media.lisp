@@ -160,31 +160,34 @@ when \"radio\" was said, but not otherwise: \"turn on wifi\" is no lofi."
   "\"some songs by daft punk\" -> \"daft punk\". Nil for words that are no
 search: \"my todo list\" is for the notes, \"the last song again\" is a
 skip, \"can i hear you\" no title."
-  (let* ((ws (uiop:split-string (remove #\, text)))
-         (ws (remove "" ws :test #'string=))
-         ;; "maroon 5 playlist play it for me"
-         (again (position "play" ws :test #'string= :start 1))
-         (ws (if again (subseq ws 0 again) ws)))
-    (loop while (in (first ws) "some" "my" "the" "a" "me") do (pop ws))
-    (let ((by (position "by" ws :test #'string=)))
-      (when (and by (plusp by)
-                 (every (lambda (w) (in w "music" "songs" "song" "something" "stuff" "tracks"))
-                        (subseq ws 0 by)))
-        (setf ws (nthcdr (1+ by) ws))))
-    (loop (cond ((in (car (last ws)) "please" "in" "here" "now") (setf ws (butlast ws)))
-                ((and (rest ws) (string= (car (last ws 2)) "for") (in (car (last ws)) "me" "us"))
-                 (setf ws (butlast ws 2)))
-                (t (return))))
-    (when (and (rest ws) (in (first ws) "song" "track" "album")) (pop ws))
-    (let ((q (unwords ws)))
-      (and (not (member "list" ws :test #'string=))
-           (not (in (first ws) "next" "previous" "last" "same" "you"))
-           (plusp (length q))
-           (not (member q *vague* :test #'string=))
-           q))))
+  (let* ((ws (search-words (split-words (remove #\, text))))
+         (q (unwords ws)))
+    (and (not (member "list" ws :test #'string=))
+         (not (in (first ws) "next" "previous" "last" "same" "you"))
+         (plusp (length q))
+         (not (member q *vague* :test #'string=))
+         q)))
 
-;; Marks our mpv in the process list so it can be stopped again.
-(defparameter *radio-tag* "voice-assistant-radio")
+(defn search-words ((ws words)) words
+  "WS without fillers around the title: \"some songs by\", \"please\", \"for me\"."
+  ;; "maroon 5 playlist play it for me"
+  (let ((again (position "play" ws :test #'string= :start 1)))
+    (when again (setf ws (subseq ws 0 again))))
+  (loop while (in (first ws) "some" "my" "the" "a" "me") do (pop ws))
+  (let ((by (position "by" ws :test #'string=)))
+    (when (and by (plusp by)
+               (every (lambda (w) (in w "music" "songs" "song" "something" "stuff" "tracks"))
+                      (subseq ws 0 by)))
+      (setf ws (nthcdr (1+ by) ws))))
+  (loop (cond ((in (car (last ws)) "please" "in" "here" "now") (setf ws (butlast ws)))
+              ((and (rest ws) (string= (car (last ws 2)) "for") (in (car (last ws)) "me" "us"))
+               (setf ws (butlast ws 2)))
+              (t (return))))
+  (when (and (rest ws) (in (first ws) "song" "track" "album")) (pop ws))
+  ws)
+
+(defparameter *radio-tag* "voice-assistant-radio"
+  "Marks our mpv in the process list so it can be stopped again.")
 
 (defn radio-socket () (or null string)
   (let ((dir (uiop:getenv "XDG_RUNTIME_DIR")))

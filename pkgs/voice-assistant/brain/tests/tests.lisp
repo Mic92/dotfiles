@@ -1,4 +1,5 @@
 (defpackage #:va-tests
+  (:documentation "The brain's tests, many ported from the Rust ones.")
   (:use #:cl #:parachute))
 (in-package #:va-tests)
 

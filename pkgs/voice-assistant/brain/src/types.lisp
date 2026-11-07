@@ -1,6 +1,7 @@
 ;;; Slot values and their parts, as Coalton types.
 
 (defpackage #:va.types
+  (:documentation "Slot values with variants, as Coalton types.")
   (:use #:coalton #:coalton-prelude)
   (:export #:Clock #:clock-secs #:clock-twelve-hour #:clock-marked
            #:Date #:Weekday #:MonthDay #:OfMonth

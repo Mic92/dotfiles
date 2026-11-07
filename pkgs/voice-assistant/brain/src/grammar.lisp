@@ -17,7 +17,8 @@
 
 (defparameter *fillers*
   '("alexa" "please" "hey" "ok" "okay" "um" "uh" "so" "now" "just" "could" "can"
-    "would" "you" "thanks" ","))
+    "would" "you" "thanks" ",")
+  "Words skipped between template words.")
 
 (deftype slot-parser ()
   "Words a slot would take and the word after them, to a value or nil."
@@ -26,8 +27,8 @@
 (deftype slots () "Slot name to value." 'list)
 
 (defstruct (template (:constructor %make-template (parts anchored source)))
-  ;; Each part is (:word alts), (:optional alts) or (:slot name optional),
-  ;; alts being lists of words, longest first.
+  "A parsed template. Each part is (:word alts), (:optional alts) or (:slot
+name optional), alts being lists of words, longest first."
   (parts nil :type list)
   (anchored nil :type boolean)
   (source "" :type string))

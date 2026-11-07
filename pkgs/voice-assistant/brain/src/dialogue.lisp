@@ -68,39 +68,49 @@
 
 (defparameter *negators*
   '("not" "never" "don't" "doesn't" "isn't" "aren't" "can't" "couldn't" "haven't" "dont" "isnt"
-    "cant" "unable" "wasn't" "don’t" "isn’t"))
+    "cant" "unable" "wasn't" "don’t" "isn’t")
+  "Words turning an answer around, as in \"I don't know\".")
 
 (defparameter *knowing*
   '("know" "sure" "certain" "confident" "say" "tell" "decide" "information" "mind" "answer"
-    "idea" "clue"))
+    "idea" "clue")
+  "What a negator denies in an unsure answer, as in \"no idea\".")
 
 (defparameter *maybe*
   '("maybe" "perhaps" "dunno" "idk" "possibly" "unsure" "undecided" "uncertain" "might" "either"
-    "both" "unaware" "possibility" "foggiest" "depends" "knows"))
+    "both" "unaware" "possibility" "foggiest" "depends" "knows")
+  "Words of an unsure answer.")
 
 (defparameter *true*
-  '("true" "right" "correct" "accurate" "fact" "facts" "valid" "truth"))
+  '("true" "right" "correct" "accurate" "fact" "facts" "valid" "truth")
+  "Agreeing with a statement, which answers yes.")
 
 (defparameter *false*
-  '("false" "wrong" "incorrect" "inaccurate" "untrue" "erroneous" "invalid" "fake"))
+  '("false" "wrong" "incorrect" "inaccurate" "untrue" "erroneous" "invalid" "fake")
+  "Disagreeing with a statement, which answers no.")
 
 (defparameter *yes*
   '("yes" "yeah" "yep" "yup" "yeap" "ya" "confirm" "confirmed" "affirmative" "affirmitive"
-    "agree" "agreed" "accepted" "approved" "roger" "indeed" "positive"))
+    "agree" "agreed" "accepted" "approved" "roger" "indeed" "positive")
+  "Words that answer yes.")
 
 (defparameter *no*
   '("no" "nope" "nah" "naw" "nay" "cancel" "abort" "wait" "pass" "negative" "negatory" "nada"
-    "disagree"))
+    "disagree")
+  "Words that answer no.")
 
 (defparameter *leans-yes*
-  '("sure" "absolutely" "definitely" "certainly" "please" "ok" "okay" "great" "awesome"))
+  '("sure" "absolutely" "definitely" "certainly" "please" "ok" "okay" "great" "awesome")
+  "Words that answer yes only when nothing says otherwise.")
 
 (defparameter *maybe-pairs*
-  '(("no" "idea") ("no" "clue") ("a" "clue") ("no" "knowledge") ("could" "be") ("if" "i")))
+  '(("no" "idea") ("no" "clue") ("a" "clue") ("no" "knowledge") ("could" "be") ("if" "i"))
+  "Word pairs of an unsure answer.")
 
 (defparameter *yes-pairs*
   '(("do" "it") ("do" "that") ("go" "ahead") ("of" "course") ("uh" "huh") ("all" "right")
-    ("got" "it") ("checks" "out") ("makes" "sense")))
+    ("got" "it") ("checks" "out") ("makes" "sense"))
+  "Word pairs that answer yes.")
 
 (defn has-pair ((ws words) (pairs list)) boolean
   (loop for (a b) on ws thereis (and b (member (list a b) pairs :test #'equal) t)))
@@ -200,9 +210,12 @@ then an act about whatever else is going on."
         ;; Loose yes/no words only when the sentence is no command of its own.
         (and (null act) (parse-tier text nil))
         (let ((act (or act (answer-word ws))))
-          (and act
-               (or (and (question-act q) (funcall (question-act q) act))
-                   (case act
-                     ((:stop :cancel :no) (command-action 'dismiss))
-                     (:maybe (say-action (pick *unsure*)))
-                     (otherwise (parse-tier text nil)))))))))
+          (and act (act-response act q text))))))
+
+(defn act-response ((act t) (q question) (text string)) (or null action)
+  "What a bare act like \"no\" or \"maybe\" means: the question's say first."
+  (or (and (question-act q) (funcall (question-act q) act))
+      (case act
+        ((:stop :cancel :no) (command-action 'dismiss))
+        (:maybe (say-action (pick *unsure*)))
+        (otherwise (parse-tier text nil)))))

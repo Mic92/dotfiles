@@ -3,6 +3,7 @@
 ;;; A command: its templates, its Coalton constructor and how it runs.
 
 (defstruct command
+  "Templates, the Coalton constructor and how it runs."
   (name nil :type symbol)
   ;; How Rust's Debug names it, and whether with field names.
   (kind "" :type string)
@@ -52,7 +53,8 @@ go to the earlier one.")
 
 (defparameter *skill-order*
   '(timer system volume media desktop app info calc spell fun chat ops notes reminders
-    meetings news kagi core))
+    meetings news kagi core)
+  "Skills in the order of Rust's MODULES. Ties between commands go to the earlier one.")
 
 (defn add-command ((c command)) symbol
   (let ((old (member (command-name c) *commands* :key #'command-name)))

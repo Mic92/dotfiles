@@ -26,42 +26,75 @@
            (in w "a" "an" "and" "of" "hundred" "couple" "few"))
        t))
 
+(defn add-fraction ((num (or null double-float)) (tok string)) double-float
+  "\"three quarters\" multiplies, \"one and a half\" adds."
+  (let ((f (fraction tok)))
+    (cond ((and num (string= tok "quarters")) (* num f))
+          (num (+ num f))
+          (t f))))
+
+(defn count-word ((tok string) (next (or null string)) (num (or null double-float)))
+    (or null double-float)
+  "NUM after a counting word: \"hundred\", \"a couple\", \"a few\", \"an hour\"."
+  (word-case tok
+    ("hundred" (* (or num 1d0) 100))
+    ("couple" 2d0)
+    ("few" 3d0)
+    (("a" "an") (and (null num) next (unit-seconds next) 1d0))))
+
+(defn leftover-scale ((last-unit (or null real)) (fraction-only t)) real
+  "Seconds per unit of a trailing number: minutes alone, the next smaller unit
+after one (\"1 hour 20\"), the unit itself after a fraction."
+  (cond ((null last-unit) 60)
+        (fraction-only last-unit)
+        ((>= last-unit 3600) 60)
+        (t 1)))
+
+(defstruct (tally (:constructor tally ()))
+  "A duration being added up word by word. The seconds so far, a number
+waiting for its unit and the last unit seen."
+  (total 0d0 :type double-float)
+  (num nil :type (or null double-float))
+  (last-unit nil :type (or null double-float))
+  (fraction-only nil :type boolean))
+
+(defn tally-word ((d tally) (tok string) (next (or null string))) boolean
+  "Add TOK to D. False when TOK rules out a duration."
+  (let ((unit (unit-seconds tok))
+        (value (or (decimal tok) (number tok))))
+    (with-accessors ((total tally-total) (num tally-num)) d
+      (cond (unit (tally-unit d tok unit))
+            ((colon tok) (incf total (colon tok)) t)
+            (value (setf num (+ (or num 0d0) value)) t)
+            ((fraction tok) (tally-fraction d tok))
+            (t (setf num (or (count-word tok next num) num)) t)))))
+
+(defn tally-unit ((d tally) (tok string) (unit double-float)) boolean
+  "Single letters are only units right after a number (\"5 m\")."
+  (unless (and (= (length tok) 1) (null (tally-num d)))
+    (incf (tally-total d) (* (or (tally-num d) 1d0) unit))
+    (setf (tally-last-unit d) unit (tally-num d) nil (tally-fraction-only d) nil)
+    t))
+
+(defn tally-fraction ((d tally) (tok string)) boolean
+  (let ((num (add-fraction (tally-num d) tok)))
+    (setf (tally-num d) num
+          (tally-fraction-only d) (or (tally-fraction-only d) (and (tally-last-unit d) t)
+                                      (= num (fraction tok))))
+    t))
+
 (defn duration ((ws words)) (or null (integer 1 86400))
   "Seconds in a spoken duration. A bare number counts as minutes, a trailing
 number as the next smaller unit (\"1 hour 20\")."
-  (let ((total 0d0) (num nil) (fraction-only nil) (last-unit nil))
+  (let ((d (tally)))
     (loop for (tok next) on ws
-          for unit = (unit-seconds tok)
-          for value = (or (decimal tok) (number tok))
-          do (cond
-               (unit
-                ;; Single letters are only units right after a number ("5 m").
-                (when (and (= (length tok) 1) (null num))
-                  (return-from duration nil))
-                (incf total (* (or num 1d0) unit))
-                (setf last-unit unit num nil fraction-only nil))
-               ((colon tok) (incf total (colon tok)))
-               (value (setf num (+ (or num 0d0) value)))
-               ((string= tok "hundred") (setf num (* (or num 1d0) 100)))
-               ((fraction tok)
-                ;; "three quarters" multiplies, "one and a half" adds.
-                (let ((f (fraction tok)))
-                  (setf num (cond ((and num (string= tok "quarters")) (* num f))
-                                  (num (+ num f))
-                                  (t f))
-                        fraction-only (or fraction-only (and last-unit t) (= num f)))))
-               ((string= tok "couple") (setf num 2d0))
-               ((string= tok "few") (setf num 3d0))
-               ((and (in tok "a" "an") (null num) next (unit-seconds next))
-                (setf num 1d0))))
-    (when num
-      (incf total (* num (cond ((null last-unit) 60)
-                               (fraction-only last-unit)
-                               ((>= last-unit 3600) 60)
-                               (t 1)))))
-    ;; Half away from zero, as Rust's round.
-    (let ((secs (floor (+ total 0.5d0))))
-      (and (<= 1 secs 86400) secs))))
+          unless (tally-word d tok next) do (return-from duration nil))
+    (with-accessors ((total tally-total) (num tally-num)) d
+      (when num
+        (incf total (* num (leftover-scale (tally-last-unit d) (tally-fraction-only d)))))
+      ;; Half away from zero, as Rust's round.
+      (let ((secs (floor (+ total 0.5d0))))
+        (and (<= 1 secs 86400) secs)))))
 
 (defn duration-slot ((ws words) (next (or null string))) (or null (integer 1 86400))
   "Every word must belong to the duration and the slot must not stop short of
