@@ -36,8 +36,6 @@
 
   clan.core.deployment.requireExplicitUpdate = true;
 
-  boot.initrd.systemd.enable = true;
-
   i18n.defaultLocale = "de_DE.UTF-8";
 
   users.users.dorit = {

@@ -37,8 +37,6 @@
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.aarch64-linux;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.initrd.systemd.enable = true;
-
   # Disable envfs to fix systemd refusing to run with unpopulated /usr/
   services.envfs.enable = lib.mkForce false;
 
