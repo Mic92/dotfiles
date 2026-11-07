@@ -229,18 +229,18 @@ hand in the panel are invisible to us, good enough for voice.")
   "A timer the user may be talking about: running, paused, or rang within
 the last minutes."
   (trivia:match *timer*
-                ((list :running deadline _) (> (+ deadline 300) (clock-now)))
-                ((list :paused _ _) t)))
+    ((list :running deadline _) (> (+ deadline 300) (clock-now)))
+    ((list :paused _ _) t)))
 
 (defn pending-timer () (values (or null (integer 0)) boolean boolean)
   "Seconds left, whether it is an alarm and whether it is paused."
   (trivia:match *timer*
-                ((list :running deadline alarm)
-                 (if (> deadline (clock-now))
-                     (values (- deadline (clock-now)) alarm nil)
-                     (values nil nil nil)))
-                ((list :paused left alarm) (values left alarm t))
-                (_ (values nil nil nil))))
+    ((list :running deadline alarm)
+     (if (> deadline (clock-now))
+         (values (- deadline (clock-now)) alarm nil)
+         (values nil nil nil)))
+    ((list :paused left alarm) (values left alarm t))
+    (_ (values nil nil nil))))
 
 (defn ipc (&rest (args string)) (or null string)
   "The plugin's IPC, which takes fractional minutes."

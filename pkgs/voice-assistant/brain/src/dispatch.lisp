@@ -59,9 +59,9 @@ or nil."
   (let ((c (parse-clock ws))) (and c (va.types:clock-marked c) c)))
 (defslot "percent" (ws next)
   (let ((n (trivia:match ws
-                         ((list n) (number n))
-                         ((list tens ones) (let ((tn (number tens)) (o (below (number ones) 10)))
-                                             (and tn o (+ tn o)))))))
+             ((list n) (number n))
+             ((list tens ones) (let ((tn (number tens)) (o (below (number ones) 10)))
+                                 (and tn o (+ tn o)))))))
     (and n (<= n 150) n)))
 ;; Stops before a following number word so "1 and 10" splits.
 (defslot ("number" "low" "high") (ws next)
@@ -71,10 +71,10 @@ or nil."
 (defslot "any" (ws next) t)
 (defslot "day" (ws next)
   (trivia:match ws
-                ((list "today") 0)
-                ((list "tomorrow") 1)
-                ((or (list "day" "after" "tomorrow") (list "the" "day" "after" "tomorrow")) 2)
-                (_ (parse-date ws))))
+    ((list "today") 0)
+    ((list "tomorrow") 1)
+    ((or (list "day" "after" "tomorrow") (list "the" "day" "after" "tomorrow")) 2)
+    (_ (parse-date ws))))
 
 (defparameter *lead-ins*
   '(("can" "you" "please" "tell" "me") ("can" "you" "tell" "me") ("could" "you" "tell" "me")

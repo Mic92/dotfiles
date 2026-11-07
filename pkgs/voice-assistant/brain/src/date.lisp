@@ -47,11 +47,11 @@
 (defn day-of-month ((ws words)) (or null (integer 1 31))
   "\"1st\", \"15\", \"first\", \"twenty first\", \"thirtieth\"."
   (let ((n (trivia:match (if (rest ws) ws (and ws (split-digits (first ws))))
-                         ((list d (or "st" "nd" "rd" "th")) (digits d))
-                         ((list "twenty" o) (let ((o (below (ordinal o) 10))) (and o (+ 20 o))))
-                         ((list "thirty" "first") 31)
-                         ((list w) (or (ordinal w) (word-case w ("twentieth" 20) ("thirtieth" 30))
-                                       (number w))))))
+             ((list d (or "st" "nd" "rd" "th")) (digits d))
+             ((list "twenty" o) (let ((o (below (ordinal o) 10))) (and o (+ 20 o))))
+             ((list "thirty" "first") 31)
+             ((list w) (or (ordinal w) (word-case w ("twentieth" 20) ("thirtieth" 30))
+                           (number w))))))
     (and n (<= 1 n 31) n)))
 
 (defn month ((w string)) (or null (integer 1 12))
@@ -77,19 +77,19 @@
          ;; "march 4th 2019": past years in CLINC, so the year only marks a date.
          (ws (if (and (> (length ws) 2) (year-p (car (last ws)))) (butlast ws) ws)))
     (trivia:match ws
-                  ;; "friday the 1st": the date decides, the weekday is decoration.
-                  ((list* (trivia:guard w (weekday-name w)) (and rest (list* "the" _)))
-                   (parse-date rest))
-                  ((or (list w) (list w (or "'s" "s")))
-                   (let ((d (weekday-name w))) (and d (va.types:Weekday d nil))))
-                  ((list "next" w)
-                   (let ((d (weekday-name w))) (and d (va.types:Weekday d t))))
-                  ;; "march 1st", "march the first"
-                  ((list* (trivia:guard m (month m)) "the" d) (month-day m d))
-                  ((list* (trivia:guard m (month m)) d) (month-day m d))
-                  ;; "the 1st of march", "1st of march", "the 15th"
-                  ((list* "the" rest) (or (date-of rest) (of-month rest)))
-                  (_ (date-of ws)))))
+      ;; "friday the 1st": the date decides, the weekday is decoration.
+      ((list* (trivia:guard w (weekday-name w)) (and rest (list* "the" _)))
+       (parse-date rest))
+      ((or (list w) (list w (or "'s" "s")))
+       (let ((d (weekday-name w))) (and d (va.types:Weekday d nil))))
+      ((list "next" w)
+       (let ((d (weekday-name w))) (and d (va.types:Weekday d t))))
+      ;; "march 1st", "march the first"
+      ((list* (trivia:guard m (month m)) "the" d) (month-day m d))
+      ((list* (trivia:guard m (month m)) d) (month-day m d))
+      ;; "the 1st of march", "1st of march", "the 15th"
+      ((list* "the" rest) (or (date-of rest) (of-month rest)))
+      (_ (date-of ws)))))
 
 (defn date-of ((ws words)) (or null va.types:Date)
   "\"1st of march\"."

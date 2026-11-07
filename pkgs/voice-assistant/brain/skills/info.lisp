@@ -151,12 +151,12 @@ from today and the forecast slot."
   (flet ((part (w) (cdr (assoc w *day-parts* :test #'string=))))
     (multiple-value-bind (day p)
         (trivia:match ws
-                      ((list "tonight") (values 0 7))
-                      ((or (list (or "this" "in" "the") p) (list "in" "the" p)) (values 0 (part p)))
-                      ((or (list "tomorrow" p) (list "tomorrow" "in" "the" p)) (values 1 (part p)))
-                      ((or (list "day" "after" "tomorrow" p)
-                           (list "the" "day" "after" "tomorrow" p))
-                       (values 2 (part p))))
+          ((list "tonight") (values 0 7))
+          ((or (list (or "this" "in" "the") p) (list "in" "the" p)) (values 0 (part p)))
+          ((or (list "tomorrow" p) (list "tomorrow" "in" "the" p)) (values 1 (part p)))
+          ((or (list "day" "after" "tomorrow" p)
+               (list "the" "day" "after" "tomorrow" p))
+           (values 2 (part p))))
       (if p (values day p) (values nil nil)))))
 
 (defslot "when" (ws next)

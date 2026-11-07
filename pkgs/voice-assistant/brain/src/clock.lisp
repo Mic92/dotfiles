@@ -54,20 +54,20 @@ there was one."
 
 (defn clock-minutes ((ws words)) (or null (integer 0 59))
   (trivia:match ws
-                (nil 0)
-                ((list (or "oh" "o") m) (below (number m) 10))
-                ((list tens ones) (below (tens-ones tens ones) 60))
-                ((list m) (below (number m) 60))))
+    (nil 0)
+    ((list (or "oh" "o") m) (below (number m) 10))
+    ((list tens ones) (below (tens-ones tens ones) 60))
+    ((list m) (below (number m) 60))))
 
 (defn hour-minute ((ws words)) (values (or null (integer 0 23)) (or null (integer 0 59)))
   "\"7\", \"7:30\", \"seven thirty\", \"seven oh five\", \"19 45\"."
   (multiple-value-bind (h m)
       (trivia:match ws
-                    ((list (trivia:guard hm (find #\: hm)))
-                     (let ((at (position #\: hm)))
-                       (values (digits (subseq hm 0 at))
-                               (below (digits (subseq hm (1+ at))) 60))))
-                    ((list* h rest) (values (number h) (clock-minutes rest))))
+        ((list (trivia:guard hm (find #\: hm)))
+         (let ((at (position #\: hm)))
+           (values (digits (subseq hm 0 at))
+                   (below (digits (subseq hm (1+ at))) 60))))
+        ((list* h rest) (values (number h) (clock-minutes rest))))
     (if (and h m (< h 24)) (values h m) (values nil nil))))
 
 (defn clock-offset ((ws words)) (or null (integer 1 59))
@@ -75,10 +75,10 @@ there was one."
   (let* ((ws (if (equal (first ws) "a") (rest ws) ws))
          (ws (or (without-suffix ws '("minutes")) (without-suffix ws '("minute")) ws)))
     (trivia:match ws
-                  ((list "half") 30)
-                  ((list "quarter") 15)
-                  ((list n) (let ((n (number n))) (and n (< 0 n 60) n)))
-                  ((list tens ones) (below (tens-ones tens ones) 60)))))
+      ((list "half") 30)
+      ((list "quarter") 15)
+      ((list n) (let ((n (number n))) (and n (< 0 n 60) n)))
+      ((list tens ones) (below (tens-ones tens ones) 60)))))
 
 (defn relative-time ((ws words)) (values (or null (integer 0 23)) (or null (integer 0 59)))
   "\"half past four\", \"quarter to five\", \"ten past nine\", \"20 minutes to 6\"."
@@ -93,9 +93,9 @@ there was one."
 
 (defn parse-clock ((ws words)) (or null va.types:Clock)
   (trivia:match ws
-                ((list (or "noon" "midday")) (va.types:Clock (* 12 3600) nil t))
-                ((list "midnight") (va.types:Clock 0 nil t))
-                (_ (spoken-clock ws))))
+    ((list (or "noon" "midday")) (va.types:Clock (* 12 3600) nil t))
+    ((list "midnight") (va.types:Clock 0 nil t))
+    (_ (spoken-clock ws))))
 
 (defn spoken-clock ((ws words)) (or null va.types:Clock)
   "\"half past seven\", \"7:30 pm\", \"ten in the evening\"."
