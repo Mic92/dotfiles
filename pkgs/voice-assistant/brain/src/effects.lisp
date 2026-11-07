@@ -57,4 +57,4 @@ failure."
 (defn output ((program string) &rest (args string)) (or null string)
   "PROGRAM's trimmed output, nil when it fails or says nothing."
   (let ((out (apply #'run program args)))
-    (and out (let ((s (string-trim '(#\Space #\Newline #\Tab) out))) (and (plusp (length s)) s)))))
+    (and out (let ((s (trim out))) (and (plusp (length s)) s)))))

@@ -346,13 +346,12 @@ the last minutes."
 
 (defn time-left ((secs (or null (integer 0))) (alarm boolean) (paused boolean)) reply
   (if (null secs)
-      (reply "Timer" "" (pick *no-timer*) :live t)
+      (live "Timer" "" (pick *no-timer*))
       (let ((what (spoken-duration secs)))
         (when (and alarm (not paused))
           (setf what (format nil "~a, the alarm rings at ~a"
                              what (format-hm (mod (+ (now) secs) +day+)))))
-        (reply "Timer" what (choose *left* what paused *left-paused* (<= secs 60) *left-soon*)
-               :live t))))
+        (live "Timer" what (choose *left* what paused *left-paused* (<= secs 60) *left-soon*)))))
 
 (defcommand timer-left
   "!how (much|long) [time] [is] left [on] [the|my] [timer|alarm|clock]"

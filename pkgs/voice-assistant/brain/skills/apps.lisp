@@ -40,7 +40,7 @@
 
 (defn app-lookup ((ws words)) (or null (integer 0))
   "The app named by exactly WS."
-  (let ((spoken (format nil "~{~a~^ ~}" ws)))
+  (let ((spoken (unwords ws)))
     (position-if (lambda (app) (member spoken (first app) :test #'string=)) *apps*)))
 
 (defslot "app" (ws next) (app-lookup ws))

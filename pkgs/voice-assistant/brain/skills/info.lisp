@@ -137,7 +137,7 @@
        (every (lambda (w) (and (not (member w *not-place* :test #'string=))
                                (every #'alpha-char-p w)))
               ws)
-       (format nil "~{~a~^ ~}" ws)))
+       (unwords ws)))
 
 (defslot "place" (ws next) (place ws))
 
@@ -175,10 +175,10 @@ from today and the forecast slot."
   "!where are we"
   :examples ("Where am I?")
   (let* ((raw (http-get "https://wttr.in/?format=%l"))
-         (place (and raw (string-trim '(#\Space #\Newline) raw))))
+         (place (and raw (trim raw))))
     (if (and place (plusp (length place)) (not (find #\< place)))
-        (reply "Location" place (choose *located* place (late-p) *located-late*) :live t)
-        (reply "Location" "" (pick *not-located*) :live t))))
+        (live "Location" place (choose *located* place (late-p) *located-late*))
+        (live "Location" "" (pick *not-located*)))))
 
 (defcommand info-time
   "!what time is it"
@@ -202,11 +202,10 @@ from today and the forecast slot."
   "!what o'clock is it"
   :examples ("What time is it?" "Do you know the time?")
   (let ((what (format-hm (mod (now) +day+))))
-    (reply "Time" what
-           (choose *time* what (late-p) *time-late* (early-p) *time-early*
-                   (= (hour) 12) *time-lunch*
-                   (<= 18 (hour) 20) *time-evening*)
-           :live t)))
+    (live "Time" what
+          (choose *time* what (late-p) *time-late* (early-p) *time-early*
+                  (= (hour) 12) *time-lunch*
+                  (<= 18 (hour) 20) *time-evening*))))
 
 (defcommand info-date
   "!what's [the] date [today]"
@@ -228,9 +227,8 @@ from today and the forecast slot."
   (let* ((today (context-today *context*))
          (what (spoken-day today))
          (d (weekday today)))
-    (reply "Date" what
-           (choose *date* what (= d 1) *monday* (= d 5) *friday* (in-weekend d) *weekend*)
-           :live t)))
+    (live "Date" what
+          (choose *date* what (= d 1) *monday* (= d 5) *friday* (in-weekend d) *weekend*))))
 
 (defn in-weekend ((d integer)) boolean (or (= d 0) (= d 6)))
 
@@ -298,23 +296,13 @@ high and low and the chance of rain."
   (place "" :type string) (cond "" :type string) (temp 0 :type integer) (feels 0 :type integer)
   (high 0 :type integer) (low 0 :type integer) (rain 0 :type integer))
 
-(defn json-get ((v t) &rest (path t)) t
-  "Follow keys and indices into parsed JSON, nil when missing."
-  (dolist (p path v)
-    (setf v (typecase p
-              (string (and (hash-table-p v) (gethash p v)))
-              (integer (and (vectorp v) (not (stringp v)) (< p (length v)) (aref v p)))
-              (otherwise nil)))))
-
-(defn json-int ((v t) (key string)) (or null integer)
-  (let ((s (json-get v key))) (and (stringp s) (values (parse-integer s :junk-allowed t)))))
-
 (defn first-value ((v t) (key string)) (or null string)
-  (let ((s (json-get v key 0 "value"))) (and (stringp s) (string-trim " " s))))
+  "wttr.in wraps texts as [{\"value\": ...}]."
+  (let ((s (json-get v key 0 "value"))) (and (stringp s) (trim s))))
 
 (defn parse-weather ((json string) (day (integer 0)) (part (or null (integer 0))))
     (or null forecast)
-  (let* ((v (handler-case (jzon:parse json) (error () nil)))
+  (let* ((v (parse-json json))
          (fc (json-get v "weather" day))
          (hourly (json-get fc "hourly")))
     (when (and (vectorp hourly) (plusp (length hourly)))
@@ -358,16 +346,15 @@ high and low and the chance of rain."
                                 (substitute #\+ #\Space (or place "")))))
          (w (and raw (parse-weather raw day part))))
     (if (null w)
-        (reply "Weather" "" (pick *no-weather*) :live t)
+        (live "Weather" "" (pick *no-weather*))
         (let* ((what (weather-text w day place part))
                (desc (string-downcase (forecast-cond w)))
                (wet (or (>= (forecast-rain w) 60)
                         (some (lambda (x) (search x desc))
                               '("rain" "drizzle" "shower" "snow" "sleet" "thunder"))))
                (feels (if (or (= day 0) part) (forecast-feels w) (forecast-high w))))
-          (reply "Weather" what
-                 (choose *weather* what wet *rainy* (< feels 5) *cold* (> feels 26) *hot*)
-                 :live t)))))
+          (live "Weather" what
+                (choose *weather* what wet *rainy* (< feels 5) *cold* (> feels 26) *hot*))))))
 
 (defcommand info-holiday
   (:join "!(when is|when's|what is|what's|which is|what day is|how long until|how long"
@@ -403,11 +390,10 @@ high and low and the chance of rain."
       (let* ((n (- day today))
              (what (format nil "~a, ~a, ~a" name (spoken-day day)
                            (if (= n 1) "tomorrow" (format nil "in ~d days" n)))))
-        (reply "Holiday" what
-               (choose *holiday* what (in-weekend (weekday day)) *holiday-weekend*
-                       (late-p) *holiday-late*
-                       (<= n 7) *holiday-soon*)
-               :live t)))))
+        (live "Holiday" what
+              (choose *holiday* what (in-weekend (weekday day)) *holiday-weekend*
+                      (late-p) *holiday-late*
+                      (<= n 7) *holiday-soon*))))))
 
 (defreplies *battery-low* "~a. Plug me in, I'm fading!" "~a. I'm dying here. Charger, now.")
 (defreplies *battery-charging* "~a, and charging. Mmm, juice." "~a and filling up nicely.")
@@ -415,7 +401,7 @@ high and low and the chance of rain."
 (defreplies *battery* "Battery is at ~a." "~a. We're good for a while.")
 
 (defn read-file ((path string)) (or null string)
-  (handler-case (string-trim '(#\Space #\Newline) (uiop:read-file-string path))
+  (handler-case (trim (uiop:read-file-string path))
     (error () nil)))
 
 (defcommand info-battery
@@ -426,13 +412,12 @@ high and low and the chance of rain."
   (let ((cap (read-file "/sys/class/power_supply/BAT0/capacity"))
         (charging (equal (read-file "/sys/class/power_supply/BAT0/status") "Charging")))
     (if (null cap)
-        (reply "Battery" "" "I can't find a battery. Running on pure charm." :live t)
+        (live "Battery" "" "I can't find a battery. Running on pure charm.")
         (let* ((n (or (parse-integer cap :junk-allowed t) 0))
                (what (format nil "~d percent" n)))
-          (reply "Battery" what
-                 (choose *battery* what (and (< n 15) (not charging)) *battery-low*
-                         charging *battery-charging* (> n 90) *battery-full*)
-                 :live t)))))
+          (live "Battery" what
+                (choose *battery* what (and (< n 15) (not charging)) *battery-low*
+                        charging *battery-charging* (> n 90) *battery-full*))))))
 
 (defreplies *uptime-long* "Up for ~a. Maybe reboot me sometime?" "~a. I'm exhausted, honestly.")
 (defreplies *uptime* "Up for ~a." "~a without a break. Impressed?")
@@ -450,7 +435,7 @@ high and low and the chance of rain."
                (what (cond ((and (= d 0) (= h 0)) (format nil "~d minutes" m))
                            ((= d 0) (format nil "~d hours and ~d minutes" h m))
                            (t (format nil "~d days and ~d hours" d h)))))
-          (reply "Uptime" what (choose *uptime* what (>= d 7) *uptime-long*) :live t))))))
+          (live "Uptime" what (choose *uptime* what (>= d 7) *uptime-long*)))))))
 
 (defreplies *no-mail*
   "No unread mail. Inbox zero, you legend."
@@ -463,12 +448,11 @@ high and low and the chance of rain."
   :examples ("Do I have new mail?" "Check my email")
   (let* ((out (output "notmuch" "count" "tag:unread"))
          (n (or (and out (parse-integer out :junk-allowed t)) 0)))
-    (reply "Mail" (format nil "~d unread" n)
-           (cond ((= n 0) (pick *no-mail*))
-                 ((= n 1) "One unread email. Just one. Go on, read it.")
-                 ((> n 50) (format nil "~d unread emails. Declaring email bankruptcy?" n))
-                 (t (format nil "You have ~d unread emails." n)))
-           :live t)))
+    (live "Mail" (format nil "~d unread" n)
+          (cond ((= n 0) (pick *no-mail*))
+                ((= n 1) "One unread email. Just one. Go on, read it.")
+                ((> n 50) (format nil "~d unread emails. Declaring email bankruptcy?" n))
+                (t (format nil "You have ~d unread emails." n))))))
 
 (defcommand info-clipboard
   "(read|say) [me] [the|my|what's] [in] [the|my] clipboard"
@@ -477,12 +461,11 @@ high and low and the chance of rain."
   :examples ("What's in my clipboard?" "Read the clipboard")
   (let ((text (output "wl-paste" "--no-newline" "--type" "text")))
     (if (null text)
-        (reply "Clipboard" "" "Your clipboard is empty. Like my social calendar." :live t)
-        (let ((short (subseq text 0 (min 200 (length text)))))
-          (reply "Clipboard" short
-                 (if (> (length text) 200)
-                     (format nil "~a. And so on, I'm not reading all that." short)
-                     short)
-                 :live t)))))
+        (live "Clipboard" "" "Your clipboard is empty. Like my social calendar.")
+        (let ((short (take 200 text)))
+          (live "Clipboard" short
+                (if (> (length text) 200)
+                    (format nil "~a. And so on, I'm not reading all that." short)
+                    short))))))
 
 (defskill info)

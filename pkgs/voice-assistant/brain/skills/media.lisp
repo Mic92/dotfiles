@@ -176,7 +176,7 @@ skip, \"can i hear you\" no title."
                  (setf ws (butlast ws 2)))
                 (t (return))))
     (when (and (rest ws) (in (first ws) "song" "track" "album")) (pop ws))
-    (let ((q (format nil "~{~a~^ ~}" ws)))
+    (let ((q (unwords ws)))
       (and (not (member "list" ws :test #'string=))
            (not (in (first ws) "next" "previous" "last" "same" "you"))
            (plusp (length q))
@@ -367,19 +367,18 @@ skip, \"can i hear you\" no title."
   "From `playerctl metadata`: artist|title|status."
   (let ((raw (output "playerctl" "metadata" "--format" "{{artist}}|{{title}}|{{status}}")))
     (if (null raw)
-        (reply "Now playing" "" (pick *nothing-playing*) :live t)
+        (live "Now playing" "" (pick *nothing-playing*))
         (destructuring-bind (&optional (artist "") (title "") (status ""))
-            (mapcar (lambda (s) (string-trim " " s)) (uiop:split-string raw :separator "|"))
+            (mapcar (lambda (s) (trim s)) (uiop:split-string raw :separator "|"))
           (let ((what (cond ((and (string= artist "") (string= title "")) nil)
                             ((and (string= artist "") (string= title *radio-tag*)) "the radio")
                             ((string= artist "") title)
                             (t (format nil "~a by ~a" title artist)))))
             (if (null what)
-                (reply "Now playing" ""
-                       "Something is playing, but it won't tell me what. Mysterious." :live t)
-                (reply "Now playing" what
-                       (pick (if (string= status "Paused") *playing-paused* *playing*) what)
-                       :live t)))))))
+                (live "Now playing" ""
+                      "Something is playing, but it won't tell me what. Mysterious.")
+                (live "Now playing" what
+                      (pick (if (string= status "Paused") *playing-paused* *playing*) what))))))))
 
 (defcommand media-now-playing
   "!(what's|what is) (playing|this song|this track|the song|the track|on)"

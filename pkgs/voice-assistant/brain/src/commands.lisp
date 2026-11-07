@@ -35,6 +35,10 @@ are not cached for \"repeat that\"."
   ;; How to take the next utterance.
   (question nil :type (or null question)))
 
+(defn live ((title string) (body string) (speech string)) reply
+  "A reply about the world right now, which \"repeat that\" must not replay."
+  (reply title body speech :live t))
+
 (defstruct (question (:constructor question (&key answer act)))
   "A question we asked and wait to have answered: ANSWER takes free text
 (\"the computer\", \"7 am\"), ACT yes, no and the like. Either returns an
@@ -82,7 +86,7 @@ go to the earlier one.")
 
   (defn join-template ((parts list)) string
     "Pieces of a long template. Spaces inside groups are harmless."
-    (format nil "~{~a~^ ~}" parts))
+    (unwords parts))
 
   (defn default-kind ((name symbol) (skill symbol)) string
     "NAME in CamelCase, without the skill's prefix: timer-cancel is Cancel."

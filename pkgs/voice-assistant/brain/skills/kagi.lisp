@@ -23,7 +23,7 @@
 ;; or "how are you" style fragments stay with chat.
 (defslot "question" (ws next)
   (and (member (first ws) *question-words* :test #'string=) (cddr ws)
-       (format nil "~{~a~^ ~}" ws)))
+       (unwords ws)))
 
 (defn markdown-inline ((line string)) string
   "LINE without emphasis, code marks, links and footnote references.
@@ -45,8 +45,7 @@
 (defn sentences ((text string)) list
   "TEXT split after . ! or ? when a capital, digit or quote follows, as
 Unicode sentence bounds do: \"e.g. in memes\" stays whole."
-  (let ((ws (remove "" (uiop:split-string text :separator '(#\Space #\Tab #\Newline))
-                    :test #'string=))
+  (let ((ws (split-words text))
         (out nil) (cur nil))
     (loop for (w next) on ws
           do (push w cur)
@@ -54,7 +53,7 @@ Unicode sentence bounds do: \"e.g. in memes\" stays whole."
                     (and (find (char w (1- (length w))) ".!?")
                          (let ((c (char next 0)))
                            (or (upper-case-p c) (digit-char-p c) (find c "\"'")))))
-            (push (format nil "~{~a~^ ~}" (reverse cur)) out)
+            (push (unwords (reverse cur)) out)
             (setf cur nil)))
     (nreverse out)))
 
@@ -63,11 +62,11 @@ Unicode sentence bounds do: \"e.g. in memes\" stays whole."
 without headings and footnote definitions."
   (let (blocks lines item)
     (flet ((flush ()
-             (let ((s (sentences (format nil "~{~a~^ ~}" (reverse lines)))))
+             (let ((s (sentences (unwords (reverse lines)))))
                (when s (push (cons item s) blocks)))
              (setf lines nil item nil)))
       (dolist (raw (uiop:split-string md :separator '(#\Newline)))
-        (let ((line (string-trim " " raw)))
+        (let ((line (trim raw)))
           (cond ((string= line "") (flush))
                 ((or (uiop:string-prefix-p "#" line) (uiop:string-prefix-p "[^" line)) (flush))
                 ((or (uiop:string-prefix-p "- " line) (uiop:string-prefix-p "* " line))
@@ -85,20 +84,20 @@ first sentence of each list item after it, five at most."
     (loop while blocks
           do (dolist (s (cdr (pop blocks)))
                (when (>= (length said) most)
-                 (return-from spoken (format nil "~{~a~^ ~}" (reverse said))))
+                 (return-from spoken (unwords (reverse said))))
                (push s said))
           (when (and said (uiop:string-suffix-p (first said) ":"))
             (loop for b in blocks while (car b) for i from 0
                   when (< i 5) do (push (second b) said))
             (return)))
-    (format nil "~{~a~^ ~}" (reverse said))))
+    (unwords (reverse said))))
 
 (defn parse-answer ((raw string)) (values (or null string) (or null string))
   "The quick answer's markdown and its first reference."
-  (let* ((v (handler-case (jzon:parse raw) (error () nil)))
+  (let* ((v (parse-json raw))
          (md (json-get v "quick_answer" "markdown"))
          (url (json-get v "quick_answer" "references" 0 "url")))
-    (if (and (stringp md) (plusp (length (string-trim " " md))))
+    (if (and (stringp md) (plusp (length (trim md))))
         (values md (and (stringp url) url))
         (values nil nil))))
 
@@ -106,35 +105,32 @@ first sentence of each list item after it, five at most."
   (let ((raw (output "kagi-search" "-j" q)))
     (multiple-value-bind (md url) (if raw (parse-answer raw) (values nil nil))
       (if (null md)
-          (reply "Kagi" q (pick *thinking-fail*) :live t)
-          (reply (format nil "Kagi: ~a" q)
-                 (format nil "~a~@[~%~a~]" (spoken md 6) url)
-                 (spoken md 3) :live t)))))
+          (live "Kagi" q (pick *thinking-fail*))
+          (live (format nil "Kagi: ~a" q)
+                (format nil "~a~@[~%~a~]" (spoken md 6) url)
+                (spoken md 3))))))
 
-(defmacro defquery (name &body templates-and-keys)
-  `(defcommand ,name ,@templates-and-keys
-               :kind "Query"
-               :slots ((query coalton:String))
-               :filler *kagi-filler*
-               (ask-kagi query)))
-
-(defquery kagi-search
-    "!(search|google|kagi|look up) [the web|the internet|online] [for] {text}"
+(defcommand kagi-search
+  "!(search|google|kagi|look up) [the web|the internet|online] [for] {text}"
   "!(ask|use) kagi [about] {text}"
   "!(can you|could you|please) (search|google|look up) [for] {text}"
-  :parse (list (slot "text"))
-  :examples ("Search for the best pizza in Munich" "Ask Kagi about black holes"))
-
-(defquery kagi-find-out
-    "!(find out|tell me) {question}"
-  :parse (list (slot "question"))
-  :examples ("find out why the sky is blue"))
+  "!(find out|tell me) {question}"
+  :kind "Query"
+  :slots ((query coalton:String))
+  :parse (list (or (slot "text") (slot "question")))
+  :filler *kagi-filler*
+  :examples ("Search for the best pizza in Munich" "find out why the sky is blue")
+  (ask-kagi query))
 
 ;; Open questions, asked whole, when nothing else understood them.
-(defquery kagi-question
-    "!{question}"
+(defcommand kagi-question
+  "!{question}"
+  :kind "Query"
+  :slots ((query coalton:String))
   :parse (list (slot "question"))
   :fallback t
-  :examples ("Who was Ada Lovelace?"))
+  :filler *kagi-filler*
+  :examples ("Who was Ada Lovelace?")
+  (ask-kagi query))
 
 (defskill kagi)

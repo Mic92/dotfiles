@@ -24,12 +24,12 @@
     ("&gt;" . ">")))
 
 (defn unescape ((s string)) string
-  (let ((s (string-trim '(#\Space #\Newline #\Tab) s)))
+  (let ((s (trim s)))
     (when (and (uiop:string-prefix-p "<![CDATA[" s) (uiop:string-suffix-p s "]]>"))
       (setf s (subseq s 9 (- (length s) 3))))
     (loop for (from . to) in *entities*
           do (setf s (uiop:frob-substrings s (list from) to)))
-    (string-trim '(#\Space #\Newline #\Tab) s)))
+    (trim s)))
 
 (defn headlines ((xml string)) list
   "Titles of <item> (RSS) or <entry> (Atom) elements, skipping the channel's
@@ -55,12 +55,11 @@ title, livestreams and videos."
   (let* ((raw (http-get url))
          (items (and raw (headlines raw))))
     (if (null items)
-        (reply "News" "" (pick *no-news*) :live t)
-        (reply name
-               (format nil "~{• ~a~^~%~}" (subseq items 0 (min 8 (length items))))
-               (format nil "~a ~{~a~^. Next: ~}" (pick *intro*)
-                       (subseq items 0 (min 3 (length items))))
-               :live t))))
+        (live "News" "" (pick *no-news*))
+        (live name
+              (format nil "~{• ~a~^~%~}" (take 8 items))
+              (format nil "~a ~{~a~^. Next: ~}" (pick *intro*)
+                      (take 3 items))))))
 
 (defcommand news-world
   "!(what's|what is) (the|in the) news [today]"

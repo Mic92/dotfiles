@@ -64,7 +64,7 @@ or nil."
 (defslot ("number" "low" "high") (ws next)
   (and (not (and next (number next))) (number-words ws)))
 (defslot "text" (ws next)
-  (and ws (format nil "~{~a~^ ~}" (substitute-if "" #'comma-p ws))))
+  (and ws (unwords (substitute-if "" #'comma-p ws))))
 (defslot "any" (ws next) t)
 (defslot "day" (ws next)
   (trivia:match ws

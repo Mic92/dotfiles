@@ -103,10 +103,7 @@
 (defn fetch-joke ((url string)) (or null string)
   "A joke from URL, short enough to listen to."
   (let* ((text (http-get url :header "Accept: text/plain"))
-         (joke (and text (format nil "~{~a~^ ~}"
-                                 (remove "" (uiop:split-string text :separator
-                                                               '(#\Space #\Newline #\Tab #\Return))
-                                         :test #'string=)))))
+         (joke (and text (unwords (split-words text)))))
     (and joke (< 0 (length joke) 300) joke)))
 
 (defparameter *joke-api*
@@ -131,7 +128,7 @@
   :filler *joke-intros*
   :repeatable t
   :examples ("Tell me a joke." "Tell me another dirty joke" "Joke!" "tell us a joke.")
-  (reply "Joke" "" (or (online-joke nil) (pick *jokes*)) :live t))
+  (live "Joke" "" (or (online-joke nil) (pick *jokes*))))
 
 (defcommand dad-joke
   "(tell|give) me [a|another] dad joke" "![another] dad joke" "something (funny|dad)"
@@ -139,7 +136,7 @@
   :repeatable t
   :examples ("Tell me a dad joke.")
   (let ((joke (online-joke t)))
-    (reply "Dad joke" "" (if joke (format nil "~a Ba dum tss." joke) (pick *jokes*)) :live t)))
+    (live "Dad joke" "" (if joke (format nil "~a Ba dum tss." joke) (pick *jokes*)))))
 
 (defcommand coin
   "(flip|toss) a coin" "heads or tails" "!coin (flip|toss)"
@@ -155,11 +152,10 @@
   :repeatable t
   :examples ("Roll a die" "Roll a d20.")
   (let ((roll (1+ (random sides))))
-    (reply "Dice" (princ-to-string roll)
-           (cond ((= roll 1) "A one. Ouch. Critical fail.")
-                 ((= roll sides) (format nil "~d! Natural max, baby!" roll))
-                 (t (format nil "You rolled a ~d." roll)))
-           :live t)))
+    (live "Dice" (princ-to-string roll)
+          (cond ((= roll 1) "A one. Ouch. Critical fail.")
+                ((= roll sides) (format nil "~d! Natural max, baby!" roll))
+                (t (format nil "You rolled a ~d." roll))))))
 
 (defcommand random-number
   "(pick|give|choose) [me] a [random] number (between|from) {low} (and|to) {high}"
@@ -172,8 +168,8 @@
   :repeatable t
   :examples ("Pick a number between 1 and 10" "Give me a random number from 100 to 50")
   (let ((n (+ low (random (1+ (- high low))))))
-    (reply "Random number" (princ-to-string n)
-           (format nil "~d. Totally random. Probably." n) :live t)))
+    (live "Random number" (princ-to-string n)
+          (format nil "~d. Totally random. Probably." n))))
 
 ;; Only a short gamble goes to the eight ball, longer ones are real
 ;; questions, and "can I hear the Beatles" asks for music.

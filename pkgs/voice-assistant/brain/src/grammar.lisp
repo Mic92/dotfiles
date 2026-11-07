@@ -54,9 +54,6 @@
 (defn bad-template ((control string) &rest (args t)) nil
   (error 'template-error :message (apply #'format nil control args)))
 
-(defn split-words ((s string)) list
-  (remove "" (uiop:split-string s :separator " ") :test #'string=))
-
 (defn alternatives ((s string)) list
   "\"a|do not\" as word lists, longest first, so \"(another|another one)\" does
 not stop after \"another\"."
@@ -217,8 +214,7 @@ variant of it with one or two parts changed: how commands are usually said
          (pick (make-array n :initial-element 0))
          (out nil))
     (flet ((say ()
-             (format nil "~{~a~^ ~}"
-                     (loop for c across choices for i across pick append (nth i c)))))
+             (unwords (loop for c across choices for i across pick append (nth i c)))))
       (push (say) out)
       (dotimes (i n)
         (loop for a from 1 below (length (svref choices i))

@@ -5,9 +5,9 @@
     :serial t
     :pathname "src/"
     :components #.`(,@(mapcar (lambda (f) (list :file f))
-                              '("package" "defn" "effects" "replies" "types" "adt" "words"
-                                "duration" "clock" "date" "holiday" "grammar" "commands"
-                                "dispatch" "dialogue" "fuzzy" "dev"))
+                              '("package" "defn" "strings" "json" "effects" "replies" "types"
+                                "adt" "words" "duration" "clock" "date" "holiday" "grammar"
+                                "commands" "dispatch" "dialogue" "fuzzy" "dev"))
                     (:module "skills" :pathname "../skills/" :serial t
                      ;; In Rust's MODULES order, which breaks ties between commands.
                      :components ,(mapcar (lambda (f) (list :file f))
