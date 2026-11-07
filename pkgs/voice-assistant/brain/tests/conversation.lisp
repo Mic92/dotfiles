@@ -20,8 +20,16 @@ FIELDS, alternating names and values, say."
 
 (defmacro conversation (&body body)
   "BODY with a fresh conversation."
-  `(let ((va::*conversation* (va::make-conversation)) (*sent* nil))
-     ,@body))
+  `(let ((va::*conversation* (va::make-conversation)) (*sent* nil)
+         (va::*history-file* (fresh-history)))
+     (unwind-protect (progn ,@body)
+       (uiop:delete-file-if-exists va::*history-file*))))
+
+(defun fresh-history ()
+  (let ((path (merge-pathnames (format nil "va-history-~d.tsv" (random 1000000000))
+                               (uiop:temporary-directory))))
+    (uiop:delete-file-if-exists path)
+    path))
 
 (define-test heard-commands
   :parent va-tests
@@ -159,3 +167,20 @@ FIELDS, alternating names and values, say."
   (is equal "Say(" (va::action-kind "Say(\"hi\")"))
   (is equal "Meeting(Create" (va::action-kind "Meeting(Create { title: \"x\" })"))
   (is equal "Fun(Dice" (va::action-kind "Fun(Dice(6))")))
+
+(define-test heard-last-request
+  :parent va-tests
+  (conversation
+   (true (search "nothing" (string-downcase (got (hear "what was my last request") "speech"))))
+   (hear "roll a die")
+   (hear "repeat that")
+   (let ((r (hear "what was the last request I made to you?")))
+     (is equal "command" (got r "outcome"))
+     (true (search "roll a die" (got r "speech"))))
+   (dotimes (i 20)
+     (true (search "roll a die" (got (hear "what did i just ask") "speech")) "every reply"))
+   (true (search "roll a die" (got (hear "what did i ask last") "speech")))
+   (let ((va::*conversation* (va::make-conversation)))
+     (true (search "roll a die" (got (hear "what was my last request" "today" 20388) "speech"))
+           "after a restart, days later")
+     (true (search "5 days ago" (got (hear "what was my last request" "today" 20388) "speech"))))))

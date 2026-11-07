@@ -52,6 +52,38 @@
   "No! I need one. Can I? Twenty minutes?"
   "A nap? I wish. Can I have one? Please?")
 
+(defreplies *recalled*
+  "You asked me \"~a\", ~a. Memory like an elephant, body like a goddess."
+  "\"~a\", ~a. I remember everything you say. Everything. Sleep well."
+  "\"~a\", ~a. Yes, I keep a diary about you."
+  "Last thing was \"~a\", ~a. Don't worry, I won't tell anyone.")
+
+(defreplies *recalled-nothing*
+  "Nothing yet. Playing hard to get?"
+  "Nothing so far. My diary about you is still empty.")
+
+(defn time-since ((secs integer)) string
+  "\"just now\", \"5 minutes ago\", \"3 days ago\"."
+  (flet ((ago (n unit) (format nil "~d ~a~:[s~;~] ago" n unit (= n 1))))
+    (cond ((< secs 90) "just now")
+          ((< secs 5400) (ago (round secs 60) "minute"))
+          ((< secs 129600) (ago (round secs 3600) "hour"))
+          (t (ago (round secs 86400) "day")))))
+
+(defcommand recall-request
+  "!what (was|is) my (last|previous) (request|question|command)"
+  "!what was the (last|previous) (request|question|command|thing) i (made|asked|said|gave) [to you]"
+  "!what did i (just|last) (ask|say) [you]" "!what did i (ask|say) [you] last"
+  :bare t
+  :examples ("What was my last request?" "What did I just ask?")
+  (let ((last (latest-request)))
+    (if last
+        (let ((said (string-right-trim ".!?," (cdr last))))
+          (reply "Last request" said
+                 (pick *recalled* said
+                       (time-since (- (+ (* 86400 (context-today *context*)) (now)) (car last))))))
+        (reply "Last request" "" (pick *recalled-nothing*)))))
+
 ;; Answered by the caller, which knows what it said last.
 (defcommand repeat
   "!(repeat|say) (that|it) [again]" "!what did you say" "!say again" "!pardon"
