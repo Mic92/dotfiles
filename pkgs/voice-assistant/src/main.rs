@@ -554,9 +554,13 @@ impl Assistant {
                 .is_ok_and(|h| h.outcome == "unsure");
             if unsure
                 && !self.cfg.stdin
-                && let Some(r) = rescore::run(&mut self.asr, &said_before, &text, |cs| {
-                    brain.parse(cs, &ctx)
-                })
+                && let Some(r) = rescore::run(
+                    &mut self.asr,
+                    &said_before,
+                    &text,
+                    brain.sound_alikes(),
+                    |cs| brain.parse(cs, &ctx),
+                )
             {
                 self.log(&r.to_string());
                 if r.accepted {
@@ -709,7 +713,7 @@ impl Assistant {
         if self.cfg.stdin {
             return None;
         }
-        let r = rescore::run(&mut self.asr, said_before, text, |cs| {
+        let r = rescore::run(&mut self.asr, said_before, text, &skills::NAMED, |cs| {
             cs.iter()
                 .map(|c| skills::parse_tier(c, ctx, false))
                 .collect()
@@ -1096,7 +1100,12 @@ fn main() {
     }
 
     // Phonemizing every command takes a quarter second; not on the first miss.
-    thread::spawn(skills::warm_sound_alikes);
+    match assistant.brain.clone() {
+        Some(b) => drop(thread::spawn(move || {
+            b.sound_alikes();
+        })),
+        None => drop(thread::spawn(skills::warm_sound_alikes)),
+    }
     let (tx, rx) = mpsc::channel();
     let worker = thread::spawn(move || run_worker(assistant, &rx));
     if let Err(e) = run_pipewire(tx) {

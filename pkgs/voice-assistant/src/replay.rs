@@ -66,6 +66,13 @@ impl Reader {
         }
     }
 
+    fn sound_alikes(&self) -> &skills::SoundAlikes {
+        match self {
+            Reader::Rust => &skills::NAMED,
+            Reader::Brain(b) => b.sound_alikes(),
+        }
+    }
+
     fn read_one(&self, text: &str, ctx: &Context) -> Parses {
         self.read(&[text.to_owned()], ctx).pop().unwrap_or_default()
     }
@@ -129,7 +136,7 @@ pub fn run(
                     Some(t) => {
                         // Same order as live: real intents, the audio, catch-alls.
                         if reader.read_one(&t, &ctx).strict.is_none() {
-                            rescored = rescore::run(asr, "", &t, |cs| {
+                            rescored = rescore::run(asr, "", &t, reader.sound_alikes(), |cs| {
                                 reader
                                     .read(cs, &ctx)
                                     .into_iter()

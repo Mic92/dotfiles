@@ -693,9 +693,49 @@ pub fn fill(text: &str, kind: &str, ctx: &Context) -> Option<Action> {
         .map(|(_, a)| a)
 }
 
+/// Sentences to offer for a miss, with their sound skeletons.
+pub struct SoundAlikes {
+    sentences: Vec<String>,
+    lexicon: phonetic::Lexicon,
+}
+
+/// How far a transcript may sound from a command to still be offered.
+/// On recorded and synthetic misses this kept 77 of 82 intended commands
+/// and 3 of 80 unrelated sentences.
+const SOUND_ALIKE: f32 = 0.4;
+
+impl SoundAlikes {
+    /// Phonemizing every command takes a quarter second.
+    pub fn new(sentences: Vec<String>) -> Self {
+        let lexicon = phonetic::Lexicon::new(sentences.iter().map(|s| phonetic::phonemes(s)));
+        SoundAlikes { sentences, lexicon }
+    }
+
+    /// Commands that sound like `heard`, closest first, as the recogniser
+    /// would write them: candidates for rescoring a transcript nothing
+    /// understood.
+    pub fn find(&self, heard: &str, limit: usize) -> Vec<String> {
+        let h = phonetic::Heard::new(heard);
+        if h.len() < 4 {
+            return Vec::new();
+        }
+        self.lexicon
+            .nearest(&h, SOUND_ALIKE, limit)
+            .into_iter()
+            .take(limit)
+            .map(|(_, i)| {
+                let mut c = self.sentences[i].chars();
+                c.next()
+                    .map(|f| format!("{}{}.", f.to_uppercase(), c.as_str()))
+                    .unwrap_or_default()
+            })
+            .collect()
+    }
+}
+
 /// Every plain sentence with a named thing in it ("ping eve", "play
-/// lassulus radio"), with its sound skeleton.
-static NAMED: LazyLock<(Vec<String>, phonetic::Lexicon)> = LazyLock::new(|| {
+/// lassulus radio").
+pub static NAMED: LazyLock<SoundAlikes> = LazyLock::new(|| {
     let mut all: Vec<String> = INTENTS
         .iter()
         .filter(|i| !i.fallback)
@@ -710,43 +750,11 @@ static NAMED: LazyLock<(Vec<String>, phonetic::Lexicon)> = LazyLock::new(|| {
         .collect();
     all.sort();
     all.dedup();
-    let lexicon = phonetic::Lexicon::new(all.iter().map(|s| phonetic::phonemes(s)));
-    (all, lexicon)
+    SoundAlikes::new(all)
 });
 
 pub fn warm_sound_alikes() {
     LazyLock::force(&NAMED);
-}
-
-/// How far a transcript may sound from a command to still be offered.
-/// On recorded and synthetic misses this kept 77 of 82 intended commands
-/// and 3 of 80 unrelated sentences.
-const SOUND_ALIKE: f32 = 0.4;
-
-/// Commands that sound like `heard`, closest first, as the recogniser
-/// would write them: candidates for rescoring a transcript nothing
-/// understood.
-pub fn sound_alikes(heard: &str, limit: usize) -> Vec<String> {
-    // The table first, so the transcript knows every sound in it.
-    let (sentences, lexicon) = &*NAMED;
-    let h = phonetic::Heard::new(heard);
-    if h.len() < 4 {
-        return Vec::new();
-    }
-    let near: Vec<(f32, &str)> = lexicon
-        .nearest(&h, SOUND_ALIKE, limit)
-        .into_iter()
-        .map(|(d, i)| (d, sentences[i].as_str()))
-        .collect();
-    near.into_iter()
-        .take(limit)
-        .map(|(_, s)| {
-            let mut c = s.chars();
-            c.next()
-                .map(|f| format!("{}{}.", f.to_uppercase(), c.as_str()))
-                .unwrap_or_default()
-        })
-        .collect()
 }
 
 /// What follows the wake word at the start of `heard` ("Alexa, play
@@ -873,7 +881,7 @@ mod tests {
     fn dump_sound_alikes() {
         let path = std::env::var("SOUND_ALIKES").expect("SOUND_ALIKES");
         for heard in std::fs::read_to_string(path).expect("read").lines() {
-            println!("{heard}\t{}", sound_alikes(heard, 8).join("\t"));
+            println!("{heard}\t{}", NAMED.find(heard, 8).join("\t"));
         }
     }
 
@@ -893,16 +901,23 @@ mod tests {
     }
 
     #[test]
+    fn sound_alikes_from_any_sentences() {
+        let s = SoundAlikes::new(vec!["tell a joke".into(), "ping eve".into()]);
+        assert_eq!(s.find("Tell a choke", 8), ["Tell a joke."]);
+        assert!(s.find("ok", 8).is_empty());
+    }
+
+    #[test]
     fn sound_alikes_for_mangled_names() {
-        let c = sound_alikes("PingYiF.", 8);
+        let c = NAMED.find("PingYiF.", 8);
         assert!(c.iter().any(|s| s == "Ping eve."), "{c:?}");
         assert!(c.iter().any(|s| s == "Ping eva."), "{c:?}");
-        let c = sound_alikes("Play Laslos Radio.", 5);
+        let c = NAMED.find("Play Laslos Radio.", 5);
         assert!(c.iter().any(|s| s.contains("lassulus")), "{c:?}");
-        assert!(sound_alikes("ok", 5).is_empty());
+        assert!(NAMED.find("ok", 5).is_empty());
         // "tell a joke", heard through a headset
         for heard in ["Tell it shalk", "tell it chalk."] {
-            let c = sound_alikes(heard, 8);
+            let c = NAMED.find(heard, 8);
             assert!(c.iter().any(|s| s.ends_with(" joke.")), "{heard}: {c:?}");
         }
     }
@@ -911,7 +926,7 @@ mod tests {
     #[test]
     #[ignore]
     fn bench_sound_alikes() {
-        let (sentences, lexicon) = &*NAMED;
+        let SoundAlikes { sentences, lexicon } = &*NAMED;
         let phones: Vec<Vec<phonetic::Phone>> =
             sentences.iter().map(|s| phonetic::phonemes(s)).collect();
         let heard = phonetic::Heard::new("tell it chalk");
@@ -935,7 +950,7 @@ mod tests {
 
     #[test]
     fn trie_agrees_with_pairwise() {
-        let (sentences, lexicon) = &*NAMED;
+        let SoundAlikes { sentences, lexicon } = &*NAMED;
         for text in ["tell it chalk", "Peng Yif", "switch on the y", "hum dum"] {
             let heard = phonetic::Heard::new(text);
             let mut all: Vec<(f32, usize)> = sentences
@@ -963,13 +978,13 @@ mod tests {
             .filter_map(|l| l.split_once('\t'))
             .collect();
         let start = std::time::Instant::now();
-        sound_alikes("warm up", 1);
+        NAMED.find("warm up", 1);
         let built = start.elapsed();
         let start = std::time::Instant::now();
         let found = cases
             .iter()
             .filter(|(heard, want)| {
-                let c = sound_alikes(heard, 8);
+                let c = NAMED.find(heard, 8);
                 let ok = c
                     .iter()
                     .any(|c| parse_at(c, &ctx).is_some_and(|a| format!("{a:?}") == *want));

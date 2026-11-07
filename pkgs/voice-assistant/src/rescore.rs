@@ -6,7 +6,7 @@ use std::fmt;
 use std::time::Instant;
 
 use crate::asr::Asr;
-use crate::skills;
+use crate::skills::SoundAlikes;
 
 /// Sound-alike commands to score against the audio.
 const CANDIDATES: usize = 8;
@@ -68,10 +68,11 @@ pub fn run<A>(
     asr: &mut Asr,
     said_before: &str,
     heard: &str,
+    alikes: &SoundAlikes,
     parse: impl FnOnce(&[String]) -> Vec<Option<A>>,
 ) -> Option<Rescored<A>> {
     let mut candidates = vec![heard.to_owned()];
-    candidates.extend(skills::sound_alikes(heard, CANDIDATES));
+    candidates.extend(alikes.find(heard, CANDIDATES));
     if candidates.len() < 2 {
         return None;
     }

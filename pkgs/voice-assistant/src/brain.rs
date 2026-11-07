@@ -8,13 +8,13 @@ use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 use std::process::{self, Child, Command, Stdio};
-use std::sync::{Arc, Mutex, PoisonError};
+use std::sync::{Arc, Mutex, OnceLock, PoisonError};
 use std::thread;
 use std::time::{Duration, Instant};
 
 use tinyjson::JsonValue;
 
-use crate::skills::Context;
+use crate::skills::{Context, SoundAlikes};
 
 pub const VERSION: f64 = 1.0;
 
@@ -150,6 +150,19 @@ impl Brain {
         Heard::from(&reply)
     }
 
+    pub fn lexicon(&mut self) -> Result<Vec<String>, String> {
+        match self.request("lexicon", HashMap::new())?.get("sentences") {
+            Some(JsonValue::Array(a)) => a
+                .iter()
+                .map(|v| match v {
+                    JsonValue::String(s) => Ok(s.clone()),
+                    v => Err(format!("lexicon: {v:?}")),
+                })
+                .collect(),
+            v => Err(format!("lexicon: sentences is {v:?}")),
+        }
+    }
+
     pub fn parse(&mut self, texts: &[String], ctx: &Context) -> Result<Vec<Parses>, String> {
         let reply = self.request("parse", parse_fields(texts, ctx))?;
         parses(&reply)
@@ -252,15 +265,21 @@ impl Heard {
 /// The brain behind a lock, shared with the threads running commands, and
 /// reconnected when it went away, as after a restart.
 #[derive(Clone)]
-pub struct Shared(Arc<Mutex<Option<Brain>>>);
+pub struct Shared {
+    brain: Arc<Mutex<Option<Brain>>>,
+    alikes: Arc<OnceLock<SoundAlikes>>,
+}
 
 impl Shared {
     pub fn new(b: Brain) -> Self {
-        Shared(Arc::new(Mutex::new(Some(b))))
+        Shared {
+            brain: Arc::new(Mutex::new(Some(b))),
+            alikes: Arc::new(OnceLock::new()),
+        }
     }
 
     pub fn heard(&self, h: &Hearing, mut filler: impl FnMut(String)) -> Result<Heard, String> {
-        let mut guard = self.0.lock().unwrap_or_else(PoisonError::into_inner);
+        let mut guard = self.brain.lock().unwrap_or_else(PoisonError::into_inner);
         if let Some(b) = guard.as_mut() {
             match b.heard(h, &mut filler) {
                 Ok(r) => return Ok(r),
@@ -274,7 +293,7 @@ impl Shared {
 
     /// Both readings of each text, nothing when the brain is away.
     pub fn parses(&self, texts: &[String], ctx: &Context) -> Vec<Parses> {
-        let mut guard = self.0.lock().unwrap_or_else(PoisonError::into_inner);
+        let mut guard = self.brain.lock().unwrap_or_else(PoisonError::into_inner);
         let parsed = match guard.as_mut() {
             Some(b) => b.parse(texts, ctx),
             None => Err("not connected".into()),
@@ -282,6 +301,22 @@ impl Shared {
         parsed
             .inspect_err(|e| eprintln!("voice-assistant: {e}"))
             .unwrap_or_else(|_| texts.iter().map(|_| Parses::default()).collect())
+    }
+
+    /// The brain's commands to search for sound-alikes, fetched once.
+    pub fn sound_alikes(&self) -> &SoundAlikes {
+        self.alikes.get_or_init(|| {
+            let mut guard = self.brain.lock().unwrap_or_else(PoisonError::into_inner);
+            let sentences = match guard.as_mut() {
+                Some(b) => b.lexicon(),
+                None => Err("not connected".into()),
+            };
+            SoundAlikes::new(
+                sentences
+                    .inspect_err(|e| eprintln!("voice-assistant: lexicon: {e}"))
+                    .unwrap_or_default(),
+            )
+        })
     }
 
     /// The strict reading of each text.
