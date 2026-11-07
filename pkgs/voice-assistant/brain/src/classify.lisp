@@ -77,11 +77,22 @@ the most slots."
                              (>= (length slots) most))
                     (setf best a most (length slots))))))))))))
 
+(defvar *plain-sentences* (cons -1 nil)
+  "Kind to the first example said without slot values, for the commands as
+of the count in the car.")
+
+(defn plain-sentence ((kind string)) (or null string)
+  (unless (= (car *plain-sentences*) *commands-changed*)
+    (let ((table (make-hash-table :test #'equal)))
+      (loop for (text k slotted) in (classifier-examples)
+            unless (or slotted (gethash k table)) do (setf (gethash k table) text))
+      (setf *plain-sentences* (cons *commands-changed* table))))
+  (values (gethash kind (cdr *plain-sentences*))))
+
 (defn plain-action ((kind string)) (or null action)
   "What KIND means said without slot values."
-  (let ((e (find-if (lambda (e) (and (string= kind (second e)) (not (third e))))
-                    (classifier-examples))))
-    (and e (parse-tier (first e) nil))))
+  (let ((text (plain-sentence kind)))
+    (and text (parse-tier text nil))))
 
 (defparameter *change-words*
   '("add" "put" "remove" "removed" "delete" "erase" "take" "forget" "cross")

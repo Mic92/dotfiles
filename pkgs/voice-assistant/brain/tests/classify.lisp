@@ -59,3 +59,12 @@
       (is equal '(null nil) (c "start a countdown" "Timer(Start" 0.99d0 0.5d0))
       (is equal '("Notes(Show(0))" nil)
           (c "add eggs and remove cheese" "Notes(Show" 0.99d0 0.5d0)))))
+
+(define-test plain-actions-are-quick
+  :parent va-tests
+  (with-focus ()
+    (va::plain-action "Fun(Joke)")
+    (let ((start (get-internal-real-time)))
+      (dotimes (i 20) (va::plain-action "Fun(Joke)"))
+      (true (< (- (get-internal-real-time) start) (* 0.2d0 internal-time-units-per-second))
+            "cached, not rebuilt from every example"))))

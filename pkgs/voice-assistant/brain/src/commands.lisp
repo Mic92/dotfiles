@@ -51,6 +51,9 @@ action, or nil to fall through."
   "Every command, by skill in `*skill-order*`, then in definition order: ties
 go to the earlier one.")
 
+(defvar *commands-changed* 0
+  "Counts redefinitions, so caches built from the commands know when to go.")
+
 (defparameter *skill-order*
   '(timer system volume media desktop app info calc spell fun chat ops notes reminder
     meeting news kagi core)
@@ -64,6 +67,7 @@ go to the earlier one.")
               (stable-sort (append *commands* (list c)) #'<
                            :key (lambda (c) (or (position (command-skill c) *skill-order*)
                                                 (length *skill-order*))))))
+    (incf *commands-changed*)
     (command-name c)))
 
 (defmacro with-slots-of (slots &body body)
