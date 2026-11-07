@@ -10,7 +10,8 @@
     "answering": false,
     "cut_off": false,
     "dry": true,
-    "unsure": false
+    "unsure": false,
+    "classified": null
   },
   "reply": {
     "id": 5,

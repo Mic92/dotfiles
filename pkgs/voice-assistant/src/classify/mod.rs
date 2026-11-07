@@ -92,6 +92,25 @@ impl Embedder {
     }
 }
 
+/// The example nearest to a sentence, and how clearly.
+pub struct Nearest {
+    /// What the nearest example asks for, e.g. "Timer(Start".
+    pub intent: String,
+    pub score: f32,
+    pub lead: f32,
+    pub example: String,
+}
+
+impl fmt::Display for Nearest {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "nearest {} ({:.3}, lead {:.3}, like {:?})",
+            self.intent, self.score, self.lead, self.example
+        )
+    }
+}
+
 pub struct Hit {
     /// What the nearest example asks for, e.g. "Timer(Start".
     pub intent: String,
@@ -157,8 +176,8 @@ fn read_vectors(path: &Path) -> Option<Vec<f32>> {
 }
 
 impl Classifier {
+    /// Learns from the Rust grammar.
     pub fn new(dir: &Path) -> Result<Self, String> {
-        let mut embedder = Embedder::load(dir)?;
         let mut examples: Vec<(String, String)> = Vec::new();
         let mut plain = HashMap::new();
         for (text, action, slotted) in skills::classifier_examples() {
@@ -168,6 +187,21 @@ impl Classifier {
             }
             examples.push((text, kind));
         }
+        Self::learn(dir, examples, plain)
+    }
+
+    /// Learns from (text, kind) examples, as the Lisp brain lists them.
+    /// Only `nearest` makes sense then.
+    pub fn from_examples(dir: &Path, examples: Vec<(String, String)>) -> Result<Self, String> {
+        Self::learn(dir, examples, HashMap::new())
+    }
+
+    fn learn(
+        dir: &Path,
+        mut examples: Vec<(String, String)>,
+        plain: HashMap<String, Action>,
+    ) -> Result<Self, String> {
+        let mut embedder = Embedder::load(dir)?;
         let known: HashSet<String> = examples.iter().map(|(_, k)| k.clone()).collect();
         examples.extend(
             CLINC
@@ -210,7 +244,7 @@ impl Classifier {
         })
     }
 
-    pub fn classify(&mut self, text: &str, ctx: &skills::Context) -> Result<Option<Hit>, String> {
+    pub fn nearest(&mut self, text: &str) -> Result<Option<Nearest>, String> {
         let q = self.embedder.embed(&[text])?;
         let mut best = vec![(f32::NEG_INFINITY, 0usize); self.kinds.len()];
         for (i, v) in self.vectors.chunks_exact(self.dim.max(1)).enumerate() {
@@ -226,19 +260,30 @@ impl Classifier {
             return Ok(None);
         };
         let (score, example) = best[top];
-        let lead = score - best[second].0;
-        let intent = self.kinds[top].clone();
-        let action = skills::fill(text, &intent, ctx).or_else(|| self.plain.get(&intent).cloned());
+        Ok(Some(Nearest {
+            intent: self.kinds[top].clone(),
+            score,
+            lead: score - best[second].0,
+            example: self.texts[example].clone(),
+        }))
+    }
+
+    pub fn classify(&mut self, text: &str, ctx: &skills::Context) -> Result<Option<Hit>, String> {
+        let Some(n) = self.nearest(text)? else {
+            return Ok(None);
+        };
+        let action =
+            skills::fill(text, &n.intent, ctx).or_else(|| self.plain.get(&n.intent).cloned());
         Ok(Some(Hit {
             accepted: action.is_some()
-                && score >= THRESHOLD
-                && lead >= MARGIN
-                && !skills::vetoed(&intent, text),
-            intent,
+                && n.score >= THRESHOLD
+                && n.lead >= MARGIN
+                && !skills::vetoed(&n.intent, text),
+            intent: n.intent,
             action,
-            score,
-            lead,
-            nearest: self.texts[example].clone(),
+            score: n.score,
+            lead: n.lead,
+            nearest: n.example,
         }))
     }
 }

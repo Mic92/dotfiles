@@ -548,7 +548,9 @@ impl Assistant {
                 cut_off,
                 dry: true,
                 unsure: !cut_off,
+                nearest: None,
             };
+            let mut rescued = false;
             let unsure = brain
                 .heard(&hearing, |_| {})
                 .is_ok_and(|h| h.outcome == "unsure");
@@ -565,6 +567,18 @@ impl Assistant {
                 self.log(&r.to_string());
                 if r.accepted {
                     hearing.text = r.best;
+                    rescued = true;
+                }
+            }
+            if unsure && !rescued {
+                hearing.nearest = self.classifier.as_mut().and_then(|c| {
+                    c.nearest(&text)
+                        .inspect_err(|e| eprintln!("voice-assistant: classifying: {e}"))
+                        .ok()
+                        .flatten()
+                });
+                if let Some(n) = &hearing.nearest {
+                    self.log(&n.to_string());
                 }
             }
             hearing.dry = self.cfg.stdin;
@@ -919,11 +933,19 @@ fn run_pipewire(tx: mpsc::Sender<Vec<i16>>) -> Result<(), Box<dyn error::Error>>
     Ok(())
 }
 
-/// Exit code 1 when any text matched nothing, so it can gate scripts.
-fn classifier(dir: &std::path::Path) -> Option<classify::Classifier> {
-    classify::Classifier::new(dir)
-        .inspect_err(|e| eprintln!("voice-assistant: intent classifier: {e}"))
-        .ok()
+/// The classifier learning from `brain`'s examples, or the Rust grammar's.
+fn classifier(
+    dir: &std::path::Path,
+    brain: Option<&brain::Shared>,
+) -> Option<classify::Classifier> {
+    match brain {
+        Some(b) => b
+            .examples(&skills::Context::local())
+            .and_then(|ex| classify::Classifier::from_examples(dir, ex)),
+        None => classify::Classifier::new(dir),
+    }
+    .inspect_err(|e| eprintln!("voice-assistant: intent classifier: {e}"))
+    .ok()
 }
 
 fn classify_text(
@@ -937,6 +959,7 @@ fn classify_text(
         .flatten()
 }
 
+/// Exit code 1 when any text matched nothing, so it can gate scripts.
 fn parse_texts(texts: &[String], mut classifier: Option<classify::Classifier>, lisp: bool) -> i32 {
     let ctx = skills::Context::local();
     let mut texts: Vec<String> = texts.to_vec();
@@ -1012,7 +1035,7 @@ fn main() {
     if !cfg.parse.is_empty() {
         process::exit(parse_texts(
             &cfg.parse,
-            classifier(&cfg.intent_model),
+            classifier(&cfg.intent_model, None),
             cfg.lisp,
         ));
     }
@@ -1031,7 +1054,6 @@ fn main() {
         let log = store::state_dir()
             .unwrap_or_else(|| die("no state directory"))
             .join("heard.tsv");
-        let mut c = classifier(&cfg.intent_model);
         let reader = if cfg.lisp {
             replay::Reader::Brain(
                 brain::Brain::connect()
@@ -1041,18 +1063,23 @@ fn main() {
         } else {
             replay::Reader::Rust
         };
+        let brain = match &reader {
+            replay::Reader::Brain(b) => Some(b),
+            replay::Reader::Rust => None,
+        };
+        let mut c = classifier(&cfg.intent_model, brain);
         process::exit(replay::run(&log, &reader, Some(&mut asr), c.as_mut()));
     }
     let wake =
         wakeword::WakeWord::new(&cfg.wake_model, cfg.threshold, 5).unwrap_or_else(|e| die(e));
     let vad = asr::Vad::new(&cfg.vad_model).unwrap_or_else(|e| die(e));
-    let classifier = classifier(&cfg.intent_model);
     let tts = tts::Tts::new(cfg.tts_model.clone(), cfg.voice, cfg.speed);
     let brain = cfg.lisp.then(|| {
         brain::Brain::connect()
             .map(brain::Shared::new)
             .unwrap_or_else(|e| die(e))
     });
+    let classifier = classifier(&cfg.intent_model, brain.as_ref());
     let stdin = cfg.stdin;
     let threshold = cfg.threshold;
     let mut assistant = Assistant {

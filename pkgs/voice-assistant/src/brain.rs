@@ -14,6 +14,7 @@ use std::time::{Duration, Instant};
 
 use tinyjson::JsonValue;
 
+use crate::classify::Nearest;
 use crate::skills::{Context, SoundAlikes};
 
 pub const VERSION: f64 = 1.0;
@@ -150,6 +151,49 @@ impl Brain {
         Heard::from(&reply)
     }
 
+    /// (text, kind) for the classifier to learn from.
+    pub fn examples(&mut self, ctx: &Context) -> Result<Vec<(String, String)>, String> {
+        let reply = self.request("examples", context_fields(ctx))?;
+        let Some(JsonValue::Array(a)) = reply.get("examples") else {
+            return Err("examples: no examples".into());
+        };
+        a.iter()
+            .map(|e| {
+                let field = |k: &str| match e {
+                    JsonValue::Object(o) => match o.get(k) {
+                        Some(JsonValue::String(s)) => Some(s.clone()),
+                        _ => None,
+                    },
+                    _ => None,
+                };
+                field("text")
+                    .zip(field("kind"))
+                    .ok_or_else(|| format!("examples: {e:?}"))
+            })
+            .collect()
+    }
+
+    /// The action the classifier's guess stands for, and whether to take it.
+    pub fn classified(
+        &mut self,
+        text: &str,
+        n: &Nearest,
+        ctx: &Context,
+    ) -> Result<(Option<String>, bool), String> {
+        let mut fields = context_fields(ctx);
+        fields.extend(guess(n));
+        fields.insert("text".into(), text.to_owned().into());
+        let reply = self.request("classified", fields)?;
+        let action = match reply.get("action") {
+            Some(JsonValue::String(s)) => Some(s.clone()),
+            _ => None,
+        };
+        Ok((
+            action,
+            reply.get("accepted") == Some(&JsonValue::Boolean(true)),
+        ))
+    }
+
     pub fn lexicon(&mut self) -> Result<Vec<String>, String> {
         match self.request("lexicon", HashMap::new())?.get("sentences") {
             Some(JsonValue::Array(a)) => a
@@ -194,6 +238,8 @@ pub struct Hearing {
     pub dry: bool,
     /// Answer "unsure" instead of trying the catch-alls, to rescore first.
     pub unsure: bool,
+    /// The classifier's nearest example, tried before the catch-alls.
+    pub nearest: Option<Nearest>,
 }
 
 impl Hearing {
@@ -208,8 +254,29 @@ impl Hearing {
             ("cut_off".into(), self.cut_off.into()),
             ("dry".into(), self.dry.into()),
             ("unsure".into(), self.unsure.into()),
+            (
+                "classified".into(),
+                self.nearest.as_ref().map_or(JsonValue::Null, |n| {
+                    JsonValue::from(guess(n).into_iter().collect::<HashMap<_, _>>())
+                }),
+            ),
         ])
     }
+}
+
+fn guess(n: &Nearest) -> [(String, JsonValue); 3] {
+    [
+        ("kind".into(), n.intent.clone().into()),
+        ("score".into(), f64::from(n.score).into()),
+        ("lead".into(), f64::from(n.lead).into()),
+    ]
+}
+
+fn context_fields(ctx: &Context) -> HashMap<String, JsonValue> {
+    HashMap::from([
+        ("now".into(), f64::from(ctx.now).into()),
+        ("today".into(), (ctx.today as f64).into()),
+    ])
 }
 
 /// What to do about an utterance.
@@ -317,6 +384,27 @@ impl Shared {
                     .unwrap_or_default(),
             )
         })
+    }
+
+    fn with<T>(&self, f: impl FnOnce(&mut Brain) -> Result<T, String>) -> Result<T, String> {
+        let mut guard = self.brain.lock().unwrap_or_else(PoisonError::into_inner);
+        match guard.as_mut() {
+            Some(b) => f(b),
+            None => Err("not connected".into()),
+        }
+    }
+
+    pub fn examples(&self, ctx: &Context) -> Result<Vec<(String, String)>, String> {
+        self.with(|b| b.examples(ctx))
+    }
+
+    pub fn classified(
+        &self,
+        text: &str,
+        n: &Nearest,
+        ctx: &Context,
+    ) -> Result<(Option<String>, bool), String> {
+        self.with(|b| b.classified(text, n, ctx))
     }
 
     /// The strict reading of each text.
@@ -458,6 +546,7 @@ mod tests {
             cut_off: false,
             dry: true,
             unsure: false,
+            nearest: None,
         };
         let mut fields = h.fields();
         for k in ["id", "type"] {

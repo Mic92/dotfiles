@@ -73,6 +73,32 @@ impl Reader {
         }
     }
 
+    /// The kind of action the classifier stands for, if sure.
+    fn classify(&self, c: &mut Classifier, text: &str, ctx: &Context) -> Option<String> {
+        match self {
+            Reader::Rust => {
+                let hit = c.classify(text, ctx).ok()??;
+                println!("        {hit}");
+                hit.action.filter(|_| hit.accepted).map(|a| kind(&a))
+            }
+            Reader::Brain(b) => {
+                let n = c.nearest(text).ok()??;
+                let (action, accepted) = b.classified(text, &n, ctx).ok()?;
+                println!(
+                    "        classified as {} ({:.3}, lead {:.3}, like {:?}), {}",
+                    action
+                        .clone()
+                        .unwrap_or_else(|| format!("{} without slots", n.intent)),
+                    n.score,
+                    n.lead,
+                    n.example,
+                    if accepted { "accepted" } else { "rejected" }
+                );
+                action.filter(|_| accepted).map(|a| kind_of(&a))
+            }
+        }
+    }
+
     fn read_one(&self, text: &str, ctx: &Context) -> Parses {
         self.read(&[text.to_owned()], ctx).pop().unwrap_or_default()
     }
@@ -159,14 +185,7 @@ pub fn run(
             .strict
             .or_else(|| rescored.filter(|r| r.accepted).map(|r| r.action))
             .map(|a| kind_of(&a))
-            .or_else(|| {
-                let hit = classifier
-                    .as_deref_mut()?
-                    .classify(&heard_now, &ctx)
-                    .ok()??;
-                println!("        {hit}");
-                hit.action.filter(|_| hit.accepted).map(|a| kind(&a))
-            })
+            .or_else(|| reader.classify(classifier.as_deref_mut()?, &heard_now, &ctx))
             .or_else(|| read.fallback.map(|a| kind_of(&a)));
         let outcome = compare(old, new.as_deref());
         let label = match outcome {
