@@ -1,7 +1,7 @@
 ;;; Nix build: a core with the libraries loaded, for `va-dev`.
 
 (require :asdf)
-(dolist (s '("coalton" "alexandria" "trivia" "com.inuoe.jzon" "parachute"
+(dolist (s '("coalton" "alexandria" "trivia" "com.inuoe.jzon" "parachute" "cl-ppcre"
              "sb-bsd-sockets" "sb-introspect"))
   (asdf:load-system s))
 (asdf:clear-configuration)

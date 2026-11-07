@@ -15,10 +15,10 @@
                                                       "info" "fun" "news" "kagi" "core")))))
 
 (defsystem "voice-assistant-brain/tests"
-    :depends-on ("voice-assistant-brain" "parachute")
+    :depends-on ("voice-assistant-brain" "parachute" "cl-ppcre")
     :pathname "tests/"
     :serial t
     :components #.(mapcar (lambda (f) (list :file f))
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
-                            "system" "media" "desktop" "info" "kagi" "news" "types"))
+                            "system" "media" "desktop" "info" "kagi" "news" "types" "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

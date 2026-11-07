@@ -15,6 +15,7 @@ let
     p.trivia
     p.com_dot_inuoe_dot_jzon
     p.parachute
+    p.cl-ppcre
   ]);
   src = lib.fileset.toSource {
     # The golden file is shared with the Rust side.
