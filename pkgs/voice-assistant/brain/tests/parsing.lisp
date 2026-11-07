@@ -122,3 +122,14 @@
             ("october 22" 0) ("october 23" 1) ("march 1" 130) ("the 25th" 3) ("the 1st" 10)
             ("february 30" nil))
           do (is eql want (va::days-ahead (date text) today) "~s" text))))
+
+(defvar *not-a-string* 1
+  "Out of the compiler's sight, so only the runtime check can catch it.")
+
+(va::defn wrong-result ((x integer)) string
+  (if (> x 0) (princ-to-string x) *not-a-string*))
+
+(define-test defn-checks-results
+  :parent va-tests
+  (is equal "1" (wrong-result 1))
+  (fail (wrong-result -1) 'type-error))
