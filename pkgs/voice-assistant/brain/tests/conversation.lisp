@@ -100,6 +100,23 @@ FIELDS, alternating names and values, say."
    (isnt equal "command" (got (hear "friday at 9 am" "dry" t) "outcome")
          "without answering the question was not heard")))
 
+(define-test heard-unsure-waits-for-rescoring
+  :parent va-tests
+  (conversation
+   (hear "add dentist to my calendar")
+   (let ((r (hear "flibber at nine" "answering" t "unsure" t)))
+     (is equal "unsure" (got r "outcome"))
+     (false (got r "notify")))
+   (is equal "Meeting(Create { title: \"dentist\", day: 2, secs: 32400, confirmed: false })"
+       (got (hear "friday at 9 am" "answering" t "dry" t) "action")
+       "the question is still open")
+   (is equal "Meeting(Create { title: \"dentist\", day: 2, secs: 32400, confirmed: false })"
+       (got (hear "friday at 9 am" "answering" t "dry" t) "action")
+       "dry runs change nothing"))
+  (conversation
+   (is equal "noise" (got (hear "flibber" "unsure" t "cut_off" t) "outcome"))
+   (is equal "command" (got (hear "roll a die" "unsure" t) "outcome"))))
+
 (define-test heard-follow-ups
   :parent va-tests
   (conversation
