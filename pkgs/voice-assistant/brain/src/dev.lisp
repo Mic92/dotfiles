@@ -36,22 +36,10 @@
 
 (defn serve ((path pathname)) nil
   "Answer eval requests on the Unix socket PATH, each in its own thread."
-  (ensure-directories-exist path)
-  (when (probe-file path) (delete-file path))
-  (let ((server (make-instance 'sb-bsd-sockets:local-socket :type :stream)))
-    (sb-bsd-sockets:socket-bind server (namestring path))
-    (sb-bsd-sockets:socket-listen server 8)
-    (loop
-     (let ((client (sb-bsd-sockets:socket-accept server)))
-       (sb-thread:make-thread
-        (lambda ()
-          (unwind-protect
-               (let ((s (sb-bsd-sockets:socket-make-stream
-                         client :input t :output t :external-format :utf-8)))
-                 (write-string (eval-string (read-all s)) s)
-                 (finish-output s))
-            (sb-bsd-sockets:socket-close client)))
-        :name "va-eval")))))
+  (accept-on path "va-eval"
+             (lambda (s)
+               (write-string (eval-string (read-all s)) s)
+               (finish-output s))))
 
 (defn reload () list
   "Recompile changed files and the ones after them (the system is serial,
@@ -90,6 +78,12 @@ so Coalton types are rechecked). Returns the warnings as strings."
       (and (null warnings) (null failed)))))
 
 (defn main () nil
-  "Entry point of the live brain."
+  "Entry point of the brain. With --socket PATH it only speaks the protocol
+there, as a private brain for one client, otherwise it is the live brain."
   (setf *random-state* (make-random-state t))
-  (serve (merge-pathnames "brain.sock" (runtime-dir))))
+  (let ((private (second (member "--socket" sb-ext:*posix-argv* :test #'string=))))
+    (unless private
+      (sb-thread:make-thread (lambda () (serve (merge-pathnames "eval.sock" (runtime-dir))))
+                             :name "va-eval server"))
+    (accept-on (if private (pathname private) (merge-pathnames "brain.sock" (runtime-dir)))
+               "va-protocol" #'converse)))

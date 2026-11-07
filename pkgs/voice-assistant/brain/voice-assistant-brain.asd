@@ -8,7 +8,7 @@
     :components #.`(,@(mapcar (lambda (f) (list :file f))
                               '("package" "defn" "strings" "json" "effects" "replies" "types" "adt"
                                 "words" "duration" "clock" "date" "holiday" "grammar" "commands"
-                                "dispatch" "dialogue" "fuzzy" "dev"))
+                                "dispatch" "dialogue" "fuzzy" "protocol" "dev"))
                       (:module "skills" :pathname "../skills/" :serial t
                                ;; In Rust's MODULES order, which breaks ties between commands.
                                :components ,(mapcar (lambda (f) (list :file f))
@@ -24,5 +24,5 @@
     :components #.(mapcar (lambda (f) (list :file f))
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
                             "system" "media" "desktop" "info" "kagi" "news" "spell" "calc" "chat"
-                            "ops" "notes" "reminders" "meetings" "types" "source"))
+                            "ops" "notes" "reminders" "meetings" "protocol" "types" "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

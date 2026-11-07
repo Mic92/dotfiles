@@ -1,0 +1,12 @@
+{
+  "request": {
+    "id": 1,
+    "type": "hello",
+    "version": 1
+  },
+  "reply": {
+    "id": 1,
+    "type": "hello",
+    "version": 1
+  }
+}

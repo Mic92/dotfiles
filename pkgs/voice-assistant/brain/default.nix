@@ -23,6 +23,7 @@ let
     root = ../.;
     fileset = lib.fileset.unions [
       ../tests/golden.tsv
+      ../tests/protocol
       ./voice-assistant-brain.asd
       ./src
       ./skills
@@ -59,7 +60,7 @@ let
     text = ''
       sock=${sock "dev"}
       if [ "''${1:-}" = --live ]; then
-        sock=${sock "brain"}
+        sock=${sock "eval"}
         shift
       fi
       if [ "$#" -eq 0 ]; then

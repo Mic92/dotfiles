@@ -1,0 +1,31 @@
+{
+  "request": {
+    "id": 2,
+    "type": "parse",
+    "now": 32400,
+    "today": 20383,
+    "texts": [
+      "tell me a joke",
+      "blorp",
+      "roll a die"
+    ]
+  },
+  "reply": {
+    "id": 2,
+    "type": "parsed",
+    "parses": [
+      {
+        "strict": "Fun(Joke)",
+        "fallback": null
+      },
+      {
+        "strict": null,
+        "fallback": null
+      },
+      {
+        "strict": "Fun(Dice(6))",
+        "fallback": null
+      }
+    ]
+  }
+}

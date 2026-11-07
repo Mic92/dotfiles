@@ -1,0 +1,11 @@
+{
+  "request": {
+    "id": 3,
+    "type": "frobnicate"
+  },
+  "reply": {
+    "id": 3,
+    "type": "error",
+    "message": "unknown message type \"frobnicate\""
+  }
+}

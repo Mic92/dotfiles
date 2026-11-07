@@ -1,0 +1,14 @@
+{
+  "request": {
+    "id": 4,
+    "type": "parse",
+    "now": "noon",
+    "today": 20383,
+    "texts": []
+  },
+  "reply": {
+    "id": 4,
+    "type": "error",
+    "message": "field \"now\" must be an integer"
+  }
+}
