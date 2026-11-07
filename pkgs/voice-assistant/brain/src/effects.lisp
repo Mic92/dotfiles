@@ -63,3 +63,14 @@ failure."
 (defn read-proc ((path string)) string
   "A /proc file's text, empty where there is none."
   (handler-case (uiop:read-file-string path) (file-error () "")))
+
+(defn append-line ((path pathname) (line string)) boolean
+  "Append LINE to the file at PATH, creating both. Whether that worked."
+  (cond (*fake-effects* (push (list :append (namestring path) line) *fake-effects*) t)
+        (t (handler-case
+               (progn (ensure-directories-exist path)
+                      (with-open-file (out path :direction :output :if-exists :append
+                                           :if-does-not-exist :create)
+                        (write-line line out))
+                      t)
+             (file-error () nil)))))

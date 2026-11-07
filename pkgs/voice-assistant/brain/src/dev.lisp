@@ -83,7 +83,8 @@ so Coalton types are rechecked). Returns the warnings as strings."
            (failed (uiop:symbol-call :parachute :results-with-status :failed report))
            (passed (uiop:symbol-call :parachute :results-with-status :passed report)))
       (dolist (f failed)
-        (format t "FAIL ~a~%" (uiop:symbol-call :parachute :format-result f :oneline)))
+        (format t "FAIL ~a~@[  ~a~]~%" (uiop:symbol-call :parachute :format-result f :oneline)
+                (uiop:symbol-call :parachute :description f)))
       (format t "~d warnings, ~d passed, ~d failed~%"
               (length warnings) (length passed) (length failed))
       (and (null warnings) (null failed)))))

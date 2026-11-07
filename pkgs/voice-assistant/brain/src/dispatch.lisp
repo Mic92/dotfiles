@@ -152,9 +152,11 @@ request beats a catch-all on the whole of it."
 
 (defn debug-value ((v t) (type t)) string
   "V of Coalton TYPE as Rust's Debug prints it."
-  (if (and v (consp type) (eq (first type) 'coalton:Optional))
-      (format nil "Some(~a)" (debug-value v (second type)))
-      (debug-plain v type)))
+  (cond ((and v (consp type) (eq (first type) 'coalton:Optional))
+         (format nil "Some(~a)" (debug-value v (second type))))
+        ((and (consp type) (eq (first type) 'coalton:List))
+         (format nil "[~{~a~^, ~}]" (mapcar (lambda (x) (debug-value x (second type))) v)))
+        (t (debug-plain v type))))
 
 (defn debug-plain ((v t) (type t)) string
   (typecase v

@@ -73,11 +73,31 @@
                  (find (char debug (length kind)) "() "))))
         (va:commands)))
 
+(defparameter *golden-fixes*
+  '(("i don't need eggs anymore, but i do need milk"
+     "Notes(Done { items: [\"eggs\"], list: 1 })"
+     "Rust kept \"but i do\" as an item")
+    ("i don't need grocery shopping on my todo list anymore"
+     "Notes(Done { items: [\"grocery shopping\"], list: 0 })"
+     "the todo list was taken for part of the item")
+    ("i don't need mowing the lawn on my to do list anymore"
+     "Notes(Done { items: [\"mowing the lawn\"], list: 0 })"
+     "the todo list was taken for part of the item")
+    ("i don't need the reservation anymore"
+     "Notes(Done { items: [\"reservation\"], list: 1 })"
+     "anymore is no part of the item")
+    ("i don't need toilet paper anymore; take it off my shopping list"
+     "Notes(Done { items: [\"toilet paper\"], list: 1 })"
+     "what follows the item is an instruction"))
+  "Sentences the brain reads better than Rust: (text what-it-says-now why).")
+
 (define-test golden
   :parent va-tests
   (let ((va::*context* (va::make-context (* 9 3600) (va::day-number 2025 10 22))))
     (loop for (text rust) in (golden-rows)
           for lisp = (tier-parsed text)
+          for fix = (assoc text *golden-fixes* :test #'string=)
+          do (when fix (setf rust (second fix)))
           ;; Other skills may still win once they are ported.
           when (or (ported-p rust) (string= rust "-"))
           ;; What Say says is picked at random.

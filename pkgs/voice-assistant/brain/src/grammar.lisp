@@ -127,6 +127,9 @@ PARSER gives a slot's parser by name."
         (multiple-value-bind (end slots) (match-at rest words (+ wi (length alt)) parser)
           (when end (return (values end slots))))))))
 
+(defparameter *comma-slots* '("text" "items")
+  "Slots whose parsers see commas, which the others never do.")
+
 (defn match-slot ((name string) (optional boolean) (rest list) (words simple-vector) (wi fixnum)
                   (parser function))
     (values (or null fixnum) slots)
@@ -141,7 +144,9 @@ finds \"timer\", then REST."
           do (let* ((next-at (skip-commas words end))
                     (next (and (< next-at (length words)) (svref words next-at)))
                     (value (funcall parse
-                                    (if (string= name "text") part (remove-if #'comma-p part))
+                                    (if (member name *comma-slots* :test #'string=)
+                                        part
+                                        (remove-if #'comma-p part))
                                     next)))
                (when value
                  (multiple-value-bind (stop slots) (match-at rest words end parser)
