@@ -72,10 +72,5 @@
 (define-test examples-are-built-once
   :parent va-tests
   (with-focus ()
-    (va::classifier-examples)
-    (va::lexicon)
-    (let ((before (sb-ext:get-bytes-consed)))
-      (va::classifier-examples)
-      (va::lexicon)
-      (true (< (- (sb-ext:get-bytes-consed) before) 1000000)
-            "kept until a command changes"))))
+    (is eq (va::classifier-examples) (va::classifier-examples) "kept until a command changes")
+    (is eq (va::lexicon) (va::lexicon))))
