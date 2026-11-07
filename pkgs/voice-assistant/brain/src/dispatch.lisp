@@ -165,6 +165,7 @@ request beats a catch-all on the whole of it."
      (let ((name (symbol-name (type-of v))))
        (string-capitalize (subseq name (1+ (position #\/ name))))))
     (string (format nil "~s" v))
+    (character (format nil "'~a'" v))
     (float (if (= v (ftruncate v)) (format nil "~,1f" v) (format nil "~f" v)))
     (otherwise (princ-to-string v))))
 

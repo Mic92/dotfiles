@@ -40,7 +40,8 @@ Rust Debug printing.")
 
 (define-test functions-are-typed
   :parent va-tests
-  (let* ((structs (struct-functions))
+  ;; Coalton types its constructors itself, Optional fields as t.
+  (let* ((structs (append (struct-functions) (mapcar #'va:command-name va::*commands*)))
          (fs (remove-if (lambda (s) (member s structs)) (brain-functions))))
     (is equal '()
         (remove :declared fs :key (lambda (s) (sb-int:info :function :where-from s)))

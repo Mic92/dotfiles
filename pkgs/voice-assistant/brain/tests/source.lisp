@@ -64,3 +64,14 @@
   :parent va-tests
   ;; It sets the user agent and timeout, and tests fake it.
   (is equal '("effects") (files-using "\"curl\"" '("src" "skills"))))
+
+(defun form-arg (head text)
+  "The argument of the first (HEAD arg) in TEXT."
+  (cl-ppcre:register-groups-bind (arg) ((format nil "\\(~a ([^)]+)\\)" head) text) arg))
+
+(define-test skills-name-themselves
+  :parent va-tests
+  ;; Without in-skill, commands join the skill of the file loaded before.
+  (dolist (f (source-files "skills"))
+    (let ((text (uiop:read-file-string f)))
+      (is equal (form-arg "defskill" text) (form-arg "in-skill" text) "~a" (pathname-name f)))))
