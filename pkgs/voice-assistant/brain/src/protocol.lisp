@@ -6,6 +6,9 @@
 (defconstant +protocol-version+ 1
   "Bumped on any incompatible message change, checked by hello.")
 
+(defvar *send* nil
+  "Called with a message to send before the reply, such as a filler line.")
+
 (define-condition bad-message (simple-error) ()
   (:documentation "A request that can't be answered, told to the sender."))
 
@@ -46,15 +49,20 @@
   (let ((type (message-field msg "type" 'string)))
     (cond ((string= type "hello") (object "type" "hello" "version" +protocol-version+))
           ((string= type "parse") (parses msg))
+          ((string= type "heard") (hear msg))
           (t (reject "unknown message type ~s" type)))))
 
 (defn answer ((msg hash-table)) hash-table
-  "The reply to MSG, carrying its id. Bad requests get an error reply."
-  (let ((body (handler-case (answer-body msg)
-                (bad-message (c) (object "type" "error" "message" (princ-to-string c))))))
-    (let ((reply (object "id" (gethash "id" msg 'null))))
-      (maphash (lambda (k v) (setf (gethash k reply) v)) body)
-      reply)))
+  "The reply to MSG, carrying its id. Bad requests get an error reply. Messages
+sent before it carry the id too."
+  (let* ((id (gethash "id" msg 'null))
+         (send *send*)
+         (*send* (and send (lambda (m) (setf (gethash "id" m) id) (funcall send m))))
+         (body (handler-case (answer-body msg)
+                 (bad-message (c) (object "type" "error" "message" (princ-to-string c)))))
+         (reply (object "id" id)))
+    (maphash (lambda (k v) (setf (gethash k reply) v)) body)
+    reply))
 
 (defn answer-line ((line string)) string
   (let ((msg (parse-json line)))
@@ -62,12 +70,13 @@
                         (answer msg)
                         (object "id" 'null "type" "error" "message" "not a JSON object")))))
 
-(defn converse ((stream stream)) nil
+(defn converse ((stream stream)) null
   "Answer each request line on STREAM until the other side hangs up."
-  (loop for line = (read-line stream nil)
-        while line
-        do (write-line (answer-line line) stream)
-        (finish-output stream)))
+  (let ((*send* (lambda (m) (write-line (jzon:stringify m) stream) (finish-output stream))))
+    (loop for line = (read-line stream nil)
+          while line
+          do (write-line (answer-line line) stream)
+          (finish-output stream))))
 
 (defn accept-on ((path pathname) (name string) (handler function)) nil
   "Call HANDLER with a stream for each connection to the Unix socket PATH,

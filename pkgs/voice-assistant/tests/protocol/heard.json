@@ -1,0 +1,30 @@
+{
+  "request": {
+    "id": 5,
+    "type": "heard",
+    "text": "roll a die",
+    "now": 36000,
+    "today": 20383,
+    "music": false,
+    "timer": false,
+    "answering": false,
+    "cut_off": false,
+    "dry": true
+  },
+  "reply": {
+    "id": 5,
+    "type": "heard",
+    "action": "Fun(Dice(6))",
+    "kind": "Fun(Dice",
+    "outcome": "command",
+    "title": "",
+    "body": "",
+    "speech": "",
+    "cache": false,
+    "chime": null,
+    "notify": false,
+    "voice": null,
+    "leave_paused": false,
+    "question": false
+  }
+}
