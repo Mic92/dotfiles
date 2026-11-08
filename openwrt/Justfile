@@ -2,9 +2,13 @@ host := "rauter"
 version := "$(curl --silent https://api.github.com/repos/openwrt/openwrt/releases/latest | jq -r '.. .name? // empty | gsub(\"^v\"; \"\")')"
 hosts_bundle := "https://github.com/krebs/kartei/releases/download/bundle/retiolum-hosts.tar.gz"
 sysupgrade_url := "https://downloads.openwrt.org/releases/" + version + "/targets/mediatek/mt7622/openwrt-" + version + "-mediatek-mt7622-linksys_e8450-ubi-squashfs-sysupgrade.itb"
+# Bootloader + UBI layout 2.0, required before sysupgrading to OpenWrt >= 24.10
+ubi_installer_url := "https://github.com/dangowrt/owrt-ubi-installer/releases/download/v1.1.4/openwrt-24.10.0-mediatek-mt7622-linksys_e8450-ubi-initramfs-recovery-installer.itb"
+ubi_installer_sha256 := "9aefbfc0cff5573b020dc3b0ddeeddbe87b125fc2548ba16ab6a82655371d3c8"
+packages := "luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3 luci-mod-rpc prometheus-node-exporter-lua prometheus-node-exporter-lua-openwrt"
 
 ssh +command:
-  ssh "root@{{host}}" "{{command}}"
+  ssh -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519_rauter "root@{{host}}" "{{command}}"
 
 eval-config:
   "$(nix build --builders '' ../#openwrt-example --no-link --print-out-paths)"
@@ -13,37 +17,67 @@ eval-config:
 apply:
   #!/usr/bin/env bash
   set -eux -o pipefail
-  # Set unix root password
-  password=$(sops -d --extract '["root_password"]' secrets.yml)
-  echo -e "$password\n$password" | just ssh "passwd root"
-
-  # Set root ssh keys
-  just ssh "mkdir -p /etc/dropbear/ && umask 177 && cat > /etc/dropbear/authorized_keys" <<EOF
+  # Keys first: on a fresh install root has no password, so once passwd
+  # ran every further ssh would prompt.
+  just host={{host}} ssh "mkdir -p /etc/dropbear/ && umask 177 && cat > /etc/dropbear/authorized_keys" <<EOF
   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHDV5xoYdIHYO7T2FtbIcV8LmiPmJc7JcxElSaGD9tzf joerg@turingmachine rauter
   EOF
 
+  password=$(sops -d --extract '["root_password"]' secrets.yml)
+  echo -e "$password\n$password" | just host={{host}} ssh "passwd root"
+
   # Apply uci configuration
-  just eval-config | just ssh 'uci batch; uci commit'
+  just eval-config | just host={{host}} ssh 'uci batch; uci commit'
 
   # Set up internet after a firmware reset
-  if ! just ssh "ip link | grep -q pppoe-wan"; then
-      just ssh "/etc/init.d/network restart"
+  if ! just host={{host}} ssh "ip link | grep -q pppoe-wan"; then
+      just host={{host}} ssh "/etc/init.d/network restart"
       # wait for pppoe to recover
       while ! ping -c1 -W 1 8.8.8.8; do :; done
   fi
 
   # Install web interface and other packages
-  just ssh "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3 luci-mod-rpc prometheus-node-exporter-lua prometheus-node-exporter-lua-openwrt"
+  # 25.12 replaced opkg with apk; the UBI installer still boots into 24.10 (opkg)
+  just host={{host}} ssh "if command -v apk >/dev/null; then apk update && apk add {{packages}}; else opkg update && opkg install {{packages}}; fi"
 
-  just ssh "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
+  just host={{host}} ssh "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
   # Overlay instead of replace: the bundle lacks some ConnectTo peers (ni, prism)
-  just ssh "mkdir -p /etc/tinc/retiolum/hosts && wget -qO- {{hosts_bundle}} | tar xzf - -C /etc/tinc/retiolum/hosts && tinc -n retiolum reload"
+  just host={{host}} ssh "mkdir -p /etc/tinc/retiolum/hosts && wget -qO- {{hosts_bundle}} | tar xzf - -C /etc/tinc/retiolum/hosts && tinc -n retiolum reload"
 
 # perform router upgrade
 upgrade:
   wget "{{sysupgrade_url}}" -O openwrt.sysupgrade.itb
   rsync -e ssh -ac openwrt.sysupgrade.itb "root@{{host}}:/tmp/openwrt.sysupgrade.itb"
-  just ssh "sysupgrade -v /tmp/openwrt.sysupgrade.itb" || true
-  # wait for internet to come back
+  just host={{host}} ssh "sysupgrade -T /tmp/openwrt.sysupgrade.itb"
+  just host={{host}} ssh "sysupgrade -v /tmp/openwrt.sysupgrade.itb" || true
+  # without this, the ping below succeeds before the router has gone down
+  while ssh -o ConnectTimeout=3 "root@{{host}}" true 2>/dev/null; do sleep 2; done
   while ! ping -c1 -W1 8.8.8.8; do sleep 2; done
-  just apply
+  while ! ssh -o ConnectTimeout=3 "root@{{host}}" true; do sleep 2; done
+  just host={{host}} apply
+
+# copy the stock bootchain off the router; the UBI installer overwrites it
+backup-bootchain:
+  #!/usr/bin/env bash
+  set -eux -o pipefail
+  dest="e8450-boot_backup-$(date +%F)"
+  just host={{host}} ssh "mkdir -p /tmp/boot_backup && (grep -q ' /tmp/boot_backup ' /proc/mounts || mount -t ubifs ubi0:boot_backup /tmp/boot_backup)"
+  mkdir -p "$dest"
+  just host={{host}} ssh "tar -C /tmp/boot_backup -cf - ." | tar -xf - -C "$dest"
+  just host={{host}} ssh "umount /tmp/boot_backup"
+  ls -l "$dest"
+
+# Wipes the config: the router comes back as 192.168.1.1. Afterwards run
+# `just host=192.168.1.1 apply` (re-run as plain `just apply` once the LAN
+# address changes), then `just upgrade`.
+# one-time bootloader/UBI layout update, needed for "image version 1.0->2.0"
+install-ubi: backup-bootchain
+  #!/usr/bin/env bash
+  set -eux -o pipefail
+  wget "{{ubi_installer_url}}" -O ubi-installer.itb
+  echo "{{ubi_installer_sha256}}  ubi-installer.itb" | sha256sum -c -
+  scp -O ubi-installer.itb "root@{{host}}:/tmp/ubi-installer.itb"
+  just host={{host}} ssh "sysupgrade -n -F /tmp/ubi-installer.itb" || true
+  # the installer reflashes and reboots several times; do not power off
+  while ! ping -c1 -W1 192.168.1.1; do sleep 5; done
+  while ! ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.1.1 true; do sleep 5; done

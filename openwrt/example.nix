@@ -35,6 +35,10 @@
       {
         _type = "system";
         hostname = "rauter";
+        # Normally seeded from board.json on first boot, but this list section
+        # is recreated on apply. sysupgrade treats a missing value as 1.0 and
+        # rejects images for the UBI 2.0 layout.
+        compat_version = "2.0";
       }
     ];
 
