@@ -1,6 +1,6 @@
-(in-package #:va)
-
 ;;; Spoken clock times: "7:30 pm", "half past four", "noon", "seven oh five".
+
+(in-package #:va)
 
 (alexandria:define-constant +day+ 86400)
 

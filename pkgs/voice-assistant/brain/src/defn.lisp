@@ -1,3 +1,5 @@
+;;; `defn' and the small macros every other file builds on.
+
 (in-package #:va)
 
 (defmacro defn (name params result &body body)

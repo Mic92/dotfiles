@@ -1,7 +1,7 @@
-(in-package #:va)
-
 ;;; Spoken calendar dates: "friday", "next friday", "march 1st", "the 15th".
 ;;; Parsed without knowing today and resolved against it later.
+
+(in-package #:va)
 
 (defparameter *weekdays*
   #("sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday")

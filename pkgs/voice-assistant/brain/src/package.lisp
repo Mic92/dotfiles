@@ -1,3 +1,5 @@
+;;; The va package and what skills and tests may use of it.
+
 (defpackage #:va
   (:documentation "The voice assistant's brain: grammar, skills and dialogue.")
   (:use #:cl)

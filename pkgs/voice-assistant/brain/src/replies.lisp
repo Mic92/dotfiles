@@ -1,3 +1,5 @@
+;;; Canned lines picked at random, avoiding recent repeats.
+
 (in-package #:va)
 
 (defvar *late* nil

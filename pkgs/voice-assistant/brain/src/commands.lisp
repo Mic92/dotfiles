@@ -1,6 +1,6 @@
-(in-package #:va)
-
 ;;; A command: its templates, its Coalton constructor and how it runs.
+
+(in-package #:va)
 
 (defstruct command
   "Templates, the Coalton constructor and how it runs."
@@ -171,3 +171,8 @@ in FORMs."
                                 ,@(mapcar #'second slots)))))
     `(coalton:coalton-toplevel
       (coalton:define-type ,(intern (symbol-name name)) ,@ctors))))
+
+(defstruct (action (:constructor make-action (command fields)))
+  "A command and the field values to run it with."
+  (command nil :type command)
+  (fields nil :type list))

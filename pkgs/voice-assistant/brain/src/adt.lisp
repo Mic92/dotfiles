@@ -1,6 +1,6 @@
-(in-package #:va)
-
 ;;; Taking Coalton values apart from plain Lisp.
+
+(in-package #:va)
 
 (define-condition no-constructor (error)
   ((type :initarg :type) (name :initarg :name))

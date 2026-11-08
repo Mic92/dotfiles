@@ -1,6 +1,6 @@
-(in-package #:va)
+;;; Development: the eval socket, `reload' and `check'.
 
-;;; The eval socket: one form per connection, plain text back.
+(in-package #:va)
 
 (defn runtime-dir () pathname
   (merge-pathnames "voice-assistant/"
@@ -90,39 +90,3 @@ checkout, points a brain built by nix at it first."
       (format t "~d warnings, ~d passed, ~d failed~%"
               (length warnings) (length passed) (length failed))
       (and (null warnings) (null failed)))))
-
-(defn warm-caches () null
-  "Build what is kept until a command changes, as for the saved image. At
-midnight every \"today at 7 pm\" is still ahead, so those examples parse."
-  (let ((*context* (make-context 0 0)))
-    (classifier-examples)
-    (lexicon))
-  nil)
-
-(defn tell-systemd-ready () null
-  "Under systemd with Type=notify, the assistant waits for this before it
-connects, instead of starting a private brain."
-  (when (uiop:getenv "NOTIFY_SOCKET")
-    (handler-case (sb-ext:run-program "systemd-notify" '("--ready") :search t)
-      (error (e) (format *error-output* "va-brain: systemd-notify: ~a~%" e))))
-  nil)
-
-(defn main () nil
-  "Entry point of the brain. With --socket PATH it only speaks the protocol
-there, as a private brain for one client, and exits with it, otherwise it is the live brain."
-  (setf *random-state* (make-random-state t))
-  ;; The image remembers the build's cache dir, which `reload' would write to.
-  (uiop:call-image-restore-hook)
-  (asdf:clear-output-translations)
-  ;; SBCL keeps every page it ever touched. A smaller nursery than the
-  ;; default 5% of the heap keeps that near 80 MB.
-  (setf (sb-ext:bytes-consed-between-gcs) (* 16 1024 1024))
-  (let ((private (second (member "--socket" sb-ext:*posix-argv* :test #'string=))))
-    (unless private
-      (sb-thread:make-thread (lambda () (serve (merge-pathnames "eval.sock" (runtime-dir))))
-                             :name "va-eval server"))
-    (cond (private (serve-one (pathname private) #'converse)
-                   (sb-ext:exit :code 0))
-          (t (let ((server (listening-socket (merge-pathnames "brain.sock" (runtime-dir)))))
-               (tell-systemd-ready)
-               (serve-socket server "va-protocol" #'converse))))))

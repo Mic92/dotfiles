@@ -1,7 +1,7 @@
-(in-package #:va)
-
 ;;; Every side effect goes through `run`, so dev brains and tests only
 ;;; record what would have happened.
+
+(in-package #:va)
 
 (defvar *fake-effects* nil
   "When a list, `run` pushes (program . args) onto it instead of running.")

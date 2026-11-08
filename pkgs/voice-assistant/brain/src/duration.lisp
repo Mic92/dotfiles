@@ -1,6 +1,6 @@
-(in-package #:va)
-
 ;;; Spoken durations: "5 minutes", "an hour and a half", "1:30", "two minutes thirty".
+
+(in-package #:va)
 
 (defn unit-seconds ((w string)) (or null double-float)
   (word-case w

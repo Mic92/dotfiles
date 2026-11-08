@@ -1,6 +1,6 @@
-(in-package #:va)
-
 ;;; Turning text into words, and number words into numbers.
+
+(in-package #:va)
 
 (deftype words () 'list)
 

@@ -1,7 +1,7 @@
-(in-package #:va)
-
 ;;; The intent classifier's half in the brain: which sentences it learns
 ;;; from, and what to make of the nearest one. Rust only embeds and compares.
+
+(in-package #:va)
 
 (defparameter *classify-threshold* 0.91d0
   "How close the nearest example must be.")

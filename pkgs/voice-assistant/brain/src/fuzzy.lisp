@@ -55,3 +55,17 @@ about one edit per four sounds, and unambiguous."
                    ((and best (>= d best)))
                    (t (setf best d best-id id tie nil))))
     (and (not tie) best-id)))
+
+(defvar *lexicon* nil "See `lexicon' and `kept'.")
+
+(defn lexicon () list
+  "Every plain sentence and every one naming a fixed thing (\"ping eve\",
+\"play radio 1\"), sorted: what sound-alikes are searched among."
+  (kept '*lexicon*
+        (lambda ()
+          (let ((all (loop for c in (commands)
+                           unless (command-fallback c)
+                           append (loop for tm in (command-parsed c)
+                                        append (template-sentences tm #'closed-values)
+                                        append (variants tm)))))
+            (remove-duplicates (sort all #'string<) :test #'string=)))))
