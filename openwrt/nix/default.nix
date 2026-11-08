@@ -1,7 +1,9 @@
 {
   formats,
   lib,
-  writeShellScript,
+  writeShellApplication,
+  openssh,
+  sops,
   pkgs,
 }:
 let
@@ -22,13 +24,32 @@ in
           configuration
         ];
       };
-      json = (formats.json { }).generate "uci.json" { inherit (res.config.uci) settings secrets; };
+      json = (formats.json { }).generate "openwrt-config.json" {
+        inherit (res.config) uci openwrt;
+      };
     in
     {
       inherit json;
-      command = writeShellScript "uci-commands" ''
-        ${nix-uci}/bin/nix-uci "${json}"
-      '';
+      # Secrets are only decrypted at deploy time and never enter the store.
+      deploy = writeShellApplication {
+        name = "openwrt-deploy";
+        runtimeInputs = [
+          nix-uci
+          openssh
+          sops
+        ];
+        text = ''
+          if [ $# -lt 1 ]; then
+            echo "usage: openwrt-deploy root@HOST [ssh options...]" >&2
+            exit 1
+          fi
+          target=$1
+          shift
+          # render before connecting, so a sops failure leaves the router untouched
+          program=$(nix-uci ${json})
+          printf '%s\n' "$program" | ssh "$@" "$target" ucode -
+        '';
+      };
     };
   inherit nix-uci;
 }

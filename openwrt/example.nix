@@ -1,4 +1,55 @@
 {
+  pkgs,
+  lib,
+  retiolumHosts,
+  ...
+}:
+{
+  openwrt.packages = [
+    "luci"
+    "tcpdump"
+    "tinc"
+    "rsync"
+    "ddns-scripts-nsupdate"
+    "iperf3"
+    "luci-mod-rpc"
+    "prometheus-node-exporter-lua"
+    "prometheus-node-exporter-lua-openwrt"
+  ];
+
+  openwrt.rootPasswordSecret = "root_password";
+
+  openwrt.files = {
+    "/etc/dropbear/authorized_keys" = {
+      text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHDV5xoYdIHYO7T2FtbIcV8LmiPmJc7JcxElSaGD9tzf joerg@turingmachine rauter";
+      mode = "0600";
+    };
+    # must match mic92/hosts/rauter in krebs/kartei
+    "/etc/tinc/retiolum/rsa_key.priv".secret = "tinc_rsa_key";
+    "/etc/tinc/retiolum/ed25519_key.priv".secret = "tinc_ed25519_key";
+    "/etc/tinc/retiolum/hosts".source = pkgs.linkFarm "retiolum-tinc-hosts" (
+      lib.mapAttrsToList (name: text: {
+        inherit name;
+        path = pkgs.writeText name text;
+      }) retiolumHosts.tincHosts
+    );
+    # dnsmasq serves /etc/hosts, so LAN clients resolve .r names too
+    "/etc/hosts".text = ''
+      127.0.0.1 localhost
+      ::1 localhost ip6-localhost ip6-loopback
+      ff02::1 ip6-allnodes
+      ff02::2 ip6-allrouters
+      ${retiolumHosts.extraHosts.v6only}
+    '';
+  };
+
+  # tinc's init script only copies keys and hosts on start; dnsmasq only
+  # rereads /etc/hosts on restart.
+  openwrt.restartServices = [
+    "tinc"
+    "dnsmasq"
+  ];
+
   uci.settings = {
     # The block below will translate to the following uci settings:
     # root@OpenWrt:~# uci show dropbear
@@ -128,8 +179,6 @@
       ConnectTo = [
         "eva"
         "eve"
-        "ni"
-        "prism"
       ];
     };
 

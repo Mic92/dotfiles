@@ -38,6 +38,9 @@ packages = ["nix_uci"]
 zip-safe = true
 include-package-data = true
 
+[tool.setuptools.package-data]
+nix_uci = ["apply.uc"]
+
 [tool.ruff]
 line-length = 88
 lint.select = ["ALL"]

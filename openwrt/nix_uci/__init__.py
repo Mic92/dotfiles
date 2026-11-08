@@ -1,181 +1,24 @@
-"""Module for converting JSON configuration to UCI (Unified Configuration Interface) format."""
+"""Render a nix-generated OpenWrt configuration into a self-contained ucode program.
+
+The program (apply.uc with the configuration embedded) is piped to `ucode -`
+on the device, which applies it through the uci API instead of `uci batch`.
+"""
 
 import json
 import re
 import subprocess
 import sys
+from importlib.resources import files
 from pathlib import Path
-from typing import Any, TypeVar, cast
+from typing import Any, cast
 
-ROOT = Path(__file__).parent.parent.resolve()
+type UciValue = str | int | float | bool | list[UciValue] | dict[str, UciValue] | None
+
+SECRET_RE = re.compile(r"@([A-Za-z0-9_]+)@")
 
 
 class ConfigError(Exception):
     """Exception raised for configuration errors."""
-
-
-def interpolate_secrets(option_val: str, secrets: dict[str, str]) -> str:
-    """Replace secret placeholders in option values with actual secret values."""
-
-    def substitute_secrets(matchobj: re.Match[str]) -> str:
-        name = matchobj.group(1)
-        val = secrets.get(name)
-        if val:
-            return str(val)
-        msg = f"Tried to use secret {name}, but no secret with this name specified."
-        raise ConfigError(
-            msg,
-        )
-
-    return re.sub("@(.+)@", substitute_secrets, option_val)
-
-
-def serialize_option_val(
-    key: str,
-    val: list[str] | str,
-    secrets: dict[str, str],
-) -> list[str]:
-    """Serialize an option value to UCI format."""
-    if isinstance(val, float | int | str):
-        val = interpolate_secrets(str(val), secrets)
-        return [f"set {key}='{val}'"]
-
-    if isinstance(val, list):
-        return [f"add_list {key}='{interpolate_secrets(v, secrets)}'" for v in val]
-
-    msg = f"{val} is not a string"
-    raise ConfigError(msg)
-
-
-def serialize_list_section(
-    config_name: str,
-    section_name: str,
-    idx: int,
-    list_obj: dict[str, str],
-    secrets: dict[str, str],
-) -> list[str]:
-    """Serialize a list section to UCI format."""
-    lines = []
-    _type = None
-
-    # TODO(@joerg): Investigate how to delete all list sections
-    # truncate list so we can start from fresh
-
-    _type = list_obj.get("_type")
-    if _type is None:
-        msg = f"{config_name}.@{section_name}[{idx}] has no type!"
-        raise ConfigError(msg)
-    del list_obj["_type"]
-    lines.append(f"set {config_name}.@{section_name}[{idx}]={_type}")
-
-    for option_name, option in list_obj.items():
-        lines.extend(
-            serialize_option_val(
-                f"{config_name}.@{section_name}[{idx}].{option_name}",
-                option,
-                secrets,
-            ),
-        )
-    return lines
-
-
-def serialize_named_section(
-    config_name: str,
-    section_name: str,
-    section: dict[str, str],
-    secrets: dict[str, str],
-) -> list[str]:
-    """Serialize a named section to UCI format."""
-    lines = []
-    _type = None
-    # truncate section so we can start from fresh
-    lines.append(f"delete {config_name}.{section_name}")
-
-    _type = section.get("_type")
-    if _type is None:
-        msg = f"{config_name}.{section_name} has no type"
-        raise ConfigError(msg)
-    del section["_type"]
-    lines.append(f"set {config_name}.{section_name}={_type}")
-
-    for option_name, option in section.items():
-        # TODO(@joerg): Investigate how escaping works in UCI
-        lines.extend(
-            serialize_option_val(
-                f"{config_name}.{section_name}.{option_name}",
-                option,
-                secrets,
-            ),
-        )
-    return lines
-
-
-def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
-    """Serialize configuration dictionary to UCI format."""
-    lines: list[str] = []
-    config_names = []
-    for config_name, sections in configs.items():
-        config_names.append(config_name)
-        if not isinstance(sections, dict):
-            msg = f"{config_name} is not a valid config object, expected dict, got: {type(sections).__name__}"
-            raise ConfigError(
-                msg,
-            )
-
-        for section_name, section in sections.items():
-            if isinstance(section, list):
-                # NOTE: Clear out existing list sections (no better method available)
-                lines.extend(
-                    f"delete {config_name}.@{section_name}[0]" for _i in range(10)
-                )
-                lines.extend(
-                    f"add {config_name} {section_name}" for _i in range(len(section))
-                )
-
-                for idx, list_obj in enumerate(section):
-                    lines.extend(
-                        serialize_list_section(
-                            config_name,
-                            section_name,
-                            idx,
-                            list_obj,
-                            secrets,
-                        ),
-                    )
-                # for option_name, option in section:
-            elif isinstance(section, dict):
-                lines.extend(
-                    serialize_named_section(
-                        config_name,
-                        section_name,
-                        section,
-                        secrets,
-                    ),
-                )
-            else:
-                msg = f"{config_name}.{section_name} is not a valid section object, expected dict, got: {type(section).__name__}"
-                raise ConfigError(
-                    msg,
-                )
-
-    return "\n".join(lines)
-
-
-T = TypeVar("T")
-
-
-def ensure_type[T](parent: dict[str, Any], key: str, t: type[T]) -> T:
-    """Ensure a dictionary value has the expected type."""
-    val = parent.get(key, {})
-    if not isinstance(val, t):
-        msg = f"{key} is not of type: {t}"
-        raise ConfigError(msg)
-    return val
-
-
-def ensure_dict(parent: dict[str, Any], key: str) -> dict[str, Any]:
-    """Ensure a dictionary value is a dict."""
-    return ensure_type(parent, key, dict)
 
 
 def load_sops_file(file: str) -> dict[str, str]:
@@ -192,40 +35,96 @@ def load_sops_file(file: str) -> dict[str, str]:
     return cast("dict[str, str]", json.loads(res.stdout))
 
 
-def convert_file(path: Path) -> str:
-    """Convert a JSON configuration file to UCI format."""
-    uci_json = json.load(path.open())
-    if not isinstance(uci_json, dict):
-        msg = "json file has no settings attribute set"
+def get_secret(secrets: dict[str, str], name: str) -> str:
+    """Look up a secret, failing loudly on typos."""
+    if name not in secrets:
+        msg = f"Tried to use secret {name}, but no secret with this name specified."
         raise ConfigError(msg)
+    return str(secrets[name])
 
-    settings = ensure_dict(uci_json, "settings")
-    if not settings:
-        msg = "json file has no settings attribute set"
-        raise ConfigError(msg)
 
-    uci_json.get("secrets", {})
-    sops_files = ensure_type(
-        ensure_dict(ensure_dict(uci_json, "secrets"), "sops"),
-        "files",
-        list,
-    )
-    secrets = {}
-    for sops_file in sops_files:
+def interpolate(val: UciValue, secrets: dict[str, str]) -> UciValue:
+    """Replace @name@ placeholders in all strings of a uci value."""
+    if isinstance(val, str):
+        return SECRET_RE.sub(lambda m: get_secret(secrets, m.group(1)), val)
+    if isinstance(val, list):
+        return [interpolate(v, secrets) for v in val]
+    if isinstance(val, dict):
+        return {k: interpolate(v, secrets) for k, v in val.items()}
+    return val
+
+
+def collect_files(
+    spec: dict[str, dict[str, Any]],
+    secrets: dict[str, str],
+) -> tuple[list[str], list[dict[str, Any]]]:
+    """Resolve file specs into (directories to replace, files with content)."""
+    replace_dirs: list[str] = []
+    out: list[dict[str, Any]] = []
+    for path, f in sorted(spec.items()):
+        mode = int(f["mode"], 8)
+        if f.get("secret") is not None:
+            out.append(
+                {
+                    "path": path,
+                    "mode": mode,
+                    "content": get_secret(secrets, f["secret"]),
+                },
+            )
+            continue
+        source = f.get("source")
+        if source is None:
+            msg = f"openwrt.files.{path}: one of text, source or secret must be set"
+            raise ConfigError(msg)
+        src = Path(source)
+        if src.is_dir():
+            replace_dirs.append(path)
+            out.extend(
+                {
+                    "path": f"{path}/{p.relative_to(src)}",
+                    "mode": mode,
+                    "content": p.read_text(),
+                }
+                for p in sorted(src.rglob("*"))
+                if p.is_file()
+            )
+        else:
+            out.append({"path": path, "mode": mode, "content": src.read_text()})
+    return replace_dirs, out
+
+
+def render(config: dict[str, Any]) -> str:
+    """Render the full ucode program for a configuration."""
+    secrets: dict[str, str] = {}
+    for sops_file in config["uci"]["secrets"]["sops"]["files"]:
         secrets.update(load_sops_file(sops_file))
 
-    return serialize_uci(settings, secrets)
+    openwrt = config["openwrt"]
+    replace_dirs, file_list = collect_files(openwrt["files"], secrets)
+    root_password = openwrt.get("rootPasswordSecret")
+    payload = {
+        "packages": openwrt["packages"],
+        "replace_dirs": replace_dirs,
+        "files": file_list,
+        "settings": interpolate(config["uci"]["settings"], secrets),
+        "root_password": None
+        if root_password is None
+        else get_secret(secrets, root_password),
+        "restart_services": openwrt["restartServices"],
+    }
+    applier = files(__package__).joinpath("apply.uc").read_text()
+    # 'use strict' must stay the first statement, so declare cfg after it.
+    head, sep, rest = applier.partition("'use strict';\n")
+    return f"{head}{sep}const cfg = {json.dumps(payload)};\n{rest}"
 
 
 def main() -> None:
     """Execute main entry point for the CLI."""
+    if len(sys.argv) != 2:  # noqa: PLR2004
+        print(f"USAGE: {sys.argv[0]} CONFIG_JSON", file=sys.stderr)
+        sys.exit(1)
     try:
-        min_args = 2
-        if len(sys.argv) < min_args:
-            print(f"USAGE: {sys.argv[0]} JSON_FILE")
-            sys.exit(1)
-        print(convert_file(Path(sys.argv[1])))
-
+        print(render(json.loads(Path(sys.argv[1]).read_text())))
     except ConfigError as e:
         print(e, file=sys.stderr)
         sys.exit(1)
