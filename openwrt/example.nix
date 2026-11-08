@@ -111,6 +111,15 @@
         key = "@wifi_password@";
       };
     };
+    # named sections are recreated, so repeat luci-app-attendedsysupgrade's defaults
+    attendedsysupgrade.client = {
+      _type = "client";
+      upgrade_packages = "1";
+      auto_search = "0";
+      advanced_mode = "0";
+      login_check_for_upgrades = "1";
+    };
+
     tinc.retiolum = {
       _type = "tinc-net";
       enabled = 1;
