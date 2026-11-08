@@ -40,14 +40,19 @@ apply:
   # 25.12 replaced opkg with apk; the UBI installer still boots into 24.10 (opkg)
   just host={{host}} ssh "if command -v apk >/dev/null; then apk update && apk add {{packages}}; else opkg update && opkg install {{packages}}; fi"
 
-  just host={{host}} ssh "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
+  # Keys must match mic92/hosts/rauter in krebs/kartei, so restore them
+  # instead of generating new ones after a wipe.
+  just host={{host}} ssh "mkdir -p /etc/tinc/retiolum && umask 077 && cat > /etc/tinc/retiolum/rsa_key.priv" < <(sops -d --extract '["tinc_rsa_key"]' secrets.yml)
+  just host={{host}} ssh "umask 077 && cat > /etc/tinc/retiolum/ed25519_key.priv" < <(sops -d --extract '["tinc_ed25519_key"]' secrets.yml)
+  just host={{host}} ssh "/etc/init.d/tinc restart"
   # Overlay instead of replace: the bundle lacks some ConnectTo peers (ni, prism)
   just host={{host}} ssh "mkdir -p /etc/tinc/retiolum/hosts && wget -qO- {{hosts_bundle}} | tar xzf - -C /etc/tinc/retiolum/hosts && tinc -n retiolum reload"
 
 # perform router upgrade
 upgrade:
   wget "{{sysupgrade_url}}" -O openwrt.sysupgrade.itb
-  rsync -e ssh -ac openwrt.sysupgrade.itb "root@{{host}}:/tmp/openwrt.sysupgrade.itb"
+  # scp: rsync is not available in the recovery initramfs
+  scp -O -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519_rauter openwrt.sysupgrade.itb "root@{{host}}:/tmp/openwrt.sysupgrade.itb"
   just host={{host}} ssh "sysupgrade -T /tmp/openwrt.sysupgrade.itb"
   just host={{host}} ssh "sysupgrade -v /tmp/openwrt.sysupgrade.itb" || true
   # without this, the ping below succeeds before the router has gone down
@@ -67,9 +72,9 @@ backup-bootchain:
   just host={{host}} ssh "umount /tmp/boot_backup"
   ls -l "$dest"
 
-# Wipes the config: the router comes back as 192.168.1.1. Afterwards run
-# `just host=192.168.1.1 apply` (re-run as plain `just apply` once the LAN
-# address changes), then `just upgrade`.
+# Wipes the config and only installs the bootloader plus a recovery
+# initramfs at 192.168.1.1; nothing persists until a real firmware is
+# flashed, so run `just host=192.168.1.1 upgrade` next.
 # one-time bootloader/UBI layout update, needed for "image version 1.0->2.0"
 install-ubi: backup-bootchain
   #!/usr/bin/env bash
