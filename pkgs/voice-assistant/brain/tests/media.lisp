@@ -84,7 +84,13 @@
                  ("Put my music on, please" "Play") ("Put on lassulus" "Radio(11)")
                  ("I want to listen to Bayern 3" "Radio(7)") ("Turn off the radio." "RadioOff")
                  ("What's playing?" "NowPlaying") ("What song is this?" "NowPlaying")
-                 ("Who sings this?" "NowPlaying")))))
+                 ("Who sings this?" "NowPlaying")
+                 ("play Mini Mix." "MiniMix") ("Play the BBC minimix" "MiniMix")
+                 ("put on a radio 1 mini mix" "MiniMix")
+                 ("play the essential mix" "EssentialMix")
+                 ("put on radio 1's essential mix" "EssentialMix")
+                 ("play radio 1 dance" "Radio(12)") ("put on bbc radio one dance" "Radio(12)")
+                 ("play radio 1" "Radio(0)")))))
 
 (define-test media-refines-radio
   :parent va-tests

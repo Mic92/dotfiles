@@ -137,7 +137,11 @@
     ((("lassulus") ("lassulus" "radio") ("lassulus's" "radio") ("lasso" "lose") ("lassul" "us")
       ("lass" "radio") ("krebs" "radio"))
      "lassulus radio"
-     "https://radio.lassul.us/radio.ogg"))
+     "https://radio.lassul.us/radio.ogg")
+    ((("radio" "1" "dance") ("radio" "one" "dance") ("bbc" "radio" "1" "dance")
+      ("bbc" "radio" "one" "dance") ("dance" "radio") ("dance" "music"))
+     "BBC Radio 1 Dance"
+     "http://as-hls-ww-live.akamaized.net/pool_62063831/live/ww/bbc_radio_one_dance/bbc_radio_one_dance.isml/bbc_radio_one_dance-audio%3d96000.norewind.m3u8"))
   "Spoken names, display name and stream URL.")
 
 (defn station-lookup ((ws words)) (or null (integer 0))
@@ -403,6 +407,34 @@ skip, \"can i hear you\" no title."
 (defn search-music ((query string)) reply
   (youtube 1 query "--no-video" "--ytdl-format=bestaudio/best")
   (reply "Music" query (pick *search* query)))
+
+(defreplies *mini-mix*
+  "Radio 1 Mini Mixes, shuffled. Five minutes each, no time for boredom."
+  "Mini Mix time. Small mixes, big tunes."
+  "Shuffling Radio 1 Mini Mixes. Stretch first.")
+
+(defreplies *essential-mix*
+  "Radio 1's Essential Mix. Two hours, cancel your plans."
+  "Essential Mix, shuffled. Hydrate, this one's long."
+  "Essential Mix. Lights down, volume up.")
+
+(defn youtube-mixes ((query string) (lines replies)) reply
+  "Twenty YouTube hits for QUERY, shuffled, audio only."
+  (youtube 20 query "--no-video" "--shuffle" "--ytdl-format=bestaudio/best")
+  (reply "Music" query (pick lines)))
+
+;; Before the plain "play {text}", which would play a single random hit.
+(defcommand media-essential-mix
+  (:join "!(play|put on|listen to|start) [the|an|some] [bbc] [radio one's|radio 1's]"
+         "(essential mix|essential mixes) [please]")
+  :examples ("Play the Essential Mix")
+  (youtube-mixes "Radio 1's Essential Mix" *essential-mix*))
+
+(defcommand media-mini-mix
+  (:join "!(play|put on|listen to|start) [the|a|some] [bbc] [radio one|radio 1]"
+         "(mini mix|minimix|mini mixes|minimixes) [please]")
+  :examples ("Play the BBC Mini Mix")
+  (youtube-mixes "BBC Radio 1 Mini Mix" *mini-mix*))
 
 (defcommand media-search
   "!(play|put on|listen to) {text}"
