@@ -55,6 +55,16 @@ failure."
         (error () nil)))
   nil)
 
+(defn launch ((program string) &rest (args string)) null
+  "Start PROGRAM in its own scope, so it survives the brain restarting."
+  (apply #'spawn "systemd-run" "--user" "--scope" "--quiet" "--slice=app.slice" program args))
+
+(defn run-later ((seconds (integer 0)) (program string) &rest (args string)) null
+  "PROGRAM with ARGS after SECONDS, from a systemd timer rather than a
+sleeping child of ours."
+  (apply #'spawn "systemd-run" "--user" "--quiet" "--collect"
+         (format nil "--on-active=~d" seconds) program args))
+
 (defn output ((program string) &rest (args string)) (or null string)
   "PROGRAM's trimmed output, nil when it fails or says nothing."
   (let ((out (apply #'run program args)))

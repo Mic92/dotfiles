@@ -178,7 +178,7 @@ early bird." (event-title e) (spoken-mins mins))))
               ((null (event-link e))
                (live "Join meeting" (event-title e)
                      (format nil "~a has no video link. In person? How retro." (event-title e))))
-              (t (spawn "xdg-open" (event-link e))
+              (t (launch "xdg-open" (event-link e))
                  (live "Join meeting" (event-title e)
                        (if (> mins 2)
                            (format nil "Opening ~a. You're ~a early. Teacher's pet."

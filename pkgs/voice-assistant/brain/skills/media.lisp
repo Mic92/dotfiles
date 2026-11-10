@@ -192,7 +192,7 @@ skip, \"can i hear you\" no title."
   ws)
 
 (defparameter *radio-tag* "voice-assistant-radio"
-  "Marks our mpv in the process list so it can be stopped again.")
+  "Media title of our mpv, so \"what's playing\" can tell it is the radio.")
 
 (defn radio-socket () (or null string)
   (let ((dir (uiop:getenv "XDG_RUNTIME_DIR")))
@@ -229,14 +229,26 @@ skip, \"can i hear you\" no title."
              (mpv-ipc "[\"set_property\", \"pause\", true]") t))
       (and (mpv-ipc "[\"set_property\", \"pause\", false]") t)))
 
-(defn stop-radio () boolean (and (run "pkill" "-f" *radio-tag*) t))
+(defparameter *player-unit* "voice-assistant-radio"
+  "The transient user unit our mpv runs in, so stopping it takes yt-dlp along.")
 
-(defn mpv ((url string) &rest (flags string)) null
+(defn stop-radio () boolean
+  (and (run "systemctl" "--user" "stop" *player-unit*) t))
+
+(defn mpv-for ((seconds (integer 0)) (url string) &rest (flags string)) null
+  "mpv on URL, stopped after SECONDS unless zero."
   (stop-radio)
   (let ((ipc (radio-socket)))
-    (apply #'spawn "mpv" "--really-quiet"
-           (append flags (and ipc (list (format nil "--input-ipc-server=~a" ipc)))
+    (apply #'spawn "systemd-run" "--user" "--quiet" "--collect"
+           (format nil "--unit=~a" *player-unit*)
+           (append (and (plusp seconds) (list "-p" (format nil "RuntimeMaxSec=~d" seconds)))
+                   (list "mpv" "--really-quiet")
+                   flags
+                   (and ipc (list (format nil "--input-ipc-server=~a" ipc)))
                    (list url)))))
+
+(defn mpv ((url string) &rest (flags string)) null
+  (apply #'mpv-for 0 url flags))
 
 (defn noctalia-media ((command string) (lines replies)) reply
   (spawn "noctalia" "msg" "media" command)
@@ -337,15 +349,8 @@ skip, \"can i hear you\" no title."
            (list (or sound 0) (or secs (if sound 0 3600))))
   :examples ("Play rain sounds" "Help me sleep")
   (destructuring-bind (name filter) (ambient-at sound)
-    (stop-radio)
-    (let ((player (append (list "mpv" "--no-video" "--really-quiet"
-                                (format nil "--force-media-title=~a" *radio-tag*))
-                          (and (radio-socket)
-                               (list (format nil "--input-ipc-server=~a" (radio-socket))))
-                          (list (format nil "av://lavfi:~a" filter)))))
-      (if (plusp seconds)
-          (apply #'spawn "timeout" (princ-to-string seconds) player)
-          (apply #'spawn player)))
+    (mpv-for seconds (format nil "av://lavfi:~a" filter) "--no-video"
+             (format nil "--force-media-title=~a" *radio-tag*))
     (reply "Ambient" name
            (pick *ambient-on* (string-capitalize name :end 1)
                  (if (plusp seconds) (format nil " for ~a" (spoken-duration seconds)) "")))))

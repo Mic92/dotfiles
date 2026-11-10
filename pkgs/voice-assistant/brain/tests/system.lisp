@@ -35,7 +35,8 @@
       (true (uiop:string-prefix-p "Say(" (shown (va::respond "No, wait!" q)))))
     (let ((q (va::reply-question (va::perform (va::parse-text "reboot")))))
       (is equal *reboot-confirmed* (shown (va::respond "the computer" q))))
-    (is equal '(("sh" "-c" "sleep 1; exec noctalia msg session lock"))
+    (is equal '(("systemd-run" "--user" "--quiet" "--collect" "--on-active=1"
+                 "noctalia" "msg" "session" "lock"))
         (va:fake-effects (va::power va.types:Lock nil)))))
 
 (define-test volume-phrasings
