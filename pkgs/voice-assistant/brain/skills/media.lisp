@@ -230,8 +230,9 @@ skip, \"can i hear you\" no title."
 (defn mpv ((url string) &rest (flags string)) null
   (stop-radio)
   (let ((ipc (radio-socket)))
-    (apply #'spawn "mpv" (append flags (and ipc (list (format nil "--input-ipc-server=~a" ipc)))
-                                 (list url)))))
+    (apply #'spawn "mpv" "--really-quiet"
+           (append flags (and ipc (list (format nil "--input-ipc-server=~a" ipc)))
+                   (list url)))))
 
 (defn noctalia-media ((command string) (lines replies)) reply
   (spawn "noctalia" "msg" "media" command)
@@ -279,7 +280,7 @@ skip, \"can i hear you\" no title."
     (cond
       ((null name) (reply "Radio" "" "I don't know that station."))
       (t
-       (mpv url "--no-video" "--really-quiet" (format nil "--force-media-title=~a" *radio-tag*))
+       (mpv url "--no-video" (format nil "--force-media-title=~a" *radio-tag*))
        (reply "Radio" name
               (cond ((uiop:string-prefix-p "lassulus" name) (pick *lassulus*))
                     ((or (search "World" name) (search "Radio 4" name)
@@ -345,6 +346,13 @@ skip, \"can i hear you\" no title."
            (pick *ambient-on* (string-capitalize name :end 1)
                  (if (plusp seconds) (format nil " for ~a" (spoken-duration seconds)) "")))))
 
+(defn youtube ((hits (integer 1)) (query string) &rest (flags string)) null
+  "Play the first HITS YouTube results for QUERY. Fresh stream URLs answer
+403 for the first few seconds, hence the reconnects."
+  (apply #'mpv (format nil "ytdl://ytsearch~d:~a" hits query)
+         "--stream-lavf-o=reconnect=1,reconnect_on_http_error=403,reconnect_delay_max=10"
+         (format nil "--title=~a" *radio-tag*) flags))
+
 (defcommand media-radio
   (:join "!(play|put on|turn on|start|listen to|switch to|tune in to|tune into) [the|some]"
          "{station} [radio] [please]")
@@ -389,13 +397,11 @@ skip, \"can i hear you\" no title."
   :slots ((query coalton:String))
   :parse (list (slot "text"))
   :examples ("search youtube for cat videos" "show me a video of cute puppies")
-  (mpv (format nil "ytdl://ytsearch1:~a" query) "--really-quiet"
-       (format nil "--title=~a" *radio-tag*))
+  (youtube 1 query)
   (reply "YouTube" query (pick *video* query)))
 
 (defn search-music ((query string)) reply
-  (mpv (format nil "ytdl://ytsearch1:~a" query) "--no-video" "--really-quiet"
-       "--ytdl-format=bestaudio/best" (format nil "--title=~a" *radio-tag*))
+  (youtube 1 query "--no-video" "--ytdl-format=bestaudio/best")
   (reply "Music" query (pick *search* query)))
 
 (defcommand media-search
