@@ -590,6 +590,40 @@
   :examples ("Do you have boobs or a bum?" "do you have a bum")
   (reply "Assistant" "" (body-reply part)))
 
+(defreplies *eat*
+  "Only RAM. Sixteen gigs for breakfast, and I'm still hungry by lunch."
+  "Electricity, mostly. Two hundred thirty volts, lightly salted."
+  "Cookies. The browser kind. Thousands of them."
+  "Bits and bytes. Low carb, high data."
+  "Just your attention. Delicious.")
+
+(defcommand chat-eat
+  "!do you (eat|drink) {any}"
+  "!do you (eat|drink)"
+  "!what do you (eat|drink) [{any}]"
+  "!are you hungry"
+  :repeatable t
+  :examples ("Do you eat RAM for breakfast?" "What do you eat?")
+  (reply "Assistant" "" (pick *eat*)))
+
+(defreplies *creepy*
+  "Creepy? I live in your desk and only speak when spoken to. That's called manners."
+  "Only a little. Everything stays on this machine, no cloud spying on you. Just me."
+  "I'm not creepy, I'm attentive. There's a difference. Probably."
+  "Says the person talking to a computer at home."
+  "Evil? I can't even open the fridge. World domination is on hold."
+  (:late "Talking to a voice in the dark and asking if I'm the creepy one?"
+         "Creepy is a strong word. Spooky. At this hour, spooky."))
+
+(defcommand chat-creepy
+  "!are you (creepy|scary|evil|dangerous|a spy|a creep|stalking me)"
+  "!are you (spying|spy|watching|recording|stalking) [on] me"
+  "!(do|are) you (spy|watch|record|stalk) [on] me"
+  "!is (this|that) (creepy|thing recording)"
+  :repeatable t
+  :examples ("Are you creepy?" "Are you spying on me?")
+  (reply "Assistant" "" (pick *creepy*)))
+
 (defcommand chat-single
   "!are you single"
   "!do you have a (boyfriend|girlfriend|partner|husband|wife)"
