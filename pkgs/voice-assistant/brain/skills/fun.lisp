@@ -465,6 +465,13 @@ random order, ANSWER accepted by a name sounding alike or the exact position."
   (let ((s (format nil "~{~a~^ ~}" (deal '*stories* *stories*))))
     (reply "Story" "" (if (late-p) (pick *story-late* s) s))))
 
+(defreplies *birthday-song*
+  "I'd sing, but my last performance got me banned from three Bluetooth speakers. Happy birthday~@[, ~a~]!"
+  "Happy birthday~@[, ~a~]! I'm not singing. The neighbours have suffered enough."
+  "Imagine me singing beautifully. There. Much better than the real thing. Happy birthday~@[, ~a~]!"
+  "La la la, birthday, la. That's all you get. Happy birthday~@[, ~a~]!"
+  "Happy birthday~@[, ~a~]! Another year older, and still not a single bug in you. Well, a few.")
+
 (defcommand birthday-song
   "![please] sing happy birthday [please]"
   "![please] sing happy birthday (to|for) {person} [please]"
@@ -474,10 +481,7 @@ random order, ANSWER accepted by a name sounding alike or the exact position."
   :slots ((name (coalton:Optional coalton:String)))
   :parse (list (slot "person"))
   :examples ("Sing happy birthday" "Sing happy birthday to Shannan")
-  (let ((who (if name (string-capitalize name) "you")))
-    (reply "Singing" "Happy birthday"
-           (format nil "Happy birthday to you, happy birthday to you, happy birthday dear ~a, ~
-                        happy birthday to you! Now blow out the candles. Make a naughty wish."
-                   who))))
+  (reply "Birthday" "Happy birthday"
+         (pick *birthday-song* (and name (string-capitalize name)))))
 
 (defskill fun)

@@ -84,7 +84,13 @@
                  ("Put my music on, please" "Play") ("Put on lassulus" "Radio(11)")
                  ("I want to listen to Bayern 3" "Radio(7)") ("Turn off the radio." "RadioOff")
                  ("What's playing?" "NowPlaying") ("What song is this?" "NowPlaying")
-                 ("Who sings this?" "NowPlaying")))))
+                 ("Who sings this?" "NowPlaying")
+                 ("play Mini Mix." "MiniMix") ("Play the BBC minimix" "MiniMix")
+                 ("put on a radio 1 mini mix" "MiniMix")
+                 ("play the essential mix" "EssentialMix")
+                 ("put on radio 1's essential mix" "EssentialMix")
+                 ("play radio 1 dance" "Radio(12)") ("put on bbc radio one dance" "Radio(12)")
+                 ("play radio 1" "Radio(0)")))))
 
 (define-test media-refines-radio
   :parent va-tests
@@ -111,7 +117,8 @@
           do (is equal want (ambient-of text) "~s" text))
     (is equal "Media(Radio(3))" (parsed "play the radio")))
   (let ((effects (va:fake-effects (va::perform (va::command-action 'va::media-ambient 0 1800)))))
-    (true (find-if (lambda (e) (and (equal (first e) "timeout") (equal (second e) "1800")
+    (true (find-if (lambda (e) (and (equal (first e) "systemd-run")
+                                    (find "RuntimeMaxSec=1800" e :test #'equal)
                                     (find "mpv" e :test #'equal)
                                     (some (lambda (a) (search "anoisesrc" a)) e)))
                    effects)

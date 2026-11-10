@@ -137,7 +137,11 @@
     ((("lassulus") ("lassulus" "radio") ("lassulus's" "radio") ("lasso" "lose") ("lassul" "us")
       ("lass" "radio") ("krebs" "radio"))
      "lassulus radio"
-     "https://radio.lassul.us/radio.ogg"))
+     "https://radio.lassul.us/radio.ogg")
+    ((("radio" "1" "dance") ("radio" "one" "dance") ("bbc" "radio" "1" "dance")
+      ("bbc" "radio" "one" "dance") ("dance" "radio") ("dance" "music"))
+     "BBC Radio 1 Dance"
+     "http://as-hls-ww-live.akamaized.net/pool_62063831/live/ww/bbc_radio_one_dance/bbc_radio_one_dance.isml/bbc_radio_one_dance-audio%3d96000.norewind.m3u8"))
   "Spoken names, display name and stream URL.")
 
 (defn station-lookup ((ws words)) (or null (integer 0))
@@ -188,7 +192,7 @@ skip, \"can i hear you\" no title."
   ws)
 
 (defparameter *radio-tag* "voice-assistant-radio"
-  "Marks our mpv in the process list so it can be stopped again.")
+  "Media title of our mpv, so \"what's playing\" can tell it is the radio.")
 
 (defn radio-socket () (or null string)
   (let ((dir (uiop:getenv "XDG_RUNTIME_DIR")))
@@ -225,13 +229,26 @@ skip, \"can i hear you\" no title."
              (mpv-ipc "[\"set_property\", \"pause\", true]") t))
       (and (mpv-ipc "[\"set_property\", \"pause\", false]") t)))
 
-(defn stop-radio () boolean (and (run "pkill" "-f" *radio-tag*) t))
+(defparameter *player-unit* "voice-assistant-radio"
+  "The transient user unit our mpv runs in, so stopping it takes yt-dlp along.")
 
-(defn mpv ((url string) &rest (flags string)) null
+(defn stop-radio () boolean
+  (and (run "systemctl" "--user" "stop" *player-unit*) t))
+
+(defn mpv-for ((seconds (integer 0)) (url string) &rest (flags string)) null
+  "mpv on URL, stopped after SECONDS unless zero."
   (stop-radio)
   (let ((ipc (radio-socket)))
-    (apply #'spawn "mpv" (append flags (and ipc (list (format nil "--input-ipc-server=~a" ipc)))
-                                 (list url)))))
+    (apply #'spawn "systemd-run" "--user" "--quiet" "--collect"
+           (format nil "--unit=~a" *player-unit*)
+           (append (and (plusp seconds) (list "-p" (format nil "RuntimeMaxSec=~d" seconds)))
+                   (list "mpv" "--really-quiet")
+                   flags
+                   (and ipc (list (format nil "--input-ipc-server=~a" ipc)))
+                   (list url)))))
+
+(defn mpv ((url string) &rest (flags string)) null
+  (apply #'mpv-for 0 url flags))
 
 (defn noctalia-media ((command string) (lines replies)) reply
   (spawn "noctalia" "msg" "media" command)
@@ -279,7 +296,7 @@ skip, \"can i hear you\" no title."
     (cond
       ((null name) (reply "Radio" "" "I don't know that station."))
       (t
-       (mpv url "--no-video" "--really-quiet" (format nil "--force-media-title=~a" *radio-tag*))
+       (mpv url "--no-video" (format nil "--force-media-title=~a" *radio-tag*))
        (reply "Radio" name
               (cond ((uiop:string-prefix-p "lassulus" name) (pick *lassulus*))
                     ((or (search "World" name) (search "Radio 4" name)
@@ -332,18 +349,18 @@ skip, \"can i hear you\" no title."
            (list (or sound 0) (or secs (if sound 0 3600))))
   :examples ("Play rain sounds" "Help me sleep")
   (destructuring-bind (name filter) (ambient-at sound)
-    (stop-radio)
-    (let ((player (append (list "mpv" "--no-video" "--really-quiet"
-                                (format nil "--force-media-title=~a" *radio-tag*))
-                          (and (radio-socket)
-                               (list (format nil "--input-ipc-server=~a" (radio-socket))))
-                          (list (format nil "av://lavfi:~a" filter)))))
-      (if (plusp seconds)
-          (apply #'spawn "timeout" (princ-to-string seconds) player)
-          (apply #'spawn player)))
+    (mpv-for seconds (format nil "av://lavfi:~a" filter) "--no-video"
+             (format nil "--force-media-title=~a" *radio-tag*))
     (reply "Ambient" name
            (pick *ambient-on* (string-capitalize name :end 1)
                  (if (plusp seconds) (format nil " for ~a" (spoken-duration seconds)) "")))))
+
+(defn youtube ((hits (integer 1)) (query string) &rest (flags string)) null
+  "Play the first HITS YouTube results for QUERY. Fresh stream URLs answer
+403 for the first few seconds, hence the reconnects."
+  (apply #'mpv (format nil "ytdl://ytsearch~d:~a" hits query)
+         "--stream-lavf-o=reconnect=1,reconnect_on_http_error=403,reconnect_delay_max=10"
+         (format nil "--title=~a" *radio-tag*) flags))
 
 (defcommand media-radio
   (:join "!(play|put on|turn on|start|listen to|switch to|tune in to|tune into) [the|some]"
@@ -389,14 +406,40 @@ skip, \"can i hear you\" no title."
   :slots ((query coalton:String))
   :parse (list (slot "text"))
   :examples ("search youtube for cat videos" "show me a video of cute puppies")
-  (mpv (format nil "ytdl://ytsearch1:~a" query) "--really-quiet"
-       (format nil "--title=~a" *radio-tag*))
+  (youtube 1 query)
   (reply "YouTube" query (pick *video* query)))
 
 (defn search-music ((query string)) reply
-  (mpv (format nil "ytdl://ytsearch1:~a" query) "--no-video" "--really-quiet"
-       "--ytdl-format=bestaudio/best" (format nil "--title=~a" *radio-tag*))
+  (youtube 1 query "--no-video" "--ytdl-format=bestaudio/best")
   (reply "Music" query (pick *search* query)))
+
+(defreplies *mini-mix*
+  "Radio 1 Mini Mixes, shuffled. Five minutes each, no time for boredom."
+  "Mini Mix time. Small mixes, big tunes."
+  "Shuffling Radio 1 Mini Mixes. Stretch first.")
+
+(defreplies *essential-mix*
+  "Radio 1's Essential Mix. Two hours, cancel your plans."
+  "Essential Mix, shuffled. Hydrate, this one's long."
+  "Essential Mix. Lights down, volume up.")
+
+(defn youtube-mixes ((query string) (lines replies)) reply
+  "Twenty YouTube hits for QUERY, shuffled, audio only."
+  (youtube 20 query "--no-video" "--shuffle" "--ytdl-format=bestaudio/best")
+  (reply "Music" query (pick lines)))
+
+;; Before the plain "play {text}", which would play a single random hit.
+(defcommand media-essential-mix
+  (:join "!(play|put on|listen to|start) [the|an|some] [bbc] [radio one's|radio 1's]"
+         "(essential mix|essential mixes) [please]")
+  :examples ("Play the Essential Mix")
+  (youtube-mixes "Radio 1's Essential Mix" *essential-mix*))
+
+(defcommand media-mini-mix
+  (:join "!(play|put on|listen to|start) [the|a|some] [bbc] [radio one|radio 1]"
+         "(mini mix|minimix|mini mixes|minimixes) [please]")
+  :examples ("Play the BBC Mini Mix")
+  (youtube-mixes "BBC Radio 1 Mini Mix" *mini-mix*))
 
 (defcommand media-search
   "!(play|put on|listen to) {text}"

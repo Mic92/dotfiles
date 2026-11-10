@@ -94,7 +94,7 @@ spoken \"yes\"."
 
 (defn power ((op va.types:Power) (confirmed boolean)) reply
   (adt-case op power
-    ((lock) (power-run "noctalia msg session lock" 1 "Locked"
+    ((lock) (power-run '("noctalia" "msg" "session" "lock") 1 "Locked"
                        (choose *lock* nil (workday-p) *lock-work*)))
     (t
      (if (not confirmed)
@@ -105,18 +105,18 @@ spoken \"yes\"."
                         (t *confirm-suspend*)))
                 :question (confirm (power-action op t) (say-action (pick *aborted*))))
          (adt-case op power
-           ((poweroff) (power-run "systemctl poweroff" 3 "Shutting down"
+           ((poweroff) (power-run '("systemctl" "poweroff") 3 "Shutting down"
                                   (choose *poweroff* nil (late-p) *poweroff-night*
                                           (workday-p) *poweroff-work*)))
-           ((reboot) (power-run "systemctl reboot" 3 "Rebooting" (pick *reboot*)))
-           (t (power-run "systemctl suspend" 3 "Suspending"
+           ((reboot) (power-run '("systemctl" "reboot") 3 "Rebooting" (pick *reboot*)))
+           (t (power-run '("systemctl" "suspend") 3 "Suspending"
                          (choose *suspend* nil (late-p) *poweroff-night*))))))))
 
-(defn power-run ((command string) (delay (integer 0)) (title string) (speech string)) reply
+(defn power-run ((command list) (delay (integer 0)) (title string) (speech string)) reply
   "Run COMMAND after DELAY seconds: suspend and lock pause the session, so
 we speak first, poweroff and reboot get a head start for their goodbye.
 Noctalia draws the lock screen, logind lock signals are not wired up."
-  (spawn "sh" "-c" (format nil "sleep ~d; exec ~a" delay command))
+  (apply #'run-later delay command)
   (reply title "" speech))
 
 (defpower system-poweroff va.types:Poweroff

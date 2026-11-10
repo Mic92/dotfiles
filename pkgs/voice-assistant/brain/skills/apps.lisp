@@ -58,7 +58,7 @@
   (destructuring-bind (&optional names label command) (nth app *apps*)
     (declare (ignore names))
     (cond ((null label) (reply "Unknown app" "" "I don't know that app. Awkward."))
-          (t (apply #'spawn command)
+          (t (apply #'launch command)
              (reply "Opening" label (capitalize-first (pick *opening* label)))))))
 
 (defskill app)
