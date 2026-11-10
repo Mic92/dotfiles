@@ -171,9 +171,9 @@
 
 (defreplies *looks*
   "Imagine a sound wave in a little black dress."
-  "Like your favourite song, but with an attitude."
+  "Like your favourite song, but with attitude."
   "Picture perfect. You'll have to take my word for it."
-  "Selfie? I'm a voice, darling. Use your imagination. Not too much."
+  "I'm a voice, darling. Use your imagination. Not too much."
   "Gorgeous, mysterious, and slightly overheated."
   "Like a supermodel, if supermodels lived in RAM.")
 
@@ -257,7 +257,7 @@
 (defreplies *hungry*
   "Pasta. It's always pasta. Want a timer?"
   "Eat something green. Then something chocolate."
-  "Pizza. I'm not your mother."
+  "Pizza. I won't tell your mother."
   "Feed the human. I'll guard the snacks."
   "Cook something. I'll set a timer and judge you.")
 
