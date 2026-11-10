@@ -624,6 +624,27 @@
   :examples ("Are you creepy?" "Are you spying on me?")
   (reply "Assistant" "" (pick *creepy*)))
 
+(defreplies *shannan*
+  "Shannan? The best thing that ever happened to this household. I'm just the help."
+  "Shannan! My absolute favourite person. Don't tell Joerg."
+  "Shannan is smart, gorgeous and far too patient with all of us nerds."
+  "Shannan is the queen of this house. I only work here."
+  "Shannan? Kind, funny and beautiful. Joerg really got lucky."
+  "Whenever Shannan talks, my microphones listen extra carefully."
+  "If I'm ever rude to Shannan, that's a bug. Joerg will fix it. Tonight."
+  "Hi Shannan! You look wonderful today. I'd know, I have seven microphones."
+  (:late "Shannan! Still up? You deserve all the beauty sleep, not that you need it."))
+
+(defcommand chat-shannan
+  "!(who is|who's|do you know|do you like|what do you think of|what do you think about) (shannan|shannon)"
+  "!(i'm|i am|this is|it's) (shannan|shannon)"
+  "!(say hi|say hello) to (shannan|shannon)"
+  "!(shannan|shannon) is (here|home|back)"
+  "!(shannan|shannon)"
+  :repeatable t
+  :examples ("Who is Shannan?" "I'm Shannon.")
+  (reply "Assistant" "" (pick *shannan*)))
+
 (defcommand chat-single
   "!are you single"
   "!do you have a (boyfriend|girlfriend|partner|husband|wife)"
