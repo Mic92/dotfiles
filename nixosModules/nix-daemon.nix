@@ -27,6 +27,8 @@
     # set legacy nixpkgs path to flake reference
     nixPath = [ "nixpkgs=flake:nixpkgs" ];
 
+    buildLogRetention = "30d";
+
     settings = {
       # for nix-direnv
       keep-outputs = true;
