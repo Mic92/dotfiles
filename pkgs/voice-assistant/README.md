@@ -28,8 +28,6 @@ for details.
    va-reload                               # loads this checkout into the live brain
    va-eval --live '(va::action-debug (va::parse-text "power off"))'
    ```
-   `va-reload` is fine for edits. New commands need a full update to take
-   priority over older catch-alls.
 
 ## Updating
 
