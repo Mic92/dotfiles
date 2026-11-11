@@ -6,6 +6,7 @@
     ./glowing-bear.nix
     ./homepage.nix
     ./ip.nix
+    ./lekwati.nix
     ./retiolum.nix
     ./mta-sts.nix
     ./photoprism.nix
