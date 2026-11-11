@@ -153,6 +153,8 @@ in
       systemd.tmpfiles.rules =
         let
           hermesConfig = pkgs.writers.writeYAML "hermes-config.yaml" {
+            # restarts are frequent, the "Gateway restarting/online" pings are noise
+            platforms.slack.gateway_restart_notification = false;
             model.model = "qwen3.8-27b";
             provider_routing = {
               data_collection = "deny";
