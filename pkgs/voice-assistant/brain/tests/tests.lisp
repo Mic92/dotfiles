@@ -74,3 +74,11 @@
                  (not (sb-int:info :function :source-transform s)))
         (push s untyped)))
     (is equal nil untyped)))
+
+(define-test reload-registers-commands-in-file-order
+  :parent va-tests
+  (let ((order (mapcar #'va::command-name (va:commands))))
+    ;; A command added by a reload lands behind its skill's catch-alls.
+    (setf va::*commands* (append (rest va::*commands*) (list (first va::*commands*))))
+    (va:reload)
+    (is equal order (mapcar #'va::command-name (va:commands)))))

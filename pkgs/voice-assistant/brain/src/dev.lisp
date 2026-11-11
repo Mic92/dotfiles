@@ -50,6 +50,19 @@
                (write-string (eval-string (read-all s)) s)
                (finish-output s))))
 
+(defn reregister-commands () null
+  "Load every compiled file again into an empty command list: a command new
+to a running brain would otherwise land behind its skill's catch-alls, and
+deleted ones would linger."
+  (setf *commands* nil)
+  (labels ((walk (c)
+             (if (typep c 'asdf:parent-component)
+                 (mapc #'walk (asdf:component-children c))
+                 (load (asdf:output-file 'asdf:compile-op c)))))
+    (walk (asdf:find-system "voice-assistant-brain")))
+  (incf *commands-changed*)
+  nil)
+
 (defn reload (&optional (source (or null string pathname) nil)) list
   "Recompile changed files and the ones after them (the system is serial,
 so Coalton types are rechecked). Returns the warnings as strings. SOURCE, the brain's directory in a
@@ -71,7 +84,8 @@ checkout, points a brain built by nix at it first."
                             warnings)
                       (muffle-warning w))))
       (let ((*compile-verbose* nil) (*compile-print* nil))
-        (asdf:load-system "voice-assistant-brain")))
+        (asdf:load-system "voice-assistant-brain")
+        (reregister-commands)))
     (nreverse warnings)))
 
 (defn check () boolean
