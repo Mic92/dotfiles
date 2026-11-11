@@ -223,6 +223,40 @@
         };
       };
 
+    # retiolum is shared with other people: only allow what listens on vpn.
+    # Named sections, so the default lan/wan zones stay untouched.
+    firewall = {
+      vpn_zone = {
+        _type = "zone";
+        name = "vpn";
+        network = [ "vpn" ];
+        input = "REJECT";
+        output = "ACCEPT";
+        forward = "REJECT";
+      };
+      vpn_ping = {
+        _type = "rule";
+        name = "Allow-VPN-Ping";
+        src = "vpn";
+        family = "ipv6";
+        proto = "icmp";
+        icmp_type = [ "echo-request" ];
+        target = "ACCEPT";
+      };
+      vpn_services = {
+        _type = "rule";
+        name = "Allow-VPN-SSH-Metrics";
+        src = "vpn";
+        family = "ipv6";
+        proto = "tcp";
+        dest_port = [
+          "22"
+          "9273"
+        ];
+        target = "ACCEPT";
+      };
+    };
+
     prometheus-node-exporter-lua.main = {
       _type = "prometheus-node-exporter-lua";
       listen_interface = "vpn";
