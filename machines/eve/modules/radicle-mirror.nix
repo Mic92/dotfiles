@@ -46,6 +46,7 @@ in
       "numtide"
       "TUM-DSE"
       "krebs"
+      "repkgs-org"
     ];
     # Dual-stack: radicle.thalheim.io has an AAAA record.
     p2pListen = [ "[::]:8776" ];
