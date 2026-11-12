@@ -12,7 +12,10 @@ in
   packages.openwrt-rauter =
     (uci.writeUci {
       imports = [ ./example.nix ];
-      _module.args = { inherit retiolumHosts; };
+      _module.args = {
+        inherit retiolumHosts;
+        inherit (self.inputs) kartei;
+      };
     }).deploy;
 
   devShells.openwrt = pkgs.mkShell {

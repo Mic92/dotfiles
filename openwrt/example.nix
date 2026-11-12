@@ -2,8 +2,23 @@
   pkgs,
   lib,
   retiolumHosts,
+  kartei,
   ...
 }:
+let
+  # OpenSSL finds CAs in /etc/ssl/certs by subject hash
+  krebsIntermediateHash = "8cbb0531";
+  krebsIntermediate =
+    pkgs.runCommand "krebs-intermediate-ca.crt" { nativeBuildInputs = [ pkgs.openssl ]; }
+      ''
+        hash=$(openssl x509 -noout -subject_hash -in ${kartei}/modules/ca/intermediate-ca.crt)
+        if [ "$hash" != ${krebsIntermediateHash} ]; then
+          echo "krebs intermediate CA changed, set krebsIntermediateHash to $hash" >&2
+          exit 1
+        fi
+        cp ${kartei}/modules/ca/intermediate-ca.crt $out
+      '';
+in
 {
   openwrt.packages = [
     "luci"
@@ -15,6 +30,7 @@
     "luci-mod-rpc"
     "prometheus-node-exporter-lua"
     "prometheus-node-exporter-lua-openwrt"
+    "acme-acmesh"
   ];
 
   openwrt.rootPasswordSecret = "root_password";
@@ -24,7 +40,6 @@
       text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHDV5xoYdIHYO7T2FtbIcV8LmiPmJc7JcxElSaGD9tzf joerg@turingmachine rauter";
       mode = "0600";
     };
-    # keep the ssh host identity across reflashes
     "/etc/dropbear/dropbear_ed25519_host_key" = {
       secret = "dropbear_ed25519_host_key";
       base64 = true;
@@ -33,6 +48,18 @@
       secret = "dropbear_rsa_host_key";
       base64 = true;
     };
+    # for https://ca.r, constrained to .r and .w unlike the root
+    "/etc/ssl/certs/${krebsIntermediateHash}.0".source = krebsIntermediate;
+    # uhttpd self-signs at its configured path if the file is missing, so
+    # copy over the default instead of pointing it at /etc/ssl/acme
+    "/etc/hotplug.d/acme/50-uhttpd".text = ''
+      if [ "$ACTION" = issued ] || [ "$ACTION" = renewed ]; then
+        # leaf only: mbedtls cannot parse the name constrained intermediate
+        cp /etc/ssl/acme/rauter.r.crt /etc/uhttpd.crt
+        cp /etc/ssl/acme/rauter.r.key /etc/uhttpd.key
+        /etc/init.d/uhttpd restart
+      fi
+    '';
     # must match mic92/hosts/rauter in krebs/kartei
     "/etc/tinc/retiolum/rsa_key.priv".secret = "tinc_rsa_key";
     "/etc/tinc/retiolum/ed25519_key.priv".secret = "tinc_ed25519_key";
@@ -52,8 +79,7 @@
     '';
   };
 
-  # dropbear only loads host keys on start. tinc's init script only copies
-  # keys and hosts on start. dnsmasq only rereads /etc/hosts on restart.
+  # none of these pick up changed files on reload
   openwrt.restartServices = [
     "dropbear"
     "tinc"
@@ -96,9 +122,7 @@
       {
         _type = "system";
         hostname = "rauter";
-        # Normally seeded from board.json on first boot, but this list section
-        # is recreated on apply. sysupgrade treats a missing value as 1.0 and
-        # rejects images for the UBI 2.0 layout.
+        # sysupgrade treats a missing value as 1.0 and rejects 25.12 images
         compat_version = "2.0";
       }
     ];
@@ -233,8 +257,25 @@
         };
       };
 
-    # retiolum is shared with other people: only allow what listens on vpn.
-    # Named sections, so the default lan/wan zones stay untouched.
+    acme = {
+      acme = [
+        {
+          _type = "acme";
+          account_email = "joerg@thalheim.io";
+        }
+      ];
+      rauter = {
+        _type = "cert";
+        enabled = "1";
+        domains = [ "rauter.r" ];
+        acme_server = "https://ca.r/acme/acme/directory";
+        validation_method = "webroot";
+        # opens port 80 in the firewall only while a validation runs
+        listen_port = "80";
+      };
+    };
+
+    # retiolum is shared with other people: only allow what listens on vpn
     firewall = {
       vpn_zone = {
         _type = "zone";
@@ -255,12 +296,13 @@
       };
       vpn_services = {
         _type = "rule";
-        name = "Allow-VPN-SSH-Metrics";
+        name = "Allow-VPN-Services";
         src = "vpn";
         family = "ipv6";
         proto = "tcp";
         dest_port = [
           "22"
+          "443"
           "9273"
         ];
         target = "ACCEPT";
