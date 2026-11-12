@@ -9,13 +9,13 @@
                               '("package" "defn" "strings" "json" "effects" "replies" "types" "adt"
                                 "words" "duration" "clock" "date" "holiday" "grammar" "commands"
                                 "context" "slots" "parse" "debug" "answers" "dialogue" "fuzzy"
-                                "classify" "protocol" "history" "conversation" "dev" "main"))
+                                "classify" "protocol" "history" "conversation" "dev" "view" "main"))
                       (:module "skills" :pathname "../skills/" :serial t
                                ;; In Rust's MODULES order, which breaks ties between commands.
                                :components ,(mapcar (lambda (f) (list :file f))
                                                     '("timer" "system" "volume" "media" "desktop"
                                                       "apps" "info" "calc" "spell" "fun" "chat"
-                                                      "ops" "notes" "reminders" "meetings" "news"
+                                                      "ops" "notes" "reminders" "meetings" "travel" "news"
                                                       "kagi" "contacts" "core")))))
 
 (defsystem "voice-assistant-brain/tests"
@@ -26,5 +26,6 @@
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
                             "system" "media" "desktop" "info" "kagi" "news" "spell" "calc" "chat"
                             "ops" "notes" "reminders" "meetings" "classify" "protocol"
-                            "conversation" "countdown" "contacts" "mail" "weather" "games" "types" "source"))
+                            "conversation" "countdown" "contacts" "mail" "weather" "games" "travel" "types"
+                            "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

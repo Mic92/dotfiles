@@ -26,13 +26,15 @@
 
 (declaim (ftype function question-act question-answer))
 
-(defstruct (reply (:constructor reply (title body speech &key live question)))
+(defstruct (reply (:constructor reply (title body speech &key live question shown)))
   "What the assistant says, and the notification showing it. LIVE replies
-are not cached for \"repeat that\"."
+are not cached for \"repeat that\". SHOWN ones are on screen already and
+need no notification."
   (title "" :type string)
   (body "" :type string)
   (speech "" :type string)
   (live nil :type boolean)
+  (shown nil :type boolean)
   ;; How to take the next utterance.
   (question nil :type (or null question)))
 

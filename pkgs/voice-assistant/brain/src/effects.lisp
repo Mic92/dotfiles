@@ -6,6 +6,9 @@
 (defvar *fake-effects* nil
   "When a list, `run` pushes (program . args) onto it instead of running.")
 
+(defvar *fake-output* nil
+  "What a recorded `run` returns instead of nothing: ((program . output)...).")
+
 (defmacro fake-effects (&body body)
   "Run BODY recording effects. Returns them, oldest first."
   `(let ((*fake-effects* (list :recording)))
@@ -24,7 +27,7 @@ failure."
   (cond
     (*fake-effects*
      (push (cons program args) *fake-effects*)
-     "")
+     (or (cdr (assoc program *fake-output* :test #'string=)) ""))
     (t
      (handler-case
          (with-output-to-string (out)

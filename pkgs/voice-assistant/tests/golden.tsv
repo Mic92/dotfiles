@@ -670,10 +670,10 @@ how do i get started making homemade pizza dough	-
 how do i get stuff with visa points	-
 how do i get that tax form from my employer	-
 how do i get the form to file my taxes from my employer	-
-how do i get to central park by foot	-
-how do i get to the airport by foot	-
-how do i get to the subway by foot	-
-how do i get to the train by foot	-
+how do i get to central park by foot	Travel(Route { origin: None, dest: "central park", mode: "walking" })
+how do i get to the airport by foot	Travel(Route { origin: None, dest: "the airport", mode: "walking" })
+how do i get to the subway by foot	Travel(Route { origin: None, dest: "the subway", mode: "walking" })
+how do i get to the train by foot	Travel(Route { origin: None, dest: "the train", mode: "walking" })
 how do i get venture capital for my app	-
 how do i go about cooking a 10lb turkey	-
 how do i go about getting cash for my card points accumulated	-
@@ -828,8 +828,8 @@ how long does it take to cook meal of tuscan	-
 how long does it take to cook steaks	-
 how long does it take to get a divorce finalized	-
 how long does it take to get a new credit card	-
-how long does it take to get downtown by bus	-
-how long does it take to get to el paso on a bus	-
+how long does it take to get downtown by bus	Travel(Route { origin: None, dest: "downtown", mode: "transit" })
+how long does it take to get to el paso on a bus	Travel(Route { origin: None, dest: "el paso", mode: "transit" })
 how long does it take to get your yellow belt in karate	-
 how long does it take to make mashed potatoes	-
 how long does it take to prepare a lasagna	-
@@ -855,7 +855,7 @@ how long until my water bill is due	-
 how long will i be on the bus if i rid it to seattle	-
 how long will i be on the bus to new orleans	-
 how long will i have to wait at cheesecake factory	-
-how long will it take me to get to walmart	-
+how long will it take me to get to walmart	Travel(Route { origin: None, dest: "walmart", mode: "transit" })
 how long will it take to cook a lasagna	-
 how long will it take to make an omelet	-
 how long will it takes to get a new credit card	-
@@ -2574,22 +2574,22 @@ where is my order now	-
 where is my package en route	-
 where is te lawrence	-
 where is the best place to mine for gold	-
-where is the closest architecture college	-
-where is the closest bathroom to the statue of liberty	-
-where is the closest driving range	-
-where is the closest gas station to glendale	-
-where is the closest hospital to madison square garden	-
-where is the closest mcdonald's to foxwoods casino	-
-where is the closest pharmacy	-
+where is the closest architecture college	Travel(Nearby { what: "architecture college", near: None })
+where is the closest bathroom to the statue of liberty	Travel(Nearby { what: "bathroom", near: Some("the statue of liberty") })
+where is the closest driving range	Travel(Nearby { what: "driving range", near: None })
+where is the closest gas station to glendale	Travel(Nearby { what: "gas station", near: Some("glendale") })
+where is the closest hospital to madison square garden	Travel(Nearby { what: "hospital", near: Some("madison square garden") })
+where is the closest mcdonald's to foxwoods casino	Travel(Nearby { what: "mcdonald's", near: Some("foxwoods casino") })
+where is the closest pharmacy	Travel(Nearby { what: "pharmacy", near: None })
 where is the colosseum	-
-where is the nearest arco gas station to macdonalds	-
-where is the nearest circuit city	-
-where is the nearest fry's	-
-where is the nearest k mart	-
-where is the nearest marijuana dispensary to kentucky fried chicken	-
-where is the nearest movie theater to time' square	-
-where is the nearest papa john's	-
-where is the nearest wal mart	-
+where is the nearest arco gas station to macdonalds	Travel(Nearby { what: "arco gas station", near: Some("macdonalds") })
+where is the nearest circuit city	Travel(Nearby { what: "circuit city", near: None })
+where is the nearest fry's	Travel(Nearby { what: "fry's", near: None })
+where is the nearest k mart	Travel(Nearby { what: "k mart", near: None })
+where is the nearest marijuana dispensary to kentucky fried chicken	Travel(Nearby { what: "marijuana dispensary", near: Some("kentucky fried chicken") })
+where is the nearest movie theater to time' square	Travel(Nearby { what: "movie theater", near: Some("time square") })
+where is the nearest papa john's	Travel(Nearby { what: "papa john's", near: None })
+where is the nearest wal mart	Travel(Nearby { what: "wal mart", near: None })
 where is wells fargo's routing number listed	-
 where is your home planet	-
 where is your home town	-
@@ -2614,7 +2614,7 @@ where would the routing number for first utah be located	-
 where's my buddy steve right this second	-
 where's my phone at	-
 where's the best place to hike in the rockies	-
-where's the closest car wash my car smells	-
+where's the closest car wash my car smells	Travel(Nearby { what: "car wash my car smells", near: None })
 where's the routing number for wells fargo	-
 which actors have played more than 1 comic book character	-
 which airports do southwest service around the greater new york city area	-

@@ -38,6 +38,13 @@ nix run ~/.homesick/repos/dotfiles#hm -- switch
 This restarts both services. The assistant keeps running while only the brain
 restarts.
 
+## Setup
+
+- Routes and nearby places start at home: put the address on the first line of
+  `~/.config/voice-assistant/home`.
+- Results that don't fit a sentence (a route, a list of places) show in the
+  noctalia plugin `mic92/voice-assistant`.
+
 ## Debugging
 
 - What was heard: `~/.local/state/voice-assistant/heard.tsv`, recordings of

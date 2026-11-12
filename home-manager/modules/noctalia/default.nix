@@ -53,6 +53,7 @@ in
         "mic92/alertmanager"
         "mic92/mail-count"
         "mic92/rbw-provider"
+        "mic92/voice-assistant"
       ];
       source = [
         {

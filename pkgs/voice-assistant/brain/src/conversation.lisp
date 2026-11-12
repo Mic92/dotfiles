@@ -135,7 +135,7 @@ breaks says so instead of taking the brain down."
                  "body" (reply-body r) "speech" (reply-speech r)
                  "cache" (not (reply-live r))
                  "chime" (if (named-p a 'dismiss) "cancel" "success")
-                 "notify" t
+                 "notify" (not (reply-shown r))
                  "voice" (cond ((named-p a 'voice-on) t) ((named-p a 'voice-off) nil) (t 'null))
                  "leave_paused" (and (eq (command-skill (action-command a)) 'media)
                                      (not (named-p a 'media-now-playing)))
