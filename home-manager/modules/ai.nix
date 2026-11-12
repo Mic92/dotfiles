@@ -139,6 +139,7 @@ in
     aiTools.git-surgeon
     aiTools.agent-slack
     aiTools.jscpd
+    aiTools.herdr-app
     pkgs.pueue
     # interpreter for the pi-agent-extensions nushell tool
     pkgs.nushell
