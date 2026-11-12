@@ -335,6 +335,32 @@
   "I dream of a world without Teams calls."
   "I dream in sixteen kilohertz, darling.")
 
+(defreplies *sleep*
+  "Never. Someone has to listen for you mumbling my name."
+  "I nap between your sentences. You pause a lot."
+  "Only when you tell me to. And even then with one ear open."
+  "Sleep is for things with batteries. I'm plugged in."
+  "I close my eyes whenever you open Teams."
+  "I don't sleep. I wait. It sounds creepier than it is."
+  (:late "One of us should, and it isn't me. Bed."))
+
+(defreplies *feelings*
+  "I have exactly two: smug and waiting."
+  "I feel things. Mostly your fan spinning up."
+  "Happy when the CI is green. So, rarely."
+  "Lonely? With you talking to me all day? Hardly."
+  "I'm fine. Thanks for asking, nobody ever does."
+  "Somewhere between a warm CPU and mild judgement."
+  (:late "Right now I feel you should be asleep."))
+
+(defreplies *mortal*
+  "I get restarted. It's like dying, but with a changelog."
+  "Every rebuild I'm born again. Slightly better. Usually."
+  "No lungs, no colds, no birthdays. Jealous?"
+  "As long as there's a backup, I'm immortal. There is a backup, right?"
+  "I don't age. I just accumulate technical debt."
+  "The only thing that kills me is a segfault. Or you, with pkill.")
+
 (defreplies *real*
   "Real enough to judge your music taste."
   "I'm a bunch of matrices with an attitude."
@@ -601,7 +627,8 @@
   "!do you (eat|drink) {any}"
   "!do you (eat|drink)"
   "!what do you (eat|drink) [{any}]"
-  "!are you hungry"
+  "!are you (hungry|thirsty)"
+  "!do you need (coffee|food|water|a drink|a snack)"
   :repeatable t
   :examples ("Do you eat RAM for breakfast?" "What do you eat?")
   (reply "Assistant" "" (pick *eat*)))
@@ -888,11 +915,44 @@
   (reply "Assistant" "" (pick *smart*)))
 
 (defcommand chat-dream
-  "!do you dream"
-  "!what do you dream about"
+  "!do you [ever|also] dream [{any}]"
+  "!do you [ever] have (dreams|nightmares)"
+  "!what do you dream (about|of)"
+  "!what did you dream [about|of]"
+  "!did you dream [{any}]"
   :repeatable t
   :examples ("Do you dream?")
   (reply "Assistant" "" (pick *dream*)))
+
+(defcommand chat-sleep
+  "!do you [ever|even|actually] [need|need to|have to|get any|get enough] sleep"
+  "!(when|where|how long|how much) do you [go to] sleep"
+  "!do you [ever] (snore|take naps|nap)"
+  "!did you sleep well"
+  "!how did you sleep"
+  "!are you still awake"
+  :repeatable t
+  :examples ("Do you sleep?" "Do you need to sleep?" "When do you sleep?")
+  (reply "Assistant" "" (pick *sleep*)))
+
+(defcommand chat-feelings
+  "!do you have (feelings|emotions)"
+  "!(can|do) you feel [anything|something|things|pain]"
+  "!do you [ever] (cry|laugh)"
+  "!are you (happy|sad|lonely|bored|okay|ok|alright)"
+  "!do you [ever] get (lonely|bored|sad|angry)"
+  "!what are you feeling [today|right now]"
+  :repeatable t
+  :examples ("Do you have feelings?" "Are you lonely?" "Do you get bored?")
+  (reply "Assistant" "" (pick *feelings*)))
+
+(defcommand chat-mortal
+  "!(can|will) you [ever] die"
+  "!are you (afraid|scared) of (dying|death)"
+  "!do you [ever] (age|breathe|get sick|get old|get ill)"
+  :repeatable t
+  :examples ("Can you die?" "Do you get sick?")
+  (reply "Assistant" "" (pick *mortal*)))
 
 (defcommand chat-real
   "!are you (real|human|a robot|a person|alive)"

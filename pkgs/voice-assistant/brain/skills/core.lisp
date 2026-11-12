@@ -125,6 +125,8 @@
 
 (defcommand nap-question
   "!(did|have) you (had|have) a (nap|sleep|rest|break|siesta) [today]" "!are you tired"
+  "!are you (sleepy|exhausted)" "!aren't you (tired|sleepy)" "!do you [ever] get (tired|sleepy)"
+  "!do you need a (break|nap|rest)"
   :bare t
   :examples ("Did you have a nap today?")
   (reply "Nap?" "" (pick *want-nap*)
