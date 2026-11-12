@@ -84,6 +84,7 @@ end = [
   "tray",
   "mail",
   "notifications",
+  "displays",
   "battery",
   "volume",
   "network",
@@ -141,6 +142,9 @@ type = "aristides/udiskie:status"
 
 [widget.alerts]
 type = "mic92/alertmanager:widget"
+
+[widget.displays]
+type = "mic92/display-config:widget"
 
 [widget.mail]
 type = "mic92/mail-count:widget"

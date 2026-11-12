@@ -44,10 +44,10 @@ in
       auto_update = "none";
       enabled = [
         "noctalia/timer"
-        "raycursive/niri-displays"
         "nightwatch75/file-search"
         "icefish/phone-connect"
         "aristides/udiskie"
+        "mic92/display-config"
         "mic92/ssh-askpass"
         "mic92/fprint-notify"
         "mic92/alertmanager"
