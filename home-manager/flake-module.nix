@@ -30,9 +30,6 @@ in
   apps.hm = {
     type = "app";
     program = "${pkgs.writeShellScriptBin "hm" ''
-      # Activation runs with a hermetic PATH; expose the host PATH for hooks
-      # needing host tools (e.g. gh for a nix.conf token).
-      export HM_HOST_PATH="$PATH"
       export PATH=${
         pkgs.lib.makeBinPath [
           pkgs.gitMinimal
@@ -59,8 +56,6 @@ in
         profile=''${profiles["$host-$user"]};
       elif [[ -n ''${profiles[$host]:-} ]]; then
         profile=''${profiles[$host]}
-      elif [[ "$host" == coder-* || "$host" == *-devspace-* ]]; then
-        profile="coder"
       fi
       if [[ "''${1:-}" == profile ]]; then
         echo $profile
@@ -97,18 +92,6 @@ in
         "$HOME/.homesick/repos/homeshick/bin/homeshick" --batch clone https://github.com/Mic92/dotfiles.git
       fi
       "$HOME/.homesick/repos/homeshick/bin/homeshick" --batch --force symlink
-      case "$(hostname)" in
-        coder-*|*-devspace-*)
-          # Pin the pre-seeded profile as its own GC root before
-          # home-manager takes over, so its store paths survive collection.
-          seed=$(realpath "$HOME/.local/state/nix/profiles/profile" 2>/dev/null || true)
-          if [ -n "$seed" ] && [ -e "$seed" ]; then
-            rm -f "$HOME/.local/state/nix/profiles/seed-1-link" "$HOME/.local/state/nix/profiles/seed"
-            nix-store --add-root "$HOME/.local/state/nix/profiles/seed-1-link" -r "$seed"
-            ln -sfn seed-1-link "$HOME/.local/state/nix/profiles/seed"
-          fi
-          ;;
-      esac
       nix --extra-experimental-features 'nix-command flakes' --accept-flake-config run ${self}#hm -- switch
     ''}/bin/bootstrap-dotfiles";
   };
@@ -130,7 +113,6 @@ in
 
       eve = homeManagerConfiguration { extraModules = [ ./eve.nix ]; };
       bernie = homeManagerConfiguration { extraModules = [ ./bernie.nix ]; };
-      coder = homeManagerConfiguration { extraModules = [ ./coder.nix ]; };
     };
   };
 }
