@@ -133,3 +133,54 @@
   :parent va-tests
   (let ((va::*context* (va::make-context 0 (va::day-number 2026 10 22))))
     (is equal "tomorrow" (va::event-day-name (first (va::parse-events *khal*))))))
+
+(define-test meetings-shannan-phrasings
+  :parent va-tests
+  (at-ten
+   (parses-as "~a"
+              '(("What is Shannon's next meeting?" "Meeting(ShannanNext)")
+                ("When is Shannan's next appointment?" "Meeting(ShannanNext)")
+                ("when's shannons next call" "Meeting(ShannanNext)")
+                ("What's next on Shannan's calendar?" "Meeting(ShannanNext)")
+                ("Does Shannon have a meeting soon?" "Meeting(ShannanNext)")
+                ("What's on Shannon's calendar?" "Meeting(ShannanDay { day: 0 })")
+                ("What is on Shannan's calendar tomorrow?" "Meeting(ShannanDay { day: 1 })")
+                ("What does Shannon have on friday?" "Meeting(ShannanDay { day: 2 })")
+                ("Does Shannan have any meetings today?" "Meeting(ShannanDay { day: 0 })")
+                ("What is Shannon doing tomorrow?" "Meeting(ShannanDay { day: 1 })")
+                ("Is Shannan free tomorrow?" "Meeting(ShannanDay { day: 1 })")
+                ("What are Shannon's plans for friday?" "Meeting(ShannanDay { day: 2 })")
+                ("What's on my calendar tomorrow?" "Meeting(Day { day: 1, part: None })")
+                ("What do you think about Shannon?" "Chat(Shannan)")))))
+
+(define-test meetings-shannan-reads-the-shared-calendar
+  :parent va-tests
+  (let ((va::*fake-effects* (list :recording)))
+    (va::shannan-next)
+    (let ((khal (find "khal" va::*fake-effects* :key #'va::car-safe :test #'equal)))
+      (true (search '("-a" "Joerg+Shannan") khal :test #'equal)))))
+
+(define-test meetings-shannan-speech
+  :parent va-tests
+  (let ((ev (va::parse-events *khal*)))
+    (flet ((next (now)
+             (let ((va::*context* (va::make-context 0 (floor (va::minutes (subseq now 0 10))
+                                                             1440))))
+               (multiple-value-bind (e mins) (va::current-or-next ev now :all-day t)
+                 (va::shared-next-speech e mins)))))
+      (is equal "Next on the calendar you share with Shannan: Anthropic sync tomorrow at 2 PM."
+          (next "2026-10-22 09:00"))
+      (is equal (format nil "Next on ~a: Anthropic sync at 2 PM, in 25 minutes." va::*shared*)
+          (next "2026-10-23 13:35"))
+      (is equal "Anthropic sync is on the calendar you share with Shannan right now."
+          (next "2026-10-23 14:10"))
+      (is equal "Next on the calendar you share with Shannan: Holiday tomorrow, all day."
+          (next "2026-10-23 15:00"))
+      (is equal "Holiday is on the calendar you share with Shannan right now."
+          (next "2026-10-25 12:00"))
+      (is equal "Nothing on the calendar you share with Shannan in the next month."
+          (next "2026-10-26 00:00")))
+    (is equal "Nothing on the calendar you share with Shannan tomorrow."
+        (va::shared-day-speech nil "tomorrow"))
+    (is equal (format nil "On ~a tomorrow: Holiday all day, and Standup at 9 AM." va::*shared*)
+        (va::shared-day-speech (rest ev) "tomorrow"))))

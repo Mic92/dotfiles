@@ -65,12 +65,15 @@ for all-day events."
                                               (string= (field e "all-day") "True"))))))
       (remove-duplicates (sort events #'string< :key #'event-start) :test #'equalp))))
 
+(defvar *calendar* nil "The one khal calendar to read, or nil for all of them.")
+
 (defn khal (&rest (range string)) (values list boolean)
   "The events in RANGE, and whether khal answered at all."
   (let ((raw (apply #'run "khal" "list" "--day-format" ""
                     (append (loop for f in '("start-long" "end-long" "title" "location" "url"
                                              "description" "all-day")
                                   append (list "--json" f))
+                            (and *calendar* (list "-a" *calendar*))
                             range))))
     (values (and raw (parse-events raw)) (and raw t))))
 
@@ -117,12 +120,17 @@ for all-day events."
   "Your calendar is locked. Maybe it's hiding something from me."
   "Calendar's not talking to me. We had a fight.")
 
-(defn current-or-next ((events list) (now string)) (values (or null event) integer)
-  "The meeting in progress, or else the next one, and minutes until it."
+(defn current-or-next ((events list) (now string) &key (all-day boolean nil))
+    (values (or null event) integer)
+  "The meeting in progress, or else the next one, and minutes until it.
+All-day events count with ALL-DAY; khal ends them on their last day."
   (let ((n (minutes now)))
     (dolist (e events (values nil 0))
-      (let ((start (minutes (event-start e))) (end (minutes (event-end e))))
-        (when (and n start (not (event-all-day e)) (or (> start n) (and end (> end n))))
+      (let ((start (minutes (event-start e)))
+            (end (let ((end (minutes (event-end e))))
+                   (if (and end (event-all-day e)) (+ end 1440) end))))
+        (when (and n start (or all-day (not (event-all-day e)))
+                   (or (> start n) (and end (> end n))))
           (return (values e (- start n))))))))
 
 (defreplies *nothing-ahead*
@@ -237,6 +245,51 @@ early bird." (event-title e) (spoken-mins mins))))
                 (format nil "~{~a~^~%~}" (mapcar #'agenda-line events))
                 (agenda-speech (remove-if #'event-all-day events) when part day))))))
 
+(defparameter *shared-calendar* "Joerg+Shannan"
+  "khal's name for the calendar shared with Shannan. Hers alone isn't synced
+here, so questions about her plans are answered from this one.")
+
+(defparameter *shared* "the calendar you share with Shannan"
+  "How replies name it, so nobody takes its events for Shannan's alone.")
+
+(defn shared-next-speech ((e (or null event)) (mins integer)) string
+  (cond ((null e) (format nil "Nothing on ~a in the next month." *shared*))
+        ((<= mins 0) (format nil "~a is on ~a right now." (event-title e) *shared*))
+        (t (let ((day (and (or (event-all-day e) (> mins 720)) (event-day-name e)))
+                 (hm (event-hm (event-start e))))
+             (format nil "Next on ~a: ~a~@[ ~a~]~a." *shared* (event-title e) day
+                     (cond ((event-all-day e) ", all day")
+                           (day (format nil " at ~a" hm))
+                           (t (format nil " at ~a, in ~a" hm (spoken-mins mins)))))))))
+
+(defn shannan-next () reply
+  (multiple-value-bind (events ok) (let ((*calendar* *shared-calendar*)) (khal "now" "30d"))
+    (let ((now (now-stamp)))
+      (if (not (and ok now))
+          (live "Calendar" "" (pick *calendar-broke*))
+          (multiple-value-bind (e mins) (current-or-next events now :all-day t)
+            (live "Shared calendar" (if e (agenda-line e) "") (shared-next-speech e mins)))))))
+
+(defn shared-day-speech ((events list) (when string)) string
+  (if (null events)
+      (format nil "Nothing on ~a ~a." *shared* when)
+      (format nil "On ~a ~a: ~{~#[~;~a~;~a, and ~a~:;~@{~a~#[~;, and ~:;, ~]~}~]~}." *shared* when
+              (loop for e in events
+                    collect (if (event-all-day e)
+                                (format nil "~a all day" (event-title e))
+                                (format nil "~a at ~a" (event-title e)
+                                        (event-hm (event-start e))))))))
+
+(defn shannan-day ((day (integer 0))) reply
+  (let ((date (date-ahead day)) (when (day-name day)))
+    (multiple-value-bind (events ok)
+        (if date (let ((*calendar* *shared-calendar*)) (day-events date nil)) (values nil nil))
+      (if (not ok)
+          (live "Calendar" "" (pick *calendar-broke*))
+          (live (format nil "Shared calendar ~a" when)
+                (format nil "~{~a~^~%~}" (mapcar #'agenda-line events))
+                (shared-day-speech events when))))))
+
 (defreplies *free-at* "You're free at ~a. Want me to book it?" "~a is free. Treasure it.")
 
 (defn clash ((events list) (tm integer)) (or null event)
@@ -344,6 +397,30 @@ you." summary)))))
   :kind "Join"
   :examples ("join my meeting" "open the zoom link")
   (join-meeting))
+
+(defcommand meeting-shannan-next
+  (:join "!(what's|what is|when's|when is) (shannan's|shannon's|shannans|shannons) next"
+         "(meeting|appointment|event|call)")
+  "!(what's|what is) next on (shannan's|shannon's|shannans|shannons) (calendar|agenda|schedule)"
+  "!does (shannan|shannon) have a (meeting|call|appointment) (soon|now|coming up|right now)"
+  :examples ("what's shannan's next meeting")
+  (shannan-next))
+
+(defcommand meeting-shannan-day
+  (:join "!(what's|what is) on (shannan's|shannon's|shannans|shannons)"
+         "(calendar|agenda|schedule) [{day}]")
+  "!(what are|what're) (shannan's|shannon's|shannans|shannons) plans [{day}]"
+  (:join "!what does (shannan|shannon) have [planned|scheduled|going on|on her calendar]"
+         "[{day}]")
+  (:join "!does (shannan|shannon) have (anything|something|any meetings|any appointments|any"
+         "plans|plans) [planned|scheduled|going on] [{day}]")
+  "!(what's|what is) (shannan|shannon) (doing|up to) [{day}]"
+  "!is (shannan|shannon) (free|busy|away|around) [{day}]"
+  :named t
+  :slots ((day coalton:UFix))
+  :parse (let ((day (slot "day"))) (let ((d (if day (day-offset day) 0))) (and d (list d))))
+  :examples ("what's on shannan's calendar tomorrow" "is shannan free on friday")
+  (shannan-day day))
 
 (defcommand meeting-day
   "(what's|what is) on my (calendar|agenda|schedule) [{day}]"
