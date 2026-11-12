@@ -18,6 +18,11 @@ let
           default = null;
           description = "Key in one of the sops files whose value becomes the file content.";
         };
+        base64 = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "The secret is base64 encoded, for binary files. It is decoded on the device.";
+        };
         mode = lib.mkOption {
           type = lib.types.str;
           default = if config.secret != null then "0600" else "0644";

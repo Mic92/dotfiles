@@ -4,6 +4,8 @@ The program (apply.uc with the configuration embedded) is piped to `ucode -`
 on the device, which applies it through the uci API instead of `uci batch`.
 """
 
+import base64
+import binascii
 import json
 import re
 import subprocess
@@ -64,11 +66,21 @@ def collect_files(
     for path, f in sorted(spec.items()):
         mode = int(f["mode"], 8)
         if f.get("secret") is not None:
+            content = get_secret(secrets, f["secret"])
+            is_base64 = bool(f.get("base64"))
+            if is_base64:
+                # fail before touching the router
+                try:
+                    base64.b64decode(content, validate=True)
+                except binascii.Error as e:
+                    msg = f"openwrt.files.{path}: secret {f['secret']} is not valid base64: {e}"
+                    raise ConfigError(msg) from e
             out.append(
                 {
                     "path": path,
                     "mode": mode,
-                    "content": get_secret(secrets, f["secret"]),
+                    "content": content,
+                    "base64": is_base64,
                 },
             )
             continue

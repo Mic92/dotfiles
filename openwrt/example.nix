@@ -24,6 +24,15 @@
       text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHDV5xoYdIHYO7T2FtbIcV8LmiPmJc7JcxElSaGD9tzf joerg@turingmachine rauter";
       mode = "0600";
     };
+    # keep the ssh host identity across reflashes
+    "/etc/dropbear/dropbear_ed25519_host_key" = {
+      secret = "dropbear_ed25519_host_key";
+      base64 = true;
+    };
+    "/etc/dropbear/dropbear_rsa_host_key" = {
+      secret = "dropbear_rsa_host_key";
+      base64 = true;
+    };
     # must match mic92/hosts/rauter in krebs/kartei
     "/etc/tinc/retiolum/rsa_key.priv".secret = "tinc_rsa_key";
     "/etc/tinc/retiolum/ed25519_key.priv".secret = "tinc_ed25519_key";
@@ -43,9 +52,10 @@
     '';
   };
 
-  # tinc's init script only copies keys and hosts on start; dnsmasq only
-  # rereads /etc/hosts on restart.
+  # dropbear only loads host keys on start. tinc's init script only copies
+  # keys and hosts on start. dnsmasq only rereads /etc/hosts on restart.
   openwrt.restartServices = [
+    "dropbear"
     "tinc"
     "dnsmasq"
   ];

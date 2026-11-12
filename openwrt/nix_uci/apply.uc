@@ -35,7 +35,10 @@ function write_file(f) {
 	let fh = fs.open(tmp, 'w', f.mode);
 	if (!fh)
 		die(sprintf('open %s: %s\n', tmp, fs.error()));
-	fh.write(f.content);
+	let content = f.base64 ? b64dec(f.content) : f.content;
+	if (content == null)
+		die(sprintf('%s: invalid base64\n', f.path));
+	fh.write(content);
 	fh.close();
 	fs.chmod(tmp, f.mode);
 	if (!fs.rename(tmp, f.path))
