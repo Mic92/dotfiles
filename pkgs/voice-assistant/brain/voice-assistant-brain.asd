@@ -14,9 +14,11 @@
                                ;; In Rust's MODULES order, which breaks ties between commands.
                                :components ,(mapcar (lambda (f) (list :file f))
                                                     '("timer" "system" "volume" "media" "desktop"
-                                                      "apps" "info" "calc" "spell" "fun" "chat"
-                                                      "ops" "notes" "reminders" "meetings" "travel" "news"
-                                                      "kagi" "contacts" "core")))))
+                                                      "apps" "info" "weather" "mail" "calc"
+                                                      "zones" "spell" "fun" "chat" "self"
+                                                      "banter" "people"
+                                                      "ops" "notes" "reminders" "meetings"
+                                                      "travel" "news" "kagi" "contacts" "core")))))
 
 (defsystem "voice-assistant-brain/tests"
     :depends-on ("voice-assistant-brain" "parachute")

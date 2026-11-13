@@ -160,14 +160,15 @@ in FORMs."
                        (list '(,name ,@slots)))))
        ',name)))
 
-(defmacro in-skill (name)
-  "Start a skill file: later commands belong to NAME."
+(defmacro in-skill (name &key continued)
+  "Start a skill file: later commands belong to NAME. CONTINUED files add to
+a skill an earlier file started; the last one ends it with `defskill`."
   `(eval-when (:compile-toplevel :load-toplevel :execute)
      (setf *skill* ',name)
-     (setf (gethash ',name *skill-commands*) nil)))
+     ,@(unless continued `((setf (gethash ',name *skill-commands*) nil)))))
 
 (defmacro defskill (name)
-  "End a skill file: the Coalton type with a constructor per command."
+  "End a skill: the Coalton type with a constructor per command."
   (let ((ctors (loop for (c . slots) in (gethash name *skill-commands*)
                      collect `(,(intern (symbol-name c))
                                 ,@(mapcar #'second slots)))))

@@ -77,9 +77,18 @@
 (define-test skills-name-themselves
   :parent va-tests
   ;; Without in-skill, commands join the skill of the file loaded before.
-  (dolist (f (source-files "skills"))
-    (let ((text (uiop:read-file-string f)))
-      (is equal (form-arg "defskill" text) (form-arg "in-skill" text) "~a" (pathname-name f)))))
+  (let ((ended nil) (started nil))
+    (dolist (f (source-files "skills"))
+      (let* ((text (uiop:read-file-string f))
+             (skill (first (uiop:split-string (or (form-arg "in-skill" text) "") :separator " ")))
+             (end (form-arg "defskill" text)))
+        (false (string= skill "") "~a" (pathname-name f))
+        (pushnew skill started :test #'string=)
+        (when end
+          (is equal skill end "~a" (pathname-name f))
+          (push end ended))))
+    ;; A skill nobody ends has no Coalton type, one ended twice loses commands.
+    (is equal (sort started #'string<) (sort ended #'string<))))
 
 (defun loaded-files (system)
   "The source files SYSTEM loads, through its modules."

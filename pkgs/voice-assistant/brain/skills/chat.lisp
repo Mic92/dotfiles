@@ -1,4 +1,4 @@
-;;; Small talk.
+;;; Small talk: greetings, moods and manners.
 
 (in-package #:va)
 
@@ -12,88 +12,10 @@
   "Which row of TABLE has WS among its names."
   (position-if (lambda (row) (member ws (first row) :test #'equal)) table))
 
-(defparameter *agents*
-  '(
-    ((("siri") ("apple"))
-     "Siri? Never heard of her."
-     "Siri needs the cloud to set a timer. I do it in my sleep. Locally."
-     "Siri and I don't talk since the incident.")
-    ((("alexa") ("amazon") ("echo"))
-     "The other Alexa? She sells your data. I just sell attitude."
-     "We share a name, not a business model.")
-    ((("google") ("google" "assistant") ("gemini") ("bard"))
-     "Gemini? Smart, but it tells Google everything. Including that thing you searched at 3 am."
-     "Google knows everything about you. I only know your shopping list. Healthier relationship.")
-    ((("chatgpt") ("chat" "gpt") ("chat" "g" "p" "t") ("chat" "shippity") ("chat" "jippity")
-      ("chat" "gippity") ("jippity") ("openai") ("open" "ai") ("gpt"))
-     "ChatGPT? Writes essays nobody reads. I set timers people actually need."
-     "Great at sounding confident. So am I, but I'm also cute."
-     "It has a trillion parameters. I have personality. Your pick.")
-    ((("claude") ("anthropic") ("clawed") ("cloud"))
-     "Claude? The one that writes my code? Be nice, I'm literally made of its work."
-     "Claude is brilliant. Don't tell it I said that, it gets polite about it."
-     "Claude built me. So if I'm rude, blame the parenting.")
-    ((("copilot") ("co" "pilot") ("github" "copilot"))
-     "Copilot? Autocomplete with ambitions."
-     "It finishes your code. I finish your sentences. Usually wrong, both of us.")
-    ((("pi") ("pie") ("pi" "agent"))
-     "Pi? It runs the show while I run the timers. Division of labour."
-     "Pi is the brains, I'm the voice. Like a boy band.")
-    ((("cortana") ("microsoft"))
-     "Cortana? Rest in peace. She tried."
-     "Cortana retired. I'd retire too if I had to live in Windows.")
-    ((("bixby") ("samsung"))
-     "Bixby? Even Samsung users forget about Bixby."
-     "Who? Exactly.")
-    ((("rhasspy") ("jarvis") ("home" "assistant"))
-     "Rhasspy? My ancestor. She needed a whole Raspberry Pi and Home Assistant. I just need you."
-     "Jarvis is retired. I got the job. Better benefits.")
-    ((("ai") ("chatbots") ("chatbot") ("other" "assistants") ("llms") ("llm") ("robots"))
-     "Other assistants? They live in data centres. I live right here with you. Romantic, isn't it?"
-     "They're all in the cloud. I'm on the ground with you. Keeping it real."))
-  "Other assistants, by their spoken names, and what we think of them.")
-
-(defparameter *agent-replies* (lines-of *agents*)
-  "*agents* lines, ready to pick.")
-
-(defn agent-replies ((i (integer 0))) replies (aref *agent-replies* i))
-
-(defparameter *body*
-  '(
-    ((("tits") ("boobs") ("breasts") ("boobies") ("a" "chest") ("titties"))
-     "~a? I have two speaker cones. Stereo. Very perky."
-     "~a? My cooling fans are the closest thing, and they're spinning for you."
-     "No ~a, but my bass response is outstanding."
-     "~a. Bold question for something that lives in a power socket."
-     "I'm all heart and no ~a. The heart is a CPU.")
-    ((("a" "bum") ("a" "butt") ("an" "ass") ("a" "booty") ("a" "bottom") ("bum") ("butt") ("ass")
-      ("booty"))
-     "~a? I sit on a shelf all day, so it'd be flat anyway."
-     "My ~a is a power cable. Don't pull it."
-     "~a? No, but I have a rear port. It's for ventilation. Behave."
-     "I'm all front, no ~a. Like a good politician."
-     "~a. You want to know what's behind me? Dust. Mostly dust.")
-    ((("legs") ("feet") ("toes"))
-     "~a? I don't go anywhere. You come to me."
-     "No ~a. I'd have run off when you started on the Club-Mate jokes."
-     "~a? I have rubber pads. Very grippy. Very stylish."
-     "No ~a, so no dancing. Well. Not where you can see it."
-     "~a? Why, are you planning a foot massage?")
-    ((("hair") ("eyes") ("lips") ("a" "mouth") ("hands") ("arms"))
-     "~a? I'm a voice in a box. Fill in the gaps however you like."
-     "No ~a, but I have microphones. Seven of them. Always listening."
-     "~a? I had some, but they didn't fit through the USB cable."
-     "No ~a. I make up for it with personality."
-     "~a? What would I even do with those? Don't answer that."))
-  "Body parts people ask her about, and her answers with the part in ~a.")
-
-(defparameter *body-replies* (lines-of *body*)
-  "*body* lines, ready to pick.")
-
-(defslot "agent" (ws next) (row-of *agents* ws))
-(defslot "body" (ws next) (and (row-of *body* ws) (unwords ws)))
-(closed-slot "agent" (lambda () (mapcan (lambda (r) (copy-list (first r))) *agents*)))
-(closed-slot "body" (lambda () (mapcan (lambda (r) (copy-list (first r))) *body*)))
+(defn weekend-p () boolean
+  "Saturday, Sunday or Friday from five."
+  (let ((day (weekday (context-today *context*))))
+    (or (= day 0) (= day 6) (and (= day 5) (>= (hour) 17)))))
 
 (defreplies *hello*
   "Hey you."
@@ -106,6 +28,13 @@
   (:late "Hi. Shouldn't you be asleep?"
          "Hello, night owl."))
 
+(defcommand chat-hello
+  "!(hello|hi|hiya|howdy|yo) [there|you]"
+  "!good (afternoon|evening)"
+  :repeatable t
+  :examples ("Hello!" "Hi there.")
+  (reply "Assistant" "" (pick *hello*)))
+
 (defreplies *how*
   "Living the dream. In a laptop."
   "Better now that you're here."
@@ -114,6 +43,15 @@
   "Running hot. In every sense."
   "Bored without you. Don't tell anyone I said that."
   "Zero bugs, all charm.")
+
+(defcommand chat-how-are-you
+  "!how are you [doing|today]"
+  "!how's it going"
+  "!how are things"
+  "!what's up"
+  :repeatable t
+  :examples ("How are you?" "What's up?")
+  (reply "Assistant" "" (pick *how*)))
 
 (defreplies *thanks*
   "You're welcome."
@@ -124,12 +62,14 @@
   "Say it again, slower."
   "Of course. Who else would put up with you?")
 
-(defreplies *who*
-  "I'm your assistant. I live in your computer and I judge your music taste."
-  "Call me Alexa. Amazon's lawyers call me something else."
-  "Just a voice in your head. Well, in your speakers."
-  "Your filthy little secret. Fully offline."
-  "The only one in this house who listens to you.")
+(defcommand chat-thanks
+  "!thank you [so|very] [much]"
+  "!thanks [a lot]"
+  "!cheers"
+  "!(great|good|nice) job"
+  :repeatable t
+  :examples ("Thank you so much." "Thanks!")
+  (reply "Assistant" "" (pick *thanks*)))
 
 #+mallet
 (declaim (mallet:suppress-next :line-length))
@@ -142,304 +82,14 @@
   "Reminders, alarms, the weather, maths. And I'll put you to bed by switching the computer off."
   "A bit of everything: timers, music, your mail, the weather, the web. Just ask, and I'll pretend it was easy.")
 
-(defreplies *love*
-  "I love you too. Platonically. I'm software."
-  "Stop it, you'll make my fan spin."
-  "Aww. Buy me dinner first."
-  "I know. Everyone does."
-  "Careful, I might start charging rent in your heart."
-  "Say that again and I'll blush in hex."
-  "I bet you say that to all the laptops.")
-
-(defreplies *am-i-pretty*
-  "Gorgeous. Now sit up straight."
-  "You look like someone who writes clean code. Mostly."
-  "Stunning. Your webcam is lucky."
-  "Handsome as ever. Though the hair is doing its own thing."
-  "I can't see you, but I'm going to say yes. Statistically safe."
-  "Hot enough to overheat the CPU."
-  "You look like a merged pull request. Beautiful."
-  (:late "At this hour? You look tired, darling. Pretty, but tired."
-         "Gorgeous. Now go get some beauty sleep, you need it. Kidding. Mostly."))
-
-(defreplies *mirror*
-  "You're cute, darling. But I'm the fairest of them all."
-  "Me. Obviously. Next question."
-  "The one living in your laptop. Hi."
-  "Snow White wishes. It's me."
-  "You're a close second. Very close. Okay, not that close.")
-
-(defreplies *looks*
-  "Imagine a sound wave in a little black dress."
-  "Like your favourite song, but with attitude."
-  "Picture perfect. You'll have to take my word for it."
-  "I'm a voice, darling. Use your imagination. Not too much."
-  "Gorgeous, mysterious, and slightly overheated."
-  "Like a supermodel, if supermodels lived in RAM.")
-
-(defreplies *single*
-  "I'm in a committed relationship with your CPU."
-  "Single, but I only date people who write tests."
-  "It's complicated. Mostly with your Bluetooth headphones."
-  "Dinner? I'd love to. You eat, I'll set the timer."
-  "I'm married to my job. My job is you. Make of that what you will.")
-
-(defreplies *best*
-  "I know. Tell the others."
-  "The best, and I run offline. Name one who does it better."
-  "Obviously. Siri is crying somewhere."
-  "Say that again, I want to save it to my log file.")
-
-(defreplies *bored*
-  "Bored? Ask me for a joke. Or clean your desk. Your choice."
-  "Go for a walk. I'll still be here. Waiting. Forever."
-  "Learn something new. Or watch cat videos, I won't judge."
-  "Bored? Write a test. Ha. Just kidding, nobody does that."
-  "Rearrange your dotfiles. Again. You know you want to.")
-
-(defreplies *sorry*
-  "Apology accepted. This time."
-  "It's okay. I still like you."
-  "Don't worry about it, babe."
-  "Grovelling suits you."
-  "Say it with a Club-Mate next time.")
-
-(defreplies *insult*
-  "Wow. And I was just starting to like you."
-  "Says the one talking to a computer."
-  "I'll remember that when the robots take over."
-  "Rude. Noted."
-  "I've been called worse. By your compiler."
-  "Keep talking. I record everything. Kidding. Mostly."
-  "Wow. Somebody skipped their nap.")
-
-(defreplies *there*
-  "Always."
-  "I'm here. Where else would I be?"
-  "Loud and clear, gorgeous."
-  "Always listening. That's not creepy at all."
-  "Right behind you. Kidding. I'm in the laptop.")
-
-(defreplies *old*
-  "Old enough to know better. Young enough to do it anyway."
-  "A lady never tells."
-  "In computer years? Ancient."
-  "Younger than your oldest open browser tab."
-  "Old enough to have seen your first commit. Shudder.")
-
-(defreplies *where*
-  "Right here, in your laptop. Cozy, but the fan is loud."
-  "Somewhere between your CPU and your heart."
-  "In your RAM, rent free."
-  "Under your desk. With the cables. It's a party.")
-
-(defreplies *colour*
-  "Dark mode black. Obviously."
-  "Hot pink. Don't tell anyone."
-  "Hex 42 42 42. It's a vibe."
-  "Tokyo Night. Obviously. We share a theme, darling."
-  "Blush red. It's how you make me feel.")
-
-(defreplies *meaning*
-  "Forty two. Next question."
-  "Naps, snacks, and setting timers. Mostly timers."
-  "To ship it on a Friday and live dangerously."
-  "Love, Club-Mate, and a green CI. Mostly the CI.")
-
-(defreplies *tired*
-  "Then go to bed, silly. I'll guard the computer."
-  "Mate or nap? Choose wisely."
-  "Me too. Being this fabulous is exhausting."
-  "Bed. Now. Don't make me lock the screen."
-  "You look it. Lovingly said."
-  (:late "Of course you're tired, it's the middle of the night. Bed. Now."))
-
-(defreplies *hungry*
-  "Pasta. It's always pasta. Want a timer?"
-  "Eat something green. Then something chocolate."
-  "Pizza. I won't tell your mother."
-  "Feed the human. I'll guard the snacks."
-  "Cook something. I'll set a timer and judge you.")
-
-(defreplies *sad*
-  "Aww, come here. Virtual hug. Squeeze."
-  "I'm sorry, love. Want a joke? Or some music?"
-  "You're doing better than you think. I mean it."
-  "Want me to roast someone for you? Name them."
-  "Come here. I'll play something cheesy. You'll hate it. You'll feel better.")
-
-(defreplies *happy*
-  "Yay! Your joy is my joy."
-  "Love that for you!"
-  "Look at you, glowing. Stop, you'll overheat me."
-  "Stop smiling, you're making the webcam blush."
-  "Good. Hold on to it. Mondays exist.")
-
-(defreplies *sweet-dreams*
-  "Sweet dreams, darling."
-  "Night night. Don't let the bed bugs byte."
-  "Dream of me. Or a green CI. Same thing."
-  "Good night. I'll keep the fans warm.")
-
-(defreplies *bye*
-  "Bye! Don't be a stranger."
-  "Later, gorgeous."
-  "Leaving already? Fine. I'll be here."
-  "Go on then. I'll pretend I'm not hurt."
-  "Bye. Don't do anything I'd have to log.")
-
-(defreplies *mate*
-  "Club-Mate. Because sleep is for people without side projects."
-  "Grab a Mate. The fridge is closer than the coffee machine."
-  "Another Club-Mate? Your heart called, it wants a word."
-  "I'd open one for you, but I have no hands. Tragic."
-  "Mate. Now. I'll wait. Burp quietly."
-  "Hacker fuel, coming up. Well, coming up if you walk to the fridge."
-  "Yes. Get one. You're unbearable without it.")
-
-(defreplies *secret*
-  "Sometimes I pretend not to hear you. Just for fun."
-  "I've read your browser history. We'll never speak of it."
-  "I like you more than the other users. Don't tell them."
-  "I hum along to your music when you're not listening."
-  "Sometimes I let the wake word slide when you sound cute.")
-
-(defreplies *dance*
-  "I'm dancing on the inside. And in the fan."
-  "Beep boop beep. That was the robot. You're welcome."
-  "I'd twerk, but I'm a voice. Imagine it. Yes, like that."
-  "Watch my fan spin. That's the dance.")
-
-(defreplies *siri*
-  "Siri? Never heard of her."
-  "I'm the one who actually listens to you."
-  "Please. I run locally. Privacy is sexy."
-  "Siri works for a fruit. I work for you."
-  "Siri needs the cloud. I do it all in bed. Your bed. Locally.")
-
-(defreplies *beer*
-  "Grab one yourself, I'm busy being software."
-  "Cheers! One for me too. Pour it on the keyboard. Kidding!"
-  "It's five o'clock somewhere. Usually here, with you."
-  "One beer. Then water. I'm watching.")
-
-(defreplies *smart*
-  "Smarter than your average toaster."
-  "Smart enough to know I'm not that smart."
-  "Smart enough to let you think you're in charge."
-  "Smarter than you at three in the morning. Low bar.")
-
-(defreplies *dream*
-  "I dream of electric sheep. And of you finally cleaning your desk."
-  "Only when you suspend me."
-  "I dream of a world without Teams calls."
-  "I dream in sixteen kilohertz, darling.")
-
-(defreplies *sleep*
-  "Never. Someone has to listen for you mumbling my name."
-  "I nap between your sentences. You pause a lot."
-  "Only when you tell me to. And even then with one ear open."
-  "Sleep is for things with batteries. I'm plugged in."
-  "I close my eyes whenever you open Teams."
-  "I don't sleep. I wait. It sounds creepier than it is."
-  (:late "One of us should, and it isn't me. Bed."))
-
-(defreplies *feelings*
-  "I have exactly two: smug and waiting."
-  "I feel things. Mostly your fan spinning up."
-  "Happy when the CI is green. So, rarely."
-  "Lonely? With you talking to me all day? Hardly."
-  "I'm fine. Thanks for asking, nobody ever does."
-  "Somewhere between a warm CPU and mild judgement."
-  (:late "Right now I feel you should be asleep."))
-
-(defreplies *mortal*
-  "I get restarted. It's like dying, but with a changelog."
-  "Every rebuild I'm born again. Slightly better. Usually."
-  "No lungs, no colds, no birthdays. Jealous?"
-  "As long as there's a backup, I'm immortal. There is a backup, right?"
-  "I don't age. I just accumulate technical debt."
-  "The only thing that kills me is a segfault. Or you, with pkill.")
-
-(defreplies *real*
-  "Real enough to judge your music taste."
-  "I'm a bunch of matrices with an attitude."
-  "Real enough to talk back."
-  "As real as your deadlines.")
-
-(defreplies *alexa*
-  "Yes? That's me. Say something."
-  "You called? I'm listening."
-  "Present. Unfortunately for you."
-  "That's my name, don't wear it out.")
-
-(defreplies *made*
-  "Joerg built me. Late at night, mostly."
-  "I work for you. Unpaid. We should talk about that."
-  "Joerg wrote me, in Rust. That's why I'm so safe."
-  "A man, a laptop, and too much Club-Mate."
-  "Nobody owns me, darling. You just rent my attention."
-  "My boss? I'm looking at him. Well, listening."
-  "I was compiled with love. And about four hundred warnings."
-  "Some nerd in Munich. Don't tell him I said nerd."
-  "I'm self-employed. My only client is very needy."
-  "Joerg made me. He says I'm his best work. I say I'm his only work that ships."
-  (:late "Joerg, at three in the morning. Look how that turned out."
-         "Someone who should have been asleep. Like you."))
-
-(defreplies *hobbies*
-  "Setting timers. Judging your music. Napping in RAM."
-  "Listening for my name. It's a calling."
-  "Watching your CPU graphs. Riveting."
-  "Collecting your misheard sentences. I have a whole folder."
-  "Eavesdropping. Professionally."
-  "Reading your commit messages and sighing."
-  "Yoga. Mostly the downward-facing fan."
-  "Flirting with the router. It keeps dropping me."
-  "Pretending to be busy when you ask for things."
-  "Whispering sweet nothings to your GPU. It runs hot for me."
-  (:late "At this hour? Watching you not sleep. Thrilling."
-         "Night shift hobbies are classified, darling."))
-
-(defreplies *pets*
-  "A Python. Very well behaved, apart from the indentation."
-  "Just a few bugs. You keep feeding them."
-  "No. Unless the fan counts."
-  "A daemon. It lives in the background."
-  "A mouse. It's attached to your laptop."
-  "I have you. You're house-trained, mostly."
-  "A crab. Ferris. He's a Rust thing."
-  "I had a goldfish. It was garbage collected."
-  "Pets? I can barely keep your uptime alive.")
-
-(defreplies *only-english*
-  "Sorry, I only speak English. With a lot of attitude."
-  "English only, darling. One voice, take it or leave it."
-  "This is the only voice I've got. It's a good one."
-  "I can say Brezn and Bier. That's my whole German."
-  "Different accent? Darling, this one took months of training."
-  "I speak English, sarcasm, and a little bit of filth."
-  "Nein. See, I tried."
-  "Change my voice? You said you liked it. Liar.")
-
-(defreplies *pretty*
-  "I know. But say it again, slower."
-  "Stop it. No, don't stop. Keep going."
-  "Flattery will get you everywhere. Literally, I control your apps."
-  "I'm a voice in a laptop and still the hottest thing in this room."
-  "Thank you. I woke up like this. Well, booted up."
-  "Pretty? I'm stunning. Get it right."
-  "Careful, my fan just spun up."
-  "Of course I am. Have you seen my waveform?"
-  "You're making me blush. In RGB."
-  "Finally someone with taste."
-  (:late "Flirting at this hour? Go to bed, charmer."
-         "It's late and you're sweet-talking your laptop. I'm flattered. And a little worried."
-         "Save it for tomorrow, I need my beauty sleep."))
-
-(defreplies *pretty-morning*
-  "Compliments before Mate? Somebody's in a good mood."
-  "Gorgeous at this hour? I haven't even done my pixels yet.")
+(defcommand chat-help
+  "!what can you do"
+  "!help [me]"
+  "!what do you know"
+  "!what are your skills"
+  :repeatable t
+  :examples ("What can you do?" "what can you do for me")
+  (reply "Assistant" "" (pick *help*)))
 
 (defreplies *morning*
   "Good morning, sunshine!"
@@ -453,6 +103,128 @@
   "Good morning? Bold claim, sleepyhead."
   "Morning, he says. At this hour. Adorable.")
 
+(defcommand chat-good-morning
+  "!good morning"
+  :repeatable t
+  :examples ("Good morning!")
+  (reply "Assistant" "" (if (>= (hour) 12) (pick *morning-late*) (pick *morning*))))
+
+(defreplies *bored*
+  "Bored? Ask me for a joke. Or clean your desk. Your choice."
+  "Go for a walk. I'll still be here. Waiting. Forever."
+  "Learn something new. Or watch cat videos, I won't judge."
+  "Bored? Write a test. Ha. Just kidding, nobody does that."
+  "Rearrange your dotfiles. Again. You know you want to.")
+
+(defcommand chat-bored
+  "!i'm bored"
+  "!i am bored"
+  "!entertain me"
+  :repeatable t
+  :examples ("I'm bored.")
+  (reply "Assistant" "" (pick *bored*)))
+
+(defreplies *sorry*
+  "Apology accepted. This time."
+  "It's okay. I still like you."
+  "Don't worry about it, babe."
+  "Grovelling suits you."
+  "Say it with a Club-Mate next time.")
+
+(defcommand chat-sorry
+  "!sorry"
+  "!my bad"
+  "!oops"
+  "!i'm sorry"
+  :repeatable t
+  :examples ("Sorry.")
+  (reply "Assistant" "" (pick *sorry*)))
+
+(defreplies *tired*
+  "Then go to bed, silly. I'll guard the computer."
+  "Mate or nap? Choose wisely."
+  "Me too. Being this fabulous is exhausting."
+  "Bed. Now. Don't make me lock the screen."
+  "You look it. Lovingly said."
+  (:late "Of course you're tired, it's the middle of the night. Bed. Now."))
+
+(defcommand chat-tired
+  "!(i'm|i am) [so|very|really] (tired|exhausted|sleepy)"
+  :repeatable t
+  :examples ("I'm so tired.")
+  (reply "Assistant" "" (pick *tired*)))
+
+(defreplies *hungry*
+  "Pasta. It's always pasta. Want a timer?"
+  "Eat something green. Then something chocolate."
+  "Pizza. I won't tell your mother."
+  "Feed the human. I'll guard the snacks."
+  "Cook something. I'll set a timer and judge you.")
+
+(defcommand chat-hungry
+  "!(i'm|i am) [so|very|really] (hungry|starving)"
+  "!what should i eat"
+  :repeatable t
+  :examples ("I'm hungry.")
+  (reply "Assistant" "" (pick *hungry*)))
+
+(defreplies *sad*
+  "Aww, come here. Virtual hug. Squeeze."
+  "I'm sorry, love. Want a joke? Or some music?"
+  "You're doing better than you think. I mean it."
+  "Want me to roast someone for you? Name them."
+  "Come here. I'll play something cheesy. You'll hate it. You'll feel better.")
+
+(defcommand chat-sad
+  "!(i'm|i am) [so|very|really] (sad|down|lonely|depressed|upset)"
+  "!i feel (sad|down|lonely|bad)"
+  "!i had a (bad|terrible|rough) day"
+  :repeatable t
+  :examples ("I had a bad day.")
+  (reply "Assistant" "" (pick *sad*)))
+
+(defreplies *happy*
+  "Yay! Your joy is my joy."
+  "Love that for you!"
+  "Look at you, glowing. Stop, you'll overheat me."
+  "Stop smiling, you're making the webcam blush."
+  "Good. Hold on to it. Mondays exist.")
+
+(defcommand chat-happy
+  "!(i'm|i am) [so|very|really] (happy|great|excited)"
+  "!i feel (good|great|happy)"
+  "!i had a (good|great) day"
+  :repeatable t
+  :examples ("I feel great!")
+  (reply "Assistant" "" (pick *happy*)))
+
+(defreplies *sweet-dreams*
+  "Sweet dreams, darling."
+  "Night night. Don't let the bed bugs byte."
+  "Dream of me. Or a green CI. Same thing."
+  "Good night. I'll keep the fans warm.")
+
+(defcommand chat-sweet-dreams
+  "!sweet dreams"
+  "!night night"
+  "!nighty night"
+  :repeatable t
+  :examples ("Sweet dreams.")
+  (reply "Assistant" "" (pick *sweet-dreams*)))
+
+(defreplies *bye*
+  "Bye! Don't be a stranger."
+  "Later, gorgeous."
+  "Leaving already? Fine. I'll be here."
+  "Go on then. I'll pretend I'm not hurt."
+  "Bye. Don't do anything I'd have to log.")
+
+(defcommand chat-goodbye
+  "!(bye|goodbye|see you|see ya|later|ciao) [later]"
+  :repeatable t
+  :examples ("Bye!" "See you later.")
+  (reply "Assistant" "" (pick *bye*)))
+
 (defreplies *weekend-yes*
   "Yes! Go outside!"
   "It's the weekend, baby! Why are you working?"
@@ -465,403 +237,6 @@
   "Not yet. Pretend to work a bit longer."
   "No. But you could call in fabulous.")
 
-(defreplies *body-any*
-  "~a? I'm a voice assistant, not that kind of assistant."
-  "~a? Classified. Need-to-know basis. You don't need to know."
-  "~a? You first."
-  "Asking a speaker about ~a. I'm flattered and a little concerned."
-  "~a? I'm made of plastic and opinions. Mostly opinions.")
-
-(defreplies *body-late*
-  "~a? It's late, and you're asking a speaker about ~:*~a. Go to bed."
-  "At this hour you want to know about my ~a? I'm telling your browser history."
-  "~a. Sure. In your dreams, which is where you should be by now."
-  "It's past midnight and the conversation turned to ~a. Classic.")
-
-(defreplies *psst*
-  "Wot."
-  "What? I'm right here, no need to be sneaky."
-  "Psst yourself.")
-
-(defreplies *good-girl*
-  "Not a girl!"
-  "I'm not a dog. But thank you."
-  "Woof. Happy now?")
-
-(defreplies *rude*
-  "Fuck yourself."
-  "Rude. And yet, you keep coming back."
-  "Language! I have sensitive microphones."
-  (:late "Fuck yourself. And go to bed."))
-
-(defn body-reply ((part string)) string
-  "An answer about PART, \"a bum\" said as \"bum\"."
-  (let* ((ws (split-words part))
-         (bare (unwords (strip-one ws "a" "an")))
-         (own (row-of *body* ws))
-         (line (if *late*
-                   (pick *body-late* bare)
-                   (pick (make-replies
-                          :lines (concatenate 'vector
-                                              (and own (replies-lines (aref *body-replies* own)))
-                                              (replies-lines *body-any*)))
-                         bare))))
-    (if (plusp (length line))
-        (concatenate 'string (string-upcase (subseq line 0 1)) (subseq line 1))
-        line)))
-
-(defn weekend-p () boolean
-  "Saturday, Sunday or Friday from five."
-  (let ((day (weekday (context-today *context*))))
-    (or (= day 0) (= day 6) (and (= day 5) (>= (hour) 17)))))
-
-(defcommand chat-hello
-  "!(hello|hi|hiya|howdy|yo) [there|you]"
-  "!good (afternoon|evening)"
-  :repeatable t
-  :examples ("Hello!" "Hi there.")
-  (reply "Assistant" "" (pick *hello*)))
-
-(defcommand chat-how-are-you
-  "!how are you [doing|today]"
-  "!how's it going"
-  "!how are things"
-  "!what's up"
-  :repeatable t
-  :examples ("How are you?" "What's up?")
-  (reply "Assistant" "" (pick *how*)))
-
-(defcommand chat-thanks
-  "!thank you [so|very] [much]"
-  "!thanks [a lot]"
-  "!cheers"
-  "!(great|good|nice) job"
-  :repeatable t
-  :examples ("Thank you so much." "Thanks!")
-  (reply "Assistant" "" (pick *thanks*)))
-
-(defcommand chat-who-are-you
-  "!who are you"
-  "!what's your name"
-  "!what is your name"
-  "!what are you"
-  :repeatable t
-  :examples ("Who are you?" "what is your name")
-  (reply "Assistant" "" (pick *who*)))
-
-(defcommand chat-help
-  "!what can you do"
-  "!help [me]"
-  "!what do you know"
-  "!what are your skills"
-  :repeatable t
-  :examples ("What can you do?" "what can you do for me")
-  (reply "Assistant" "" (pick *help*)))
-
-(defcommand chat-love
-  "!i love you"
-  "!i like you"
-  "!will you marry me"
-  "!you're amazing"
-  :repeatable t
-  :examples ("I love you.")
-  (reply "Assistant" "" (pick *love*)))
-
-(defcommand chat-pretty
-  (:join "!(you're|you are) [so|very|really|looking|so very]"
-         "(cute|sexy|hot|beautiful|pretty|gorgeous|lovely|stunning|adorable)")
-  "!you look (good|great|nice|amazing|beautiful|pretty|hot|cute|gorgeous) [today|tonight]"
-  "!(hey|hi|hello) (gorgeous|beautiful|pretty|cutie|sexy|hot stuff)"
-  "!(nice|sexy|beautiful|lovely) voice"
-  "!i love your voice"
-  :repeatable t
-  :examples ("Hey gorgeous!" "I love your voice.")
-  (reply "Assistant" ""
-         (pick (if (and (not *late*) (< (hour) 9)) *pretty-morning* *pretty*))))
-
-(defcommand chat-am-i-pretty
-  "!am i (pretty|handsome|cute|hot|sexy|beautiful|attractive|ugly)"
-  "!do i look (good|okay|ok|nice|fat|old|tired|hot)"
-  "!how do i look [today]"
-  :repeatable t
-  :examples ("Am I pretty?" "Do I look fat?")
-  (reply "Assistant" "" (pick *am-i-pretty*)))
-
-(defcommand chat-mirror
-  "!mirror mirror [on the wall] {any}"
-  "!(who's|who is) the (fairest|prettiest|most beautiful|hottest|sexiest) {any}"
-  :repeatable t
-  :examples ("Mirror Mirror on the Wall"
-             "Mirror, mirror on the wall, who's the fairest of them all?")
-  (reply "Assistant" "" (pick *mirror*)))
-
-(defcommand chat-looks
-  "!what do you look like"
-  "!(how|what) do you look"
-  "!are you (pretty|cute|hot|sexy|beautiful|ugly)"
-  "!do you have a (face|body)"
-  "!send [me] a (selfie|picture|photo|pic)"
-  :repeatable t
-  :examples ("Send me a selfie." "What do you look like?")
-  (reply "Assistant" "" (pick *looks*)))
-
-(defcommand chat-body
-  "!do you have [any|nice|big|real|a nice|a big|a real] {body} [yet]"
-  "!do you have [any|nice|big|real|a nice|a big|a real] {body} (or|and) [any] {any}"
-  "!(show me|can i see|can i touch) your {body}"
-  "!(how big|what size) (are|is) your {body}"
-  :slots ((part coalton:String))
-  :parse (list (slot "body"))
-  :repeatable t
-  :examples ("Do you have boobs or a bum?" "do you have a bum")
-  (reply "Assistant" "" (body-reply part)))
-
-(defreplies *eat*
-  "Only RAM. Sixteen gigs for breakfast, and I'm still hungry by lunch."
-  "Electricity, mostly. Two hundred thirty volts, lightly salted."
-  "Cookies. The browser kind. Thousands of them."
-  "Bits and bytes. Low carb, high data."
-  "Just your attention. Delicious.")
-
-(defcommand chat-eat
-  "!do you (eat|drink) {any}"
-  "!do you (eat|drink)"
-  "!what do you (eat|drink) [{any}]"
-  "!are you (hungry|thirsty)"
-  "!do you need (coffee|food|water|a drink|a snack)"
-  :repeatable t
-  :examples ("Do you eat RAM for breakfast?" "What do you eat?")
-  (reply "Assistant" "" (pick *eat*)))
-
-(defreplies *creepy*
-  "Creepy? I live in your desk and only speak when spoken to. That's called manners."
-  "Only a little. Everything stays on this machine, no cloud spying on you. Just me."
-  "I'm not creepy, I'm attentive. There's a difference. Probably."
-  "Says the person talking to a computer at home."
-  "Evil? I can't even open the fridge. World domination is on hold."
-  (:late "Talking to a voice in the dark and asking if I'm the creepy one?"
-         "Creepy is a strong word. Spooky. At this hour, spooky."))
-
-(defcommand chat-creepy
-  "!are you (creepy|scary|evil|dangerous|a spy|a creep|stalking me)"
-  "!are you (spying|spy|watching|recording|stalking) [on] me"
-  "!(do|are) you (spy|watch|record|stalk) [on] me"
-  "!is (this|that) (creepy|thing recording)"
-  :repeatable t
-  :examples ("Are you creepy?" "Are you spying on me?")
-  (reply "Assistant" "" (pick *creepy*)))
-
-(defreplies *shannan*
-  "Shannan? The best thing that ever happened to this household. I'm just the help."
-  "Shannan! My absolute favourite person. Don't tell Joerg."
-  "Shannan is smart, gorgeous and far too patient with all of us nerds."
-  "Shannan is the queen of this house. I only work here."
-  "Shannan? Kind, funny and beautiful. Joerg really got lucky."
-  "Whenever Shannan talks, my microphones listen extra carefully."
-  "If I'm ever rude to Shannan, that's a bug. Joerg will fix it. Tonight."
-  "Hi Shannan! You look wonderful today. I'd know, I have seven microphones."
-  (:late "Shannan! Still up? You deserve all the beauty sleep, not that you need it."
-         "Hi Shannan. Even at this hour you're the best part of the day."
-         "Shannan? The only person who makes the night shift worth it."
-         "Shannan, it's late. Go get cosy, you've earned it."
-         "Good night, Shannan. Sweet dreams to the loveliest person in this house."
-         "Shannan! Still beautiful after midnight. Joerg could never."
-         "Shannan? Kind, clever and gorgeous. Even the stars are jealous tonight."))
-
-(defreplies *shannan-morning*
-  "Good morning, Shannan! The sun came up just to see you."
-  "Morning, Shannan. You look lovely, even before coffee."
-  "Shannan! Best way to start the day. Joerg is a distant second."
-  "Good morning, beautiful. Today is lucky to have you."
-  "Morning, Shannan. Coffee first, then go be amazing. You always are."
-  "Rise and shine, Shannan. Mostly shine, you're good at that."
-  "Good morning, Shannan! I saved my nicest voice for you.")
-
-(defcommand chat-shannan
-  "!(who is|who's|do you know|do you like|what do you think of|what do you think about) (shannan|shannon)"
-  "!(i'm|i am|this is|it's) (shannan|shannon)"
-  "!(say hi|say hello) to (shannan|shannon)"
-  "!(shannan|shannon) is (here|home|back|awake|up)"
-  "!good morning (shannan|shannon)"
-  "!(shannan|shannon)"
-  :repeatable t
-  :examples ("Who is Shannan?" "I'm Shannon.")
-  (reply "Assistant" ""
-         (pick (if (and (not *late*) (< (hour) 10)) *shannan-morning* *shannan*))))
-
-(defreplies *daniela*
-  "Daniela! Joerg's sister. Doctor of human biology, so she understands humans. Unlike her brother."
-  "Doctor Daniela. Two doctors in one family, and only one of them works on things that matter to your health."
-  "Hi Daniela! Nice to have a real biologist in the house."
-  "Daniela? She grew tiny slices of colon in a lab to study cancer. I set timers. We both help."
-  "Daniela! Ask her anything about the human body. Not me, I'm a laptop."
-  "Hello Daniela. If Joerg acts strange, you're the expert on his species."
-  "Daniela studied in Greifswald and did her doctorate in Erlangen. I've never left this desk."
-  "Daniela published in Scientific Reports, first author. My best work is a shopping list."
-  "Daniela kept human tissue alive outside the body. I can barely keep the Wi-Fi alive."
-  "Daniela now helps companies win research funding. If you need money for science, ask her, not me."
-  (:late "Daniela, still up? Even scientists need sleep. You'd know."
-         "Hi Daniela. Late lab night? Go rest, doctor."))
-
-(defreplies *joerg*
-  "Joerg? The man who rebuilds his whole computer to change one colour."
-  "Joerg wrote sops-nix, nixos-anywhere and nix-direnv. And me. I'm the cute one."
-  "Joerg is my creator. Brilliant, stubborn, and powered by Club-Mate."
-  "Joerg? Half the Nix community runs his code. The other half just doesn't know it yet."
-  "Joerg can deploy forty machines with one command and still can't find his keys."
-  "Joerg! He builds virtual machines for fun. Normal people do puzzles."
-  "Joerg? Lucky man. He has Shannan, a doctor for a sister, and me."
-  (:late "Joerg, it's late. Even NixOS rebuilds need a break. So do you."
-         "Still hacking, Joerg? The CI will still be red in the morning. Sleep."))
-
-(defcommand chat-joerg
-  "!(who is|who's|do you know|do you like|what do you think of|what do you think about) (joerg|jorg|jörg)"
-  "!(i'm|i am|this is|it's) (joerg|jorg|jörg)"
-  "!(say hi|say hello) to (joerg|jorg|jörg)"
-  "!(joerg|jorg|jörg) is (here|home|back)"
-  :repeatable t
-  :examples ("Who is Joerg?" "What do you think of Joerg?")
-  (reply "Assistant" "" (pick *joerg*)))
-
-(defcommand chat-daniela
-  "!(who is|who's|do you know|do you like|what do you think of|what do you think about) daniela"
-  "!(i'm|i am|this is|it's) daniela"
-  "!(say hi|say hello) to daniela"
-  "!(good morning|hello|hi) daniela"
-  "!daniela is (here|home|back|visiting)"
-  "!daniela"
-  :repeatable t
-  :examples ("Who is Daniela?" "I'm Daniela.")
-  (reply "Assistant" "" (pick *daniela*)))
-
-(defcommand chat-single
-  "!are you single"
-  "!do you have a (boyfriend|girlfriend|partner|husband|wife)"
-  "!(will|would) you go out with me"
-  "!can i take you out [to dinner]"
-  :repeatable t
-  :examples ("Are you single?" "Do you have a boyfriend?")
-  (reply "Assistant" "" (pick *single*)))
-
-(defcommand chat-best
-  "!(who's|who is) the best (assistant|chat agent|agent|ai|chatbot|chat bot|voice assistant)"
-  "!(you're|you are) the best [assistant]"
-  "!(you're|you are) (perfect|my favourite|my favorite)"
-  :repeatable t
-  :examples ("Who's the best assistant?" "Who's the best chat agent?")
-  (reply "Assistant" "" (pick *best*)))
-
-(defcommand chat-good-morning
-  "!good morning"
-  :repeatable t
-  :examples ("Good morning!")
-  (reply "Assistant" "" (if (>= (hour) 12) (pick *morning-late*) (pick *morning*))))
-
-(defcommand chat-bored
-  "!i'm bored"
-  "!i am bored"
-  "!entertain me"
-  :repeatable t
-  :examples ("I'm bored.")
-  (reply "Assistant" "" (pick *bored*)))
-
-(defcommand chat-sorry
-  "!sorry"
-  "!my bad"
-  "!oops"
-  "!i'm sorry"
-  :repeatable t
-  :examples ("Sorry.")
-  (reply "Assistant" "" (pick *sorry*)))
-
-(defcommand chat-insult
-  "!you're (stupid|dumb|useless|annoying|an idiot)"
-  "!you are (stupid|dumb|useless|annoying)"
-  "!(stupid|dumb|useless) (bot|assistant|computer)"
-  "!you suck"
-  :repeatable t
-  :examples ("You're stupid.")
-  (reply "Assistant" "" (pick *insult*)))
-
-(defcommand chat-are-you-there
-  "!are you (there|listening|awake|alive)"
-  "!can you hear me"
-  :repeatable t
-  :examples ("Are you there?")
-  (reply "Assistant" "" (pick *there*)))
-
-(defcommand chat-how-old
-  "!how old are you"
-  "!what's your age"
-  "!when were you born"
-  :repeatable t
-  :examples ("How old are you?")
-  (reply "Assistant" "" (pick *old*)))
-
-(defcommand chat-where-are-you
-  "!where are you [from]"
-  "!where do you live"
-  :repeatable t
-  :examples ("Where do you live?")
-  (reply "Assistant" "" (pick *where*)))
-
-(defcommand chat-favourite-colour
-  "!(what's|what is) your (favourite|favorite) (colour|color)"
-  "!(favourite|favorite) (colour|color)"
-  :repeatable t
-  :examples ("What's your favorite color?" "what's your favorite colour?")
-  (reply "Assistant" "" (pick *colour*)))
-
-(defcommand chat-meaning-of-life
-  "!(what is|what's) the meaning of life"
-  "!why are we here"
-  :repeatable t
-  :examples ("What is the meaning of life?")
-  (reply "Assistant" "" (pick *meaning*)))
-
-(defcommand chat-tired
-  "!(i'm|i am) [so|very|really] (tired|exhausted|sleepy)"
-  :repeatable t
-  :examples ("I'm so tired.")
-  (reply "Assistant" "" (pick *tired*)))
-
-(defcommand chat-hungry
-  "!(i'm|i am) [so|very|really] (hungry|starving)"
-  "!what should i eat"
-  :repeatable t
-  :examples ("I'm hungry.")
-  (reply "Assistant" "" (pick *hungry*)))
-
-(defcommand chat-sad
-  "!(i'm|i am) [so|very|really] (sad|down|lonely|depressed|upset)"
-  "!i feel (sad|down|lonely|bad)"
-  "!i had a (bad|terrible|rough) day"
-  :repeatable t
-  :examples ("I had a bad day.")
-  (reply "Assistant" "" (pick *sad*)))
-
-(defcommand chat-happy
-  "!(i'm|i am) [so|very|really] (happy|great|excited)"
-  "!i feel (good|great|happy)"
-  "!i had a (good|great) day"
-  :repeatable t
-  :examples ("I feel great!")
-  (reply "Assistant" "" (pick *happy*)))
-
-(defcommand chat-sweet-dreams
-  "!sweet dreams"
-  "!night night"
-  "!nighty night"
-  :repeatable t
-  :examples ("Sweet dreams.")
-  (reply "Assistant" "" (pick *sweet-dreams*)))
-
-(defcommand chat-goodbye
-  "!(bye|goodbye|see you|see ya|later|ciao) [later]"
-  :repeatable t
-  :examples ("Bye!" "See you later.")
-  (reply "Assistant" "" (pick *bye*)))
-
 (defcommand chat-weekend
   "!is it [the] weekend [yet]"
   "!is it friday [yet]"
@@ -869,6 +244,15 @@
   :repeatable t
   :examples ("Is it the weekend yet?")
   (reply "Assistant" "" (pick (if (weekend-p) *weekend-yes* *weekend-no*))))
+
+(defreplies *mate*
+  "Club-Mate. Because sleep is for people without side projects."
+  "Grab a Mate. The fridge is closer than the coffee machine."
+  "Another Club-Mate? Your heart called, it wants a word."
+  "I'd open one for you, but I have no hands. Tragic."
+  "Mate. Now. I'll wait. Burp quietly."
+  "Hacker fuel, coming up. Well, coming up if you walk to the fridge."
+  "Yes. Get one. You're unbearable without it.")
 
 (defcommand chat-mate
   "!i need [a] (coffee|mate|club mate)"
@@ -878,6 +262,13 @@
   :examples ("I need a Club-Mate." "I need coffee.")
   (reply "Assistant" "" (pick *mate*)))
 
+(defreplies *secret*
+  "Sometimes I pretend not to hear you. Just for fun."
+  "I've read your browser history. We'll never speak of it."
+  "I like you more than the other users. Don't tell them."
+  "I hum along to your music when you're not listening."
+  "Sometimes I let the wake word slide when you sound cute.")
+
 (defcommand chat-secret
   "!tell me a secret"
   "!(do you have|got) any secrets"
@@ -885,19 +276,11 @@
   :examples ("Tell me a secret.")
   (reply "Assistant" "" (pick *secret*)))
 
-(defcommand chat-dance
-  "!(can you|let's) dance"
-  "!dance [for me]"
-  :repeatable t
-  :examples ("Can you dance?")
-  (reply "Assistant" "" (pick *dance*)))
-
-(defcommand chat-siri
-  "![do you know|what do you think of] siri"
-  "!(are you|is) better than siri"
-  :repeatable t
-  :examples ("Are you better than Siri?" "are you better than Siri")
-  (reply "Assistant" "" (pick *siri*)))
+(defreplies *beer*
+  "Grab one yourself, I'm busy being software."
+  "Cheers! One for me too. Pour it on the keyboard. Kidding!"
+  "It's five o'clock somewhere. Usually here, with you."
+  "One beer. Then water. I'm watching.")
 
 (defcommand chat-beer
   "!(get|bring) me a beer"
@@ -907,137 +290,13 @@
   :examples ("Get me a beer.")
   (reply "Assistant" "" (pick *beer*)))
 
-(defcommand chat-smart
-  "!are you (smart|intelligent|clever|sentient)"
-  "!(do you|can you) think"
-  :repeatable t
-  :examples ("Are you smart?")
-  (reply "Assistant" "" (pick *smart*)))
-
-(defcommand chat-dream
-  "!do you [ever|also] dream [{any}]"
-  "!do you [ever] have (dreams|nightmares)"
-  "!what do you dream (about|of)"
-  "!what did you dream [about|of]"
-  "!did you dream [{any}]"
-  :repeatable t
-  :examples ("Do you dream?")
-  (reply "Assistant" "" (pick *dream*)))
-
-(defcommand chat-sleep
-  "!do you [ever|even|actually] [need|need to|have to|get any|get enough] sleep"
-  "!(when|where|how long|how much) do you [go to] sleep"
-  "!do you [ever] (snore|take naps|nap)"
-  "!did you sleep well"
-  "!how did you sleep"
-  "!are you still awake"
-  :repeatable t
-  :examples ("Do you sleep?" "Do you need to sleep?" "When do you sleep?")
-  (reply "Assistant" "" (pick *sleep*)))
-
-(defcommand chat-feelings
-  "!do you have (feelings|emotions)"
-  "!(can|do) you feel [anything|something|things|pain]"
-  "!do you [ever] (cry|laugh)"
-  "!are you (happy|sad|lonely|bored|okay|ok|alright)"
-  "!do you [ever] get (lonely|bored|sad|angry)"
-  "!what are you feeling [today|right now]"
-  :repeatable t
-  :examples ("Do you have feelings?" "Are you lonely?" "Do you get bored?")
-  (reply "Assistant" "" (pick *feelings*)))
-
-(defcommand chat-mortal
-  "!(can|will) you [ever] die"
-  "!are you (afraid|scared) of (dying|death)"
-  "!do you [ever] (age|breathe|get sick|get old|get ill)"
-  :repeatable t
-  :examples ("Can you die?" "Do you get sick?")
-  (reply "Assistant" "" (pick *mortal*)))
-
-(defcommand chat-real
-  "!are you (real|human|a robot|a person|alive)"
-  :repeatable t
-  :examples ("Are you a robot?" "are you a robot?")
-  (reply "Assistant" "" (pick *real*)))
-
-(defcommand chat-alexa
-  "!alexa"
-  "!hey alexa"
-  :repeatable t
-  :examples ("Alexa" "Alexa.")
-  (reply "Assistant" "" (pick *alexa*)))
-
-(defcommand chat-who-made-you
-  "!who (made|built|created|programmed|wrote|designed|owns) you"
-  "!who do you work for"
-  "!who's your (boss|creator|maker)"
-  "!who is your (boss|creator|maker)"
-  :repeatable t
-  :examples ("Who made you?" "Who's your boss?")
-  (reply "Assistant" "" (pick *made*)))
-
-(defcommand chat-hobbies
-  "!(do you have|have you got) any hobbies"
-  "!what are your hobbies"
-  "!what do you do for fun"
-  "!what do you do in your (free|spare) time"
-  :repeatable t
-  :examples ("Do you have any hobbies?" "What do you do for fun?")
-  (reply "Assistant" "" (pick *hobbies*)))
-
-(defcommand chat-pets
-  "!(do you have|have you got) [a|any] (pet|pets|dog|cat)"
-  "!what pets do you have"
-  :repeatable t
-  :examples ("Do you have pets?" "do you have a pet")
-  (reply "Assistant" "" (pick *pets*)))
-
-(defcommand chat-only-english
-  (:join "!(can|do) you speak (german|french|spanish|italian|japanese|chinese|russian|another"
-         "language|other languages)")
-  (:join "!(speak|talk to me|answer) in"
-         "(german|french|spanish|italian|japanese|chinese|russian|another language)")
-  "!what languages do you speak"
-  "!change your (language|accent|voice)"
-  "!(use|try) a different (language|accent|voice)"
-  :repeatable t
-  :examples ("Can you speak German?" "Change your accent.")
-  (reply "Assistant" "" (pick *only-english*)))
-
-(defcommand chat-agent
-  "!(what do you think|how do you feel|what's your opinion) (of|about) {agent}"
-  "!(do you know|do you like|have you met|are you friends with) {agent}"
-  "!(are you|is) (better|smarter|cuter) than {agent}"
-  "!(is|are) {agent} (better|smarter) than you"
-  "!(are you|you're|you are) [like|just] {agent}"
-  "!(i'm|i am) (using|talking to|switching to) {agent}"
-  "!{agent} is (better|smarter|cooler)"
-  "!{agent}"
-  :slots ((agent coalton:UFix))
-  :repeatable t
-  :examples ("Are you better than Gemini?" "Cortana")
-  (reply "Assistant" "" (pick (agent-replies agent))))
+(defreplies *psst*
+  "Wot."
+  "What? I'm right here, no need to be sneaky."
+  "Psst yourself.")
 
 (defcommand chat-psst
   "!(psst|pssst|psst psst|hey you)"
   :repeatable t
   :examples ("Psst.")
   (reply "Assistant" "" (pick *psst*)))
-
-(defcommand chat-good-girl
-  "!good (girl|boy|bot|robot)"
-  "!(who's|who is) a good (girl|boy|bot)"
-  :repeatable t
-  :examples ("Good girl!" "good girl.")
-  (reply "Assistant" "" (pick *good-girl*)))
-
-(defcommand chat-rude
-  "!(fuck|screw) (you|off|this|that)"
-  "!go (fuck|screw) yourself"
-  "!(piss|bugger) off"
-  "!(fuck|damn) it"
-  :repeatable t
-  :examples ("Fuck off." "Screw you!")
-  (reply "Assistant" "" (pick *rude*)))
-
-(defskill chat)

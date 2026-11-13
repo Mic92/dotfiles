@@ -10,7 +10,8 @@ for details.
   `voice-assistant.service`.
 - `brain/` (Common Lisp): understands requests and runs the skills. Runs as
   `voice-assistant-brain.service`.
-  - `brain/skills/*.lisp`: one file per skill (`defcommand`, `defreplies`).
+  - `brain/skills/*.lisp`: one file per skill (`defcommand`, `defreplies`), or
+    several for a big one: `self.lisp` continues `chat.lisp`.
   - `brain/tests/*.lisp`: tests. New files go into `voice-assistant-brain.asd`.
 - `tests/golden.tsv`: sentences and the command each must parse to.
 
