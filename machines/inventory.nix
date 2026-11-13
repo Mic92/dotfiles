@@ -40,7 +40,6 @@ clan-core.lib.clan {
       };
       matchbox.deploy.targetHost = "root@matchbox.x";
       jacquardmachine.deploy.targetHost = "root@jacquardmachine.x";
-      utm-vm.deploy.targetHost = "root@utm-vm.x";
     };
 
     instances = {
