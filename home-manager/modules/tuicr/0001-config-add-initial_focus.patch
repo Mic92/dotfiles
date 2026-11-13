@@ -1,6 +1,6 @@
-From 765d7db924c13217df01e15ee949c691092d3b3c Mon Sep 17 00:00:00 2001
+From 15e0be5a42c6b9d9bab5ab97e0d9d60474953519 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
-Date: Sat, 17 Oct 2026 15:29:06 +0200
+Date: Sat, 19 Sep 2026 10:37:19 +0200
 Subject: [PATCH] feat(config): add initial_focus to start in the file tree
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -21,7 +21,7 @@ Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
  3 files changed, 46 insertions(+)
 
 diff --git a/docs/CONFIG.md b/docs/CONFIG.md
-index 33355ad..b725e66 100644
+index a7a031e..c06a94e 100644
 --- a/docs/CONFIG.md
 +++ b/docs/CONFIG.md
 @@ -28,6 +28,7 @@ diff_view = "side-by-side"
@@ -32,7 +32,7 @@ index 33355ad..b725e66 100644
  show_file_list = true
  compact_folders = false
  show_pr_checks = false
-@@ -91,6 +92,7 @@ session_header = true
+@@ -93,6 +94,7 @@ session_header = true
  | `diff_view`                | `unified`    | `unified` or `side-by-side`. Toggle in-app with `:diff`.                                                                                                   |
  | `commit_order`             | `descending` | Inline commit selector order: `descending` (newest on top, the default) or `ascending` (oldest on top).                                                    |
  | `initial_commit_selection` | `all`        | Which commits are selected when a multi-commit review first opens: `all`, or `oldest` to start on just the oldest commit and walk forward with `(` / `)`.  |
@@ -41,10 +41,10 @@ index 33355ad..b725e66 100644
  | `ignore_whitespace_overrides` | (none)    | Table of extension-to-boolean overrides, used only with `ignore_whitespace = "auto"`. `true` ignores whitespace; `false` compares normally. |
  | `show_file_list`           | `true`       | Whether the file list panel is visible on startup. Toggle with `<leader>e`.                                                                                |
 diff --git a/src/config/mod.rs b/src/config/mod.rs
-index 01bb677..a26ee21 100644
+index 16d6fb3..1293abd 100644
 --- a/src/config/mod.rs
 +++ b/src/config/mod.rs
-@@ -185,6 +185,8 @@ pub struct AppConfig {
+@@ -192,6 +192,8 @@ pub struct AppConfig {
      /// `"all"` (the default) or `"oldest"` (only the oldest commit, for a
      /// walk-forward per-commit review).
      pub initial_commit_selection: Option<String>,
@@ -53,7 +53,7 @@ index 01bb677..a26ee21 100644
      pub ignore_whitespace: Option<IgnoreWhitespaceConfig>,
      /// Extension → ignore-whitespace decisions used only when
      /// `ignore_whitespace = "auto"`. Keys are stored already normalized
-@@ -264,6 +266,7 @@ const KNOWN_KEYS: &[&str] = &[
+@@ -278,6 +280,7 @@ const KNOWN_KEYS: &[&str] = &[
      "diff_view",
      "commit_order",
      "initial_commit_selection",
@@ -61,7 +61,7 @@ index 01bb677..a26ee21 100644
      "ignore_whitespace",
      "ignore_whitespace_overrides",
      "wrap",
-@@ -614,6 +617,12 @@ fn load_config_from_path(path: &Path) -> Result<ConfigLoadOutcome> {
+@@ -644,6 +647,12 @@ fn load_config_from_path(path: &Path) -> Result<ConfigLoadOutcome> {
              &["all", "oldest"],
              &mut warnings,
          ),
@@ -74,7 +74,7 @@ index 01bb677..a26ee21 100644
          ignore_whitespace,
          ignore_whitespace_overrides,
          wrap: read_bool(table, "wrap", &mut warnings),
-@@ -1279,6 +1288,33 @@ mod tests {
+@@ -1324,6 +1333,33 @@ mod tests {
          assert!(outcome.warnings[0].contains("\"descending\" or \"ascending\""));
      }
  
@@ -109,10 +109,10 @@ index 01bb677..a26ee21 100644
      fn should_parse_initial_commit_selection_oldest() {
          let outcome = parse_config("initial_commit_selection = \"oldest\"\n");
 diff --git a/src/main.rs b/src/main.rs
-index a1e5552..0f5187f 100644
+index 138dfc4..eb0e8fc 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -400,6 +400,14 @@ fn main() -> anyhow::Result<()> {
+@@ -415,6 +415,14 @@ fn main() -> anyhow::Result<()> {
          app.focused_panel = FocusedPanel::Diff;
      }
  
@@ -124,9 +124,9 @@ index a1e5552..0f5187f 100644
 +        app.focused_panel = FocusedPanel::FileList;
 +    }
 +
-     if let Some(message) = startup_warnings.first() {
-         app.set_warning(message.clone());
+     if let Some(message) = preferred_startup_warning(&startup_warnings) {
+         app.set_warning(message);
      }
 -- 
-2.55.0
+2.56.0
 
