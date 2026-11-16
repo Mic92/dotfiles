@@ -15,7 +15,7 @@ in
 
   # CA, hub key pair and the worker key pair share one generator so they
   # come from a single self-signed root. The worker key pair (worker.crt,
-  # worker.key) is consumed by the eliza worker in doctor-cluster-config.
+  # worker.key) is consumed by the workers in doctor-cluster-config.
   clan.core.vars.generators.tribuchet = {
     files = {
       "ca.crt".secret = false;

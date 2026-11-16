@@ -76,10 +76,16 @@ in
               eva = [ "x509:dns:eva.r" ];
               eliza = [ "x509:dns:eliza.r" ];
               jamie = [ "x509:dns:jamie.r" ];
+              polly = [ "x509:dns:polly.r" ];
+              irene = [ "x509:dns:irene.r" ];
+              graham = [ "x509:dns:graham.r" ];
             };
             groups.tum = [
               "eliza"
               "jamie"
+              "polly"
+              "irene"
+              "graham"
             ];
             groups.relays = [
               "eve"
@@ -120,6 +126,9 @@ in
                 "eve/tribuchet-hub"
                 "eliza/tribuchet-worker"
                 "jamie/tribuchet-worker"
+                "polly/tribuchet-worker"
+                "irene/tribuchet-worker"
+                "graham/tribuchet-worker"
               ];
             }
             {
