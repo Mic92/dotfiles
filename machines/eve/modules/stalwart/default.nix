@@ -28,21 +28,32 @@ let
   adminPasswordFile = config.clan.core.vars.generators.stalwart.files.admin-password.path;
 
   cfg = config.services.stalwart;
-  format = pkgs.formats.toml { };
-  staticConfig = format.generate "stalwart.toml" cfg.settings;
-  # staticConfig + private alias map from clan vars, assembled in preStart
-  runtimeConfig = "/run/stalwart/config.toml";
+  credential = name: variant "File" { filePath = "/run/credentials/stalwart.service/${name}"; };
+  apiUrl = "http://127.0.0.1:8642";
 
   acmeDir = config.security.acme.certs."thalheim.io".directory;
+
+  variant = type: value: { "@type" = type; } // value;
+  expr = match: default: {
+    inherit match;
+    "else" = default;
+  };
+  id = lib.replaceStrings [ "." ] [ "-" ];
 in
 {
   services.stalwart = {
     enable = true;
-    package = pkgs.stalwart_0_15;
+    package = pkgs.stalwart_1_0;
     stateVersion = "26.05";
+    url = "https://jmap.thalheim.io";
+    # Also accepted as `user%admin` master login for any account.
+    admin = {
+      enable = true;
+      username = "admin";
+    };
     credentials = {
       ldap_password = ldapPasswordFile;
-      admin_password = adminPasswordFile;
+      admin = adminPasswordFile;
     }
     // lib.listToAttrs (
       lib.concatMap (d: [
@@ -51,268 +62,293 @@ in
       ]) dkimDomains
     );
 
-    settings = {
-      # Keys read from this file instead of the DB-backed webadmin settings.
-      config.local-keys = [
-        "store.*"
-        "directory.*"
-        "tracer.*"
-        "server.*"
-        "!server.blocked-ip.*"
-        "certificate.*"
-        "authentication.*"
-        "storage.*"
-        "lookup.*"
-        "session.*"
-        "queue.connection.default.*"
-        "queue.tls.default.*"
-        "auth.dkim.*"
-        "auth.arc.*"
-        "signature.*"
-        "report.*"
-        "email.*"
-        "imap.*"
-        "jmap.*"
-        "sieve.*"
-        "http.*"
-        "webadmin.*"
-        "resolver.*"
-        "spam-filter.resource"
-        "config.local-keys.*"
-      ];
+    provision = {
+      enable = true;
+      urls = [ apiUrl ];
 
-      tracer.stdout = {
-        type = "stdout";
-        level = "debug";
-        ansi = false;
-        enable = true;
+      singletons = {
+        SystemSettings = {
+          defaultHostname = "mail.thalheim.io";
+          defaultDomainId = "#domain-thalheim-io";
+          defaultCertificateId = "#cert-wildcard";
+        };
+        Authentication.directoryId = "#ldap";
+        Http = {
+          clientIpSource = "xForwardedFor";
+          # bulwark on mail.thalheim.io talks to jmap.thalheim.io from the browser
+          usePermissiveCors = true;
+        };
+
+        MtaStageRcpt = {
+          rewrite = expr [
+            {
+              "if" = "key_exists('aliases', rcpt)";
+              "then" = "key_get('aliases', rcpt)";
+            }
+            {
+              "if" = "matches('^joerg[.+][^@]+@thalheim\\.io$', rcpt)";
+              "then" = "'joerg@thalheim.io'";
+            }
+            {
+              "if" = "matches('^shannan[.+][^@]+@lekwati\\.com$', rcpt)";
+              "then" = "'shannan@lekwati.com'";
+            }
+            {
+              "if" = "matches('^devkid-[^@.]+@devkid\\.net$', rcpt)";
+              "then" = "'devkid@devkid.net'";
+            }
+            {
+              "if" = "matches('^(info|dave)\\.[^@.]+@davhau\\.com$', rcpt)";
+              "then" = "'info@davhau.com'";
+            }
+            {
+              "if" = "rcpt == 'hello@handi-work.co.uk'";
+              "then" = "'mlekwati@gmail.com'";
+            }
+            {
+              "if" = "matches('^ls1-logins-[^@.]+@thalheim\\.io$', rcpt)";
+              "then" = "'ls1-logins@lists.lrz.de'";
+            }
+          ] "false";
+          # rcpt/rcpt_domain are post-rewrite here
+          allowRelaying = expr [
+            {
+              "if" = "!is_empty(authenticated_as)";
+              "then" = "true";
+            }
+            {
+              "if" =
+                "rcpt_domain == 'lists.lrz.de' || rcpt == 'mlekwati@gmail.com' || key_exists('alias-targets', rcpt)";
+              "then" = "true";
+            }
+          ] "false";
+        };
+        MtaStageData.maxMessageSize = expr [ ] "51200000";
+
+        ReportSettings = {
+          outboundReportDomain = "thalheim.io";
+          outboundReportSubmitter = expr [ ] "'mail.thalheim.io'";
+          inboundReportAddresses = [
+            "postmaster@*"
+            "joerg.dmarc@thalheim.io"
+            "joerc.dmarc@thalheim.io"
+            "joerg.smtp-tls@thalheim.io"
+          ];
+          inboundReportForwarding = true;
+        };
+
+        # folder names as migrated from dovecot
+        Email.defaultFolders =
+          lib.genAttrs
+            [
+              "trash"
+              "sent"
+              "drafts"
+              "archive"
+            ]
+            (use: {
+              name = lib.toSentenceCase use;
+              create = true;
+              subscribe = true;
+            })
+          // {
+            junk = {
+              name = "Spam";
+              aliases = [
+                "Junk"
+                "Junk Mail"
+              ];
+              create = true;
+              subscribe = true;
+            };
+          };
+
+        # Stalwart would otherwise download the rules from GitHub.
+        SpamSettings.spamFilterRulesUrl = "file://${cfg.package.spam-filter}/spam-filter-rules.json.gz";
       };
 
-      server = {
-        hostname = "mail.thalheim.io";
-        tls.certificate = "wildcard";
+      objects = {
+        NetworkListener = {
+          reconcile = true;
+          match = [ "name" ];
+          objects =
+            let
+              listener = protocol: bind: implicitTls: name: {
+                inherit name protocol implicitTls;
+                bind = [ bind ];
+              };
+            in
+            lib.mapAttrs (name: mk: mk name) {
+              smtp = listener "smtp" "[::]:25" false;
+              submissions = listener "smtp" "[::]:465" true;
+              submission = listener "smtp" "[::]:587" false;
+              imap = listener "imap" "[::]:143" false;
+              imaps = listener "imap" "[::]:993" true;
+              sieve = listener "manageSieve" "[::]:4190" false;
+              http = listener "http" "127.0.0.1:8642" false;
+            };
+        };
+
+        Tracer = {
+          reconcile = true;
+          match = [ "@type" ];
+          objects.stdout = variant "Stdout" {
+            enable = true;
+            level = "debug";
+            ansi = false;
+          };
+        };
+
+        # Stalwart would otherwise download the web UI from GitHub.
+        Application = {
+          reconcile = true;
+          match = [ "description" ];
+          objects.webui = {
+            description = "Stalwart Web Interface";
+            enable = true;
+            resourceUrl = "file://${cfg.package.webui}/webui.zip";
+            urlPrefix = [
+              "/admin"
+              "/account"
+            ];
+          };
+        };
+
+        Certificate = {
+          reconcile = true;
+          match = [ "certificate" ];
+          objects.cert-wildcard = {
+            certificate = variant "File" { filePath = "${acmeDir}/fullchain.pem"; };
+            privateKey = variant "File" { filePath = "${acmeDir}/key.pem"; };
+          };
+        };
+
+        Directory = {
+          reconcile = true;
+          match = [ "description" ];
+          objects.ldap = variant "Ldap" {
+            description = "lldap";
+            url = "ldap://127.0.0.1:3890";
+            baseDn = "ou=people,dc=eve";
+            bindDn = "uid=stalwart,ou=people,dc=eve";
+            bindSecret = credential "ldap_password";
+            # lldap exposes no hashes, so look up the DN and bind as it
+            bindAuthentication = true;
+            timeout = 15000;
+            filterLogin = "(&${ldapFilter}(mail=?))";
+            filterRecipient = "(&${ldapFilter}(mail=?))";
+            # LDAP groups are only used to gate access, not as mail groups.
+            filterMemberOf = null;
+            attrMemberOf = [ ];
+            attrEmail = [ "mail" ];
+            attrEmailAlias = [ ];
+            attrDescription = [ "cn" ];
+          };
+        };
+
+        Domain = {
+          match = [ "name" ];
+          objects = lib.listToAttrs (
+            map (
+              name:
+              lib.nameValuePair "domain-${id name}" {
+                inherit name;
+                certificateManagement = variant "Manual" { };
+                dnsManagement = variant "Manual" { };
+                dkimManagement = variant "Manual" { };
+              }
+            ) mailDomains
+          );
+        };
+
+        DkimSignature = {
+          reconcile = true;
+          match = [
+            "@type"
+            "domainId"
+            "selector"
+          ];
+          objects = lib.listToAttrs (
+            lib.concatMap (
+              domain:
+              lib.concatMap
+                (
+                  algo:
+                  let
+                    common = {
+                      domainId = "#domain-${id domain}";
+                      selector = "${dkimSelector}${lib.substring 0 1 algo.name}";
+                      privateKey = credential "dkim-${domain}.${algo.name}";
+                      stage = "active";
+                    };
+                  in
+                  [
+                    (lib.nameValuePair "dkim1-${algo.name}-${id domain}" (
+                      variant "Dkim1${algo.type}" (
+                        common
+                        // {
+                          headers = [
+                            "From"
+                            "To"
+                            "Cc"
+                            "Date"
+                            "Subject"
+                            "Message-ID"
+                            "MIME-Version"
+                            "Content-Type"
+                            "In-Reply-To"
+                            "References"
+                            "List-Id"
+                          ];
+                          canonicalization = "relaxed/relaxed";
+                          report = false;
+                        }
+                      )
+                    ))
+                    # DKIM2 publishes keys in the same DNS record format, so it
+                    # shares key and selector with DKIM1.
+                    (lib.nameValuePair "dkim2-${algo.name}-${id domain}" (variant "Dkim2${algo.type}" common))
+                  ]
+                )
+                [
+                  {
+                    name = "rsa";
+                    type = "RsaSha256";
+                  }
+                  {
+                    name = "ed25519";
+                    type = "Ed25519Sha256";
+                  }
+                ]
+            ) dkimDomains
+          );
+        };
+
+        MtaConnectionStrategy = {
+          match = [ "name" ];
+          objects.connection-default = {
+            name = "default";
+            ehloHostname = "mail.thalheim.io";
+            localIps = [
+              { localIp = config.networking.eve.ipv4.address; }
+              { localIp = config.networking.eve.ipv6.address; }
+            ];
+          };
+        };
+
         # Bulwark and Authelia connect from eve itself; failed logins they
         # relay must not get eve auto-banned.
-        allowed-ip = {
-          "127.0.0.1" = "";
-          "::1" = "";
-          ${config.networking.eve.ipv4.address} = "";
-          ${config.networking.eve.ipv6.address} = "";
-        };
-        listener = {
-          smtp = {
-            bind = [ "[::]:25" ];
-            protocol = "smtp";
-          };
-          submissions = {
-            bind = [ "[::]:465" ];
-            protocol = "smtp";
-            tls.implicit = true;
-          };
-          submission = {
-            bind = [ "[::]:587" ];
-            protocol = "smtp";
-          };
-          imap = {
-            bind = [ "[::]:143" ];
-            protocol = "imap";
-          };
-          imaps = {
-            bind = [ "[::]:993" ];
-            protocol = "imap";
-            tls.implicit = true;
-          };
-          sieve = {
-            bind = [ "[::]:4190" ];
-            protocol = "managesieve";
-          };
-          http = {
-            bind = [ "127.0.0.1:8642" ];
-            protocol = "http";
-          };
-        };
-      };
-
-      http = {
-        url = "'https://jmap.thalheim.io'";
-        use-x-forwarded = true;
-        # bulwark on mail.thalheim.io talks to jmap.thalheim.io from the browser
-        permissive-cors = true;
-      };
-
-      certificate.wildcard = {
-        cert = "%{file:${acmeDir}/fullchain.pem}%";
-        private-key = "%{file:${acmeDir}/key.pem}%";
-        default = true;
-      };
-
-      authentication.fallback-admin = {
-        user = "admin";
-        secret = "%{file:/run/credentials/stalwart.service/admin_password}%";
-      };
-      # `user%admin` logs in as any user
-      authentication.master = {
-        user = "admin";
-        secret = "%{file:/run/credentials/stalwart.service/admin_password}%";
-      };
-
-      storage.directory = "ldap";
-      directory.ldap = {
-        type = "ldap";
-        url = "ldap://127.0.0.1:3890";
-        base-dn = "ou=people,dc=eve";
-        timeout = "15s";
-        tls.enable = false;
-        bind = {
-          dn = "uid=stalwart,ou=people,dc=eve";
-          secret = "%{file:/run/credentials/stalwart.service/ldap_password}%";
-          # lldap exposes no hashes, so look up the DN and bind as it
-          auth.method = "lookup";
-        };
-        filter = {
-          name = "(&${ldapFilter}(|(mail=?)(uid=?)))";
-          email = "(&${ldapFilter}(mail=?))";
-        };
-        attributes = {
-          name = "mail";
-          email = "mail";
-          description = "cn";
-        };
-      };
-
-      session.rcpt = {
-        directory = "'ldap'";
-        rewrite = [
-          {
-            "if" = "key_exists('aliases', rcpt)";
-            "then" = "key_get('aliases', rcpt)";
-          }
-          {
-            "if" = "matches('^joerg[.+][^@]+@thalheim\\.io$', rcpt)";
-            "then" = "'joerg@thalheim.io'";
-          }
-          {
-            "if" = "matches('^shannan[.+][^@]+@lekwati\\.com$', rcpt)";
-            "then" = "'shannan@lekwati.com'";
-          }
-          {
-            "if" = "matches('^devkid-[^@.]+@devkid\\.net$', rcpt)";
-            "then" = "'devkid@devkid.net'";
-          }
-          {
-            "if" = "matches('^(info|dave)\\.[^@.]+@davhau\\.com$', rcpt)";
-            "then" = "'info@davhau.com'";
-          }
-          {
-            "if" = "rcpt == 'hello@handi-work.co.uk'";
-            "then" = "'mlekwati@gmail.com'";
-          }
-          {
-            "if" = "matches('^ls1-logins-[^@.]+@thalheim\\.io$', rcpt)";
-            "then" = "'ls1-logins@lists.lrz.de'";
-          }
-          { "else" = false; }
-        ];
-        # rcpt/rcpt_domain are post-rewrite here
-        relay = [
-          {
-            "if" = "!is_empty(authenticated_as)";
-            "then" = true;
-          }
-          {
-            "if" =
-              "rcpt_domain == 'lists.lrz.de' || rcpt == 'mlekwati@gmail.com' || key_exists('alias-targets', rcpt)";
-            "then" = true;
-          }
-          { "else" = false; }
-        ];
-      };
-      session.data.limits.size = 51200000;
-
-      queue.connection.default = {
-        ehlo-hostname = "mail.thalheim.io";
-        source-ips = [
-          config.networking.eve.ipv4.address
-          config.networking.eve.ipv6.address
-        ];
-      };
-      queue.tls.default = {
-        dane = "optional";
-        starttls = "optional";
-        allow-invalid-certs = false;
-      };
-
-      auth.dkim.sign = [
-        {
-          "if" =
-            "is_empty(authenticated_as) && local_port == 25 || !("
-            + lib.concatMapStringsSep " || " (d: "sender_domain == '${d}'") dkimDomains
-            + ")";
-          "then" = false;
-        }
-        { "else" = "['rsa-' + sender_domain, 'ed25519-' + sender_domain]"; }
-      ];
-      auth.arc.seal = "'ed25519-thalheim.io'";
-      signature = lib.listToAttrs (
-        lib.concatMap (
-          domain:
-          map
-            (
-              algo:
-              lib.nameValuePair "${algo}-${domain}" {
-                private-key = "%{file:/run/credentials/stalwart.service/dkim-${domain}.${algo}}%";
-                inherit domain;
-                selector = "${dkimSelector}${lib.substring 0 1 algo}";
-                headers = [
-                  "From"
-                  "To"
-                  "Cc"
-                  "Date"
-                  "Subject"
-                  "Message-ID"
-                  "MIME-Version"
-                  "Content-Type"
-                  "In-Reply-To"
-                  "References"
-                  "List-Id"
-                ];
-                algorithm = "${algo}-sha256";
-                canonicalization = "relaxed/relaxed";
-                report = false;
-              }
-            )
-            [
-              "rsa"
-              "ed25519"
+        AllowedIp = {
+          match = [ "address" ];
+          objects = lib.listToAttrs (
+            lib.imap0 (i: address: lib.nameValuePair "allowed-ip-${toString i}" { inherit address; }) [
+              "127.0.0.1"
+              "::1"
+              config.networking.eve.ipv4.address
+              config.networking.eve.ipv6.address
             ]
-        ) dkimDomains
-      );
-
-      report = {
-        domain = "thalheim.io";
-        submitter = "'mail.thalheim.io'";
-        analysis.addresses = [
-          "postmaster@*"
-          "joerg.dmarc@thalheim.io"
-          "joerc.dmarc@thalheim.io"
-          "joerg.smtp-tls@thalheim.io"
-        ];
-        analysis.forward = true;
-      };
-
-      # folder names as migrated from dovecot
-      email.folders = {
-        junk = {
-          name = "Spam";
-          aliases = [
-            "Junk"
-            "Junk Mail"
-          ];
+          );
         };
-        trash.name = "Trash";
-        sent.name = "Sent";
-        drafts.name = "Drafts";
-        archive.name = "Archive";
       };
     };
   };
@@ -323,59 +359,53 @@ in
       "acme-thalheim.io.service"
     ];
     wants = [ "acme-finished-thalheim.io.target" ];
-    restartTriggers = [ staticConfig ];
-    preStart = ''
-      {
-        cat ${staticConfig}
-        printf '\n[lookup.aliases]\n'
-        sed -E '/^[[:space:]]*(#|$)/d; s/^[[:space:]]*([^[:space:]]+)[[:space:]]+([^[:space:]]+).*$/"\1" = "\2"/' "$CREDENTIALS_DIRECTORY/aliases"
-        printf '\n[lookup.alias-targets]\n'
-        sed -E '/^[[:space:]]*(#|$)/d; s/^[[:space:]]*[^[:space:]]+[[:space:]]+([^[:space:]]+).*$/\1/' "$CREDENTIALS_DIRECTORY/aliases" \
-          | grep -vE '@(${lib.concatMapStringsSep "|" lib.escapeRegex mailDomains})$' | sort -u \
-          | sed -E 's/.*/"&" = ""/'
-      } > ${runtimeConfig}
-    '';
-    serviceConfig = {
-      RuntimeDirectory = "stalwart";
-      RuntimeDirectoryMode = "0700";
-      LoadCredential = [
-        "aliases:${config.clan.core.vars.generators.postfix-aliases.files.virtual-aliases.path}"
-      ];
-      ExecStart = lib.mkForce [
-        ""
-        "${lib.getExe cfg.package} --config=${runtimeConfig}"
-      ];
-      SupplementaryGroups = [ "nginx" ];
-    };
+    serviceConfig.SupplementaryGroups = [ "nginx" ];
   };
-  systemd.services.stalwart.unitConfig.ConditionPathExists = lib.mkForce [ ];
 
-  # Local domains live in the internal store even with an LDAP directory.
-  systemd.services.stalwart-domains = {
+  # The alias map is private, so it is provisioned from the clan var at
+  # runtime instead of going through the world-readable provision plan.
+  systemd.services.stalwart-aliases = {
     wantedBy = [ "multi-user.target" ];
-    after = [ "stalwart.service" ];
-    requires = [ "stalwart.service" ];
-    restartTriggers = [ (builtins.toJSON mailDomains) ];
+    partOf = [ "stalwart.service" ];
+    after = [ "stalwart-provision.service" ];
+    requires = [ "stalwart-provision.service" ];
     path = [
-      pkgs.curl
       pkgs.jq
+      cfg.provision.package
     ];
+    environment = {
+      STALWART_URL = apiUrl;
+      STALWART_USER = cfg.admin.username;
+      # stalwart-cli caches the server schema and fails without a writable cache.
+      XDG_CACHE_HOME = "/var/cache/stalwart-aliases";
+    };
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      LoadCredential = [ "admin_password:${adminPasswordFile}" ];
       DynamicUser = true;
+      CacheDirectory = "stalwart-aliases";
+      LoadCredential = [
+        "admin:${adminPasswordFile}"
+        "aliases:${config.clan.core.vars.generators.postfix-aliases.files.virtual-aliases.path}"
+      ];
     };
     script = ''
       set -euo pipefail
-      api() { curl -fsS --retry 10 --retry-connrefused -u "admin:$(cat "$CREDENTIALS_DIRECTORY/admin_password")" "$@"; }
-      existing=$(api 'http://127.0.0.1:8642/api/principal?types=domain&limit=1000' | jq -r '.data.items[].name')
-      for d in ${toString mailDomains}; do
-        if ! grep -qxF "$d" <<<"$existing"; then
-          echo "creating domain $d"
-          api -H 'Content-Type: application/json' -d "{\"type\":\"domain\",\"name\":\"$d\"}" http://127.0.0.1:8642/api/principal >/dev/null
-        fi
-      done
+      STALWART_PASSWORD=$(cat "$CREDENTIALS_DIRECTORY/admin")
+      export STALWART_PASSWORD
+      # Destinations outside our domains must be allowed for relaying.
+      jq -Rnc --argjson local ${lib.escapeShellArg (builtins.toJSON mailDomains)} '
+        [inputs | select(test("^\\s*(#|$)") | not) | [splits("\\s+")] | map(select(. != ""))
+         | {key: .[0], value: .[1]}] as $aliases
+        | ($aliases | map(.value) | unique
+           | map(select((split("@")[1]) as $d | $local | index($d) | not))) as $targets
+        | def entries(ns): to_entries | map({key: "\(ns)-\(.key)", value: (.value + {namespace: ns})}) | from_entries;
+          {"@type": "reconcile", object: "MemoryLookupKeyValue", matchOn: ["namespace", "key"],
+           scope: {namespace: "aliases"}, value: ($aliases | entries("aliases"))},
+          {"@type": "reconcile", object: "MemoryLookupKey", matchOn: ["namespace", "key"],
+           scope: {namespace: "alias-targets"}, value: ($targets | map({key: .}) | entries("alias-targets"))},
+          {"@type": "create", object: "Action", value: {reload: {"@type": "ReloadLookupStores"}}}
+      ' "$CREDENTIALS_DIRECTORY/aliases" | stalwart-cli apply --stdin --quiet
     '';
   };
 
@@ -406,7 +436,7 @@ in
         useACMEHost = "thalheim.io";
         forceSSL = true;
         locations."/" = stalwart;
-        locations."= /api/account/auth" = stalwart // {
+        locations."/login" = stalwart // {
           extraConfig = stalwart.extraConfig + "limit_req zone=login burst=10 nodelay;";
         };
       };
