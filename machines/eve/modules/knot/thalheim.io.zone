@@ -70,8 +70,7 @@ imap IN AAAA 2a01:4f9:4b:4084::1
 _mta-sts IN TXT "v=STSv1; id=20181027085700Z;"
 smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.tls-report@thalheim.io"
 ;
-_adsp._domainkey IN TXT "dkim=all;"
-_dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:joerc.dmarc@thalheim.io; ruf=mailto:joerg.dmarc@thalheim.io; pct=100"
+_dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:joerg.dmarc@thalheim.io; ruf=mailto:joerg.dmarc@thalheim.io; pct=100"
 @ IN TXT "v=spf1 ip4:135.181.61.171 ip6:2a01:4f9:4b:4084::/64 -all"
 
 _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
