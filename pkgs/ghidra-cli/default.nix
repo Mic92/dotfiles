@@ -6,6 +6,7 @@
   makeWrapper,
   pkg-config,
   openssl,
+  zstd,
   ghidra,
 }:
 
@@ -32,7 +33,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     pkg-config
   ];
 
-  buildInputs = [ openssl ];
+  buildInputs = [
+    openssl
+    zstd
+  ];
 
   # Integration tests require a running Ghidra installation / network.
   checkFlags = [
