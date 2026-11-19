@@ -2,7 +2,6 @@
 
 - fd, rg, dnsutils, lsof, gdb, binutils, graphicsmagick (gm)
 - On Linux: strace/sysdig/bcc
-- macOS: strace (port available), sed (GNU sed, not BSD)
 
 ## General Guidelines
 
@@ -47,7 +46,8 @@
 
 ## Git
 
-- Commit messages: Linux-kernel style, explain WHY the change is needed.
+- Commit messages: Linux-kernel style, explain WHY the change is needed. Don't
+  mention changes to tests
 - Before ANY commit, read the diff and ...
   1. Check for bugs
   2. Try to simplify your code
@@ -64,10 +64,9 @@
 
 ## Search
 
-- Recommended: Use GitHub code search to find examples for libraries and APIs:
-  `gh search code "foo lang:nix"`.
+- Recommended: Use GitHub code search to find examples for libraries and APIs.
 - Prefer cloning source code over web searches for more accurate results.
   Various projects are available in `~/git`, including: `nixpkgs`, `linux`,
   `nix`
 
-- Start every reply with my name: Mic92
+- Start every reply with my name: Mic92 and keep them concise
