@@ -43,6 +43,8 @@
 
   services.openssh.enable = true;
 
+  environment.systemPackages = [ pkgs.smartmontools ];
+
   systemd.network.networks."10-uplink" = {
     matchConfig.Type = "ether";
     networkConfig.DHCP = "yes";
