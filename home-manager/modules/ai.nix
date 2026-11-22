@@ -48,8 +48,8 @@ let
     cp -r ${herdrAppSrc}/defaults/mods/tabs $out
     chmod -R u+w $out
     substituteInPlace $out/main.js --replace-fail \
-      'const name = /^tb\d+$/.test(c.name) ? program?.name ?? "Terminal" : c.name;' \
-      'const name = c.named ? c.name : `''${c.index} ''${program?.name ?? "Terminal"}`;'
+      'const name = label(c, lead);' \
+      'const name = c.named ? label(c, lead) : `''${c.index} ''${label(c, lead)}`;'
   '';
   # The agents list without program icons: every row is pi anyway.
   herdrAgents = pkgs.runCommand "herdr-app-agents-plain" { } ''
