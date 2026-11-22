@@ -41,7 +41,8 @@ let
   # herdr-app's shipped layouts and mods are read-only and clones never get
   # upstream updates, so derive the personal variants from the packaged
   # source instead: a tab bar that labels unnamed tabs with their program
-  # (tmux's automatic-rename), and the main layout using it.
+  # (tmux's automatic-rename). The layout using them is vendored in
+  # home/.config/herdr-app/layouts/mic92.json.
   herdrAppSrc = aiTools.herdr-app.src;
   herdrTabs = pkgs.runCommand "herdr-app-tabs-auto" { } ''
     cp -r ${herdrAppSrc}/defaults/mods/tabs $out
@@ -56,18 +57,6 @@ let
     chmod -R u+w $out
     substituteInPlace $out/main.js --replace-fail \
       'if (!p?.icon) return null;' 'return null;'
-  '';
-  # Also drops the brand row and the Settings / Add machine footer; both
-  # are reachable from the prefix keys and the palette.
-  herdrLayout = pkgs.runCommand "herdr-app-layout.json" { nativeBuildInputs = [ pkgs.jq ]; } ''
-    jq 'walk(
-      if type == "object" and .mod == "tabs" then .mod = "tabs-auto"
-      elif type == "object" and .mod == "agents" then .mod = "agents-plain"
-      elif type == "array" then map(select((.id? // "") | IN("brand", "sidebar-footer") | not))
-      else . end)' ${herdrAppSrc}/defaults/layouts/main.json > $out
-    grep -q tabs-auto $out
-    grep -q agents-plain $out
-    ! grep -q -e '"brand"' -e sidebar-footer $out
   '';
 in
 {
@@ -135,8 +124,6 @@ in
     cp -r ${aiTools.herdr-core.src}/skills/herdr-core $out
   '';
 
-  # Select once with: herdr-app do layout.switch --name mic92
-  xdg.configFile."herdr-app/layouts/mic92.json".source = herdrLayout;
   # recursive: the app writes jsconfig.json and .d.ts files next to each mod.
   xdg.configFile."herdr-app/mods/tabs-auto" = {
     source = herdrTabs;
