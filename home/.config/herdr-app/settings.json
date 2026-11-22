@@ -5,5 +5,7 @@
   },
   "font_ligatures": false,
   "minimum_contrast": 1.0,
-  "telemetry": false
+  "telemetry": false,
+  "theme": "tokyo-night",
+  "font": "JetBrainsMono Nerd Font"
 }
