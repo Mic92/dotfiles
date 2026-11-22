@@ -20,5 +20,23 @@
     "#bb9af7",
     "#7dcfff",
     "#c0caf5"
-  ]
+  ],
+  "colors": {
+    "foreground": "#c0caf5",
+    "muted": "#a9b1d6",
+    "dim": "#565f89",
+    "chrome": "#16161e",
+    "canvas": "#16161e",
+    "popover": "#1f2335",
+    "raised": "#292e42",
+    "hover": "#292e4299",
+    "selected": "#3b4261",
+    "border": "#292e42",
+    "input": "#3b4261",
+    "ring": "#7aa2f7",
+    "solid": "#c0caf5",
+    "solid_foreground": "#16161e",
+    "idle": "#565f89",
+    "unknown": "#565f89"
+  }
 }
