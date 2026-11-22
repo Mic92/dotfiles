@@ -96,6 +96,13 @@ in
   # herdr pane and wait for their results.
   home.file.".claude/skills/herdr/SKILL.md".source = "${herdrPackage.src}/SKILL.md";
 
+  # Stub that points agents at `hc --skill` / `herdr-app --skill`, which
+  # always match the installed versions.
+  # Copied out so the 90MB source tree stays out of the profile closure.
+  home.file.".claude/skills/herdr-core".source = pkgs.runCommand "herdr-core-skill" { } ''
+    cp -r ${aiTools.herdr-core.src}/skills/herdr-core $out
+  '';
+
   # nixbot-cli (nbo) ships its agent skill alongside the binary
   home.file.".claude/skills/nixbot-cli".source = "${nixbot-cli}/share/skills/nixbot-cli";
 
@@ -140,6 +147,8 @@ in
     aiTools.agent-slack
     aiTools.jscpd
     aiTools.herdr-app
+    # hc: herdr-app only puts it on its own PATH
+    aiTools.herdr-core
     pkgs.pueue
     # interpreter for the pi-agent-extensions nushell tool
     pkgs.nushell
