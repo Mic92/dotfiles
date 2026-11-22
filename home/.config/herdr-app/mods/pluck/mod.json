@@ -1,0 +1,11 @@
+{
+  "place": "none",
+  "title": "Pluck",
+  "overlay": {
+    "kind": "popup",
+    "at": "top",
+    "offset": 64,
+    "width": 720,
+    "height": 480
+  }
+}

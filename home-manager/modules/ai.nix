@@ -37,6 +37,24 @@ let
             builtins.attrNames (builtins.readDir "${inputs.herdr-eternal}/nix/patches")
           );
       });
+
+  # herdr-app's shipped layouts and mods are read-only and clones never get
+  # upstream updates, so derive the personal variants from the packaged
+  # source instead: a tab bar that labels unnamed tabs with their program
+  # (tmux's automatic-rename), and the main layout using it.
+  herdrAppSrc = aiTools.herdr-app.src;
+  herdrTabs = pkgs.runCommand "herdr-app-tabs-auto" { } ''
+    cp -r ${herdrAppSrc}/defaults/mods/tabs $out
+    chmod -R u+w $out
+    substituteInPlace $out/main.js --replace-fail \
+      'const name = /^tb\d+$/.test(c.name) ? program?.name ?? "Terminal" : c.name;' \
+      'const name = c.named ? c.name : `''${c.index} ''${program?.name ?? "Terminal"}`;'
+  '';
+  herdrLayout = pkgs.runCommand "herdr-app-layout.json" { nativeBuildInputs = [ pkgs.jq ]; } ''
+    jq 'walk(if type == "object" and .mod == "tabs" then .mod = "tabs-auto" else . end)' \
+      ${herdrAppSrc}/defaults/layouts/main.json > $out
+    grep -q tabs-auto $out
+  '';
 in
 {
   imports = [
@@ -102,6 +120,14 @@ in
   home.file.".claude/skills/herdr-core".source = pkgs.runCommand "herdr-core-skill" { } ''
     cp -r ${aiTools.herdr-core.src}/skills/herdr-core $out
   '';
+
+  # Select once with: herdr-app do layout.switch --name mic92
+  xdg.configFile."herdr-app/layouts/mic92.json".source = herdrLayout;
+  xdg.configFile."herdr-app/mods/tabs-auto" = {
+    source = herdrTabs;
+    # The app writes jsconfig.json and .d.ts files next to each mod.
+    recursive = true;
+  };
 
   # nixbot-cli (nbo) ships its agent skill alongside the binary
   home.file.".claude/skills/nixbot-cli".source = "${nixbot-cli}/share/skills/nixbot-cli";

@@ -1,0 +1,11 @@
+{
+  "place": "none",
+  "title": "Sesh",
+  "overlay": {
+    "kind": "popup",
+    "at": "top",
+    "offset": 64,
+    "width": 640,
+    "height": 460
+  }
+}

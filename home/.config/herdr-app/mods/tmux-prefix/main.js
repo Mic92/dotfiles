@@ -7,6 +7,9 @@ import {
   nextCommand,
   props,
   run,
+  setShared,
+  shared,
+  spaces,
   theme,
 } from "herdr";
 
@@ -14,6 +17,12 @@ import {
 // ~/.tmux.conf), so k closes a pane instead of moving focus; alt-hjkl and
 // the arrows move focus.
 const REPEAT_MS = 500;
+// Handled here rather than by an app command.
+const LAST_SPACE = "@last-space";
+// The two spaces most recently seen when the prefix was pressed, newest
+// first. Every prefix action passes through here, so this is enough to
+// find the space to go back to.
+const SEEN = "tmux-prefix.spaces";
 const BINDINGS = [
   ["c", "New tab", "tab.new"],
   ["C", "New space", "space.new"],
@@ -29,8 +38,10 @@ const BINDINGS = [
   ["p", "Previous tab", "tab.prev", {}, true],
   [")", "Next space", "space.next", {}, true],
   ["(", "Previous space", "space.prev", {}, true],
-  ["s", "Picker", "mod.open", { name: "picker" }],
-  ["w", "Picker", "mod.open", { name: "picker" }],
+  ["s", "Projects", "mod.open", { name: "sesh" }],
+  ["L", "Last space", LAST_SPACE],
+  ["w", "Tabs", "mod.open", { name: "picker" }],
+  ["f", "Pluck", "mod.open", { name: "pluck" }],
   [",", "Settings", "app.settings"],
   ["$", "Rename space", "space.rename"],
   // The closest thing to detach: terminals keep running in herdr-core.
@@ -71,6 +82,9 @@ export default class TmuxPrefix extends View {
     this.repeat = false;
     this.generation = 0;
     this.all = false;
+    const here = focused()?.space;
+    const seen = shared(SEEN) ?? [];
+    if (here && seen[0] !== here) setShared(SEEN, [here, seen[0]]);
     // The mod-specific key binding beats the global opener while we're open.
     cx.spawn(async (cx) => {
       for (;;) {
@@ -126,6 +140,13 @@ export default class TmuxPrefix extends View {
     }
     const [, , command, args = {}, repeatable = false] = binding;
     if (!repeatable) this.dismiss();
+    if (command === LAST_SPACE) {
+      const last = (shared(SEEN) ?? [])[1];
+      if (spaces().some((s) => s.id === last)) {
+        run("space.select", { id: last });
+      }
+      return;
+    }
     run(command, args);
     if (repeatable) {
       this.repeat = true;
