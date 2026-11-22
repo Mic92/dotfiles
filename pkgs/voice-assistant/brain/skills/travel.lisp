@@ -9,18 +9,9 @@
 voice-assistant/home in the config directory. Routes start there.")
 
 (defn home-path () pathname
-  (or *home-file*
-      (merge-pathnames "voice-assistant/home"
-                       (uiop:ensure-directory-pathname
-                        (or (uiop:getenv-absolute-directory "XDG_CONFIG_HOME")
-                            (merge-pathnames ".config/" (user-homedir-pathname)))))))
+  (or *home-file* (config-path "home")))
 
-(defn home () (or null string)
-  (handler-case
-      (with-open-file (in (home-path) :if-does-not-exist nil)
-        (let ((line (and in (read-line in nil))))
-          (and line (plusp (length (trim line))) (trim line))))
-    (file-error () nil)))
+(defn home () (or null string) (config-line (home-path)))
 
 (defparameter *modes*
   '((("by" "car") . "driving") (("driving") . "driving") (("by" "taxi") . "driving")

@@ -14,6 +14,7 @@
   numbat,
   playerctl,
   libnotify,
+  android-tools,
 }:
 let
   lisp = sbcl.withPackages (p: [
@@ -59,7 +60,7 @@ let
     '';
     installPhase = ''
       install -Dm755 va-brain $out/bin/va-brain
-      # web lookups, the radio, players and notifications. noctalia,
+      # web lookups, the radio, players, notifications and the TV. noctalia,
       # systemctl and friends come from the session's PATH.
       wrapProgram $out/bin/va-brain --prefix PATH : ${
         lib.makeBinPath [
@@ -68,6 +69,7 @@ let
           numbat
           playerctl
           libnotify
+          android-tools
         ]
       }
       install -Dm644 deps.core $out/lib/va-brain/deps.core

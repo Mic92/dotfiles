@@ -13,8 +13,8 @@
                       (:module "skills" :pathname "../skills/" :serial t
                                ;; In Rust's MODULES order, which breaks ties between commands.
                                :components ,(mapcar (lambda (f) (list :file f))
-                                                    '("timer" "system" "volume" "media" "desktop"
-                                                      "apps" "info" "weather" "mail" "calc"
+                                                    '("timer" "system" "tv" "volume" "media"
+                                                      "desktop" "apps" "info" "weather" "mail" "calc"
                                                       "zones" "spell" "fun" "chat" "self"
                                                       "banter" "people"
                                                       "ops" "notes" "reminders" "meetings"
@@ -28,6 +28,6 @@
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
                             "system" "media" "desktop" "info" "kagi" "news" "spell" "calc" "chat"
                             "ops" "notes" "reminders" "meetings" "classify" "protocol"
-                            "conversation" "countdown" "contacts" "mail" "weather" "games" "travel" "types"
-                            "source"))
+                            "conversation" "countdown" "contacts" "mail" "weather" "games" "travel" "tv"
+                            "types" "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

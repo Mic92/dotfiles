@@ -43,6 +43,9 @@ restarts.
 
 - Routes and nearby places start at home: put the address on the first line of
   `~/.config/voice-assistant/home`.
+- The Android TV is driven over adb: enable network debugging on it, put its
+  host (or `host:port`) on the first line of `~/.config/voice-assistant/tv`, and
+  run `adb connect <host>:5555` once to accept the prompt on the TV.
 - Results that don't fit a sentence (a route, a list of places) show in the
   noctalia plugin `mic92/voice-assistant`.
 

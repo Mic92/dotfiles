@@ -67,7 +67,7 @@ changes. CACHE holds (count . value)."
           value))))
 
 (defparameter *skill-order*
-  '(timer system volume media desktop app info calc spell fun chat ops notes reminder
+  '(timer system tv volume media desktop app info calc spell fun chat ops notes reminder
     meeting news kagi core)
   "Skills in the order of Rust's MODULES. Ties between commands go to the earlier one.")
 

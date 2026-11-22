@@ -77,6 +77,21 @@ sleeping child of ours."
   "A /proc file's text, empty where there is none."
   (handler-case (uiop:read-file-string path) (file-error () "")))
 
+(defn config-path ((name string)) pathname
+  "NAME in our directory under XDG_CONFIG_HOME."
+  (merge-pathnames (format nil "voice-assistant/~a" name)
+                   (uiop:ensure-directory-pathname
+                    (or (uiop:getenv-absolute-directory "XDG_CONFIG_HOME")
+                        (merge-pathnames ".config/" (user-homedir-pathname))))))
+
+(defn config-line ((path pathname)) (or null string)
+  "The first line of the file at PATH, trimmed. Nil without one."
+  (handler-case
+      (with-open-file (in path :if-does-not-exist nil)
+        (let ((line (and in (read-line in nil))))
+          (and line (plusp (length (trim line))) (trim line))))
+    (file-error () nil)))
+
 (defn append-line ((path pathname) (line string)) boolean
   "Append LINE to the file at PATH, creating both. Whether that worked."
   (cond (*fake-effects* (push (list :append (namestring path) line) *fake-effects*) t)
