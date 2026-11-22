@@ -42,6 +42,7 @@ const BINDINGS = [
   ["L", "Last space", LAST_SPACE],
   ["w", "Tabs", "mod.open", { name: "picker" }],
   ["f", "Pluck", "mod.open", { name: "pluck" }],
+  ["[", "Copy mode", "mod.open", { name: "copy-mode" }],
   [",", "Settings", "app.settings"],
   ["$", "Rename space", "space.rename"],
   // The closest thing to detach: terminals keep running in herdr-core.

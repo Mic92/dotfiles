@@ -1,0 +1,9 @@
+{
+  "place": "none",
+  "overlay": {
+    "kind": "popup",
+    "frame": "none",
+    "width": 0,
+    "height": 0
+  }
+}
