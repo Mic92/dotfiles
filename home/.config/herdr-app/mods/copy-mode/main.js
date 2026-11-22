@@ -10,7 +10,32 @@ import {
   terminals,
 } from "herdr";
 import { terminalText } from "./text.js";
-import { transitions } from "./transitions.js";
+import { transitions as generated } from "./transitions.js";
+
+// Local addition, kept out of the generated table: ctrl-v selects a
+// rectangle. Needs terminal.select's "block" mode, which upstream Herdr
+// lacks (see the herdr-app patch in home-manager/modules/ai.nix).
+const blockKey = { "ctrl-v": ["block", "anchor", ""] };
+const transitions = {
+  move: { ...generated.move, ...blockKey },
+  visual: { ...generated.visual, ...blockKey },
+  line: { ...generated.line, ...blockKey },
+  block: {
+    ...Object.fromEntries(
+      Object.entries(generated.visual).map(([key, [mode, action, arg]]) => [
+        key,
+        [
+          mode === "visual" && !["anchor", "object"].includes(action)
+            ? "block"
+            : mode,
+          action,
+          arg,
+        ],
+      ]),
+    ),
+    ...blockKey,
+  },
+};
 
 const MAX_HISTORY_ROWS = 1000;
 const shifted = { "4": "$", "6": "^", "[": "{", "]": "}" };
@@ -251,6 +276,17 @@ export default class CopyMode extends View {
       return;
     }
     const anchor = this.anchor;
+    if (this.mode === "block") {
+      run("terminal.select", {
+        terminal: this.terminal,
+        at: anchor,
+        end: cursor,
+        mode: "block",
+      });
+      this.scrollTo(offset);
+      await this.flush();
+      return;
+    }
     const line = this.mode === "line";
     let [start, end] = anchor.row >= cursor.row
       ? [anchor, cursor]

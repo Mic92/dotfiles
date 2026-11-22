@@ -1,0 +1,111 @@
+From b654b2d167ae28c3cba4f7c5e0e145a3970419b9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Sun, 22 Nov 2026 19:35:30 +0100
+Subject: [PATCH] terminal.select: add a block mode for rectangular selections
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+A keyboard copy mode can select cells, words and lines but not a
+column range, which tmux and the herdr TUI offer as rectangle
+selection. Ghostty's selection already carries a rectangle flag, so
+expose it as mode "block".
+
+The mode takes the opposite corner as `end` instead of relying on
+terminal.adjust_selection: the native left/right/down adjustments skip
+empty cells, so a rectangle could not reach padding or blank rows.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ src/commands.rs |  2 +-
+ src/terminal.rs | 10 ++++++++--
+ src/vt.rs       | 31 +++++++++++++++++++++++++++++++
+ 3 files changed, 40 insertions(+), 3 deletions(-)
+
+diff --git a/src/commands.rs b/src/commands.rs
+index 612b882..2bbcdfb 100644
+--- a/src/commands.rs
++++ b/src/commands.rs
+@@ -63,7 +63,7 @@ pub const COMMANDS: &[Command] = &[
+     cmd("terminal.peek", &[req("terminal")], "Peek at a running terminal over the tab, with keep-as-tab and close controls."),
+     cmd("terminal.show", &[opt("terminal"), opt("pane")], "Show a terminal in a pane for now, in place of its own (no terminal: back)."),
+     cmd("terminal.select_all", &[opt("terminal")], "Select a terminal's whole screen and scrollback (default: the focused one), ready to copy. On the alternate screen, select only that screen."),
+-    cmd("terminal.select", &[opt("terminal"), opt("at"), opt("mode")], "Start a terminal selection (default: the focused one), replacing the old selection. at defaults to \"cursor\" or takes {row, col}: zero-based cells, rows from the top of the history including the active screen. mode is \"cell\" (default), \"word\" or \"line\" (like double/triple click). Mods read the inclusive endpoints from focused().selection or terminals(); selection.end is the moving end."),
++    cmd("terminal.select", &[opt("terminal"), opt("at"), opt("mode"), opt("end")], "Start a terminal selection (default: the focused one), replacing the old selection. at defaults to \"cursor\" or takes {row, col}: zero-based cells, rows from the top of the history including the active screen. mode is \"cell\" (default), \"word\" or \"line\" (like double/triple click), or \"block\": a rectangle from at to end ({row, col}, default at), which may be empty cells. Mods read the inclusive endpoints from focused().selection or terminals(); selection.end is the moving end."),
+     cmd("terminal.adjust_selection", &[opt("terminal"), req("direction")], "Move the selection's moving end: left, right, up, down, page_up, page_down, home, end, line_start or line_end. The view follows the moving end. Fails if there is no selection. Defaults to the focused terminal."),
+     cmd("terminal.clear_selection", &[opt("terminal")], "Clear a terminal's selection (default: the focused one)."),
+     cmd("terminal.copy", &[], "Copy the focused terminal's selection. With nothing selected, that key goes to the program."),
+diff --git a/src/terminal.rs b/src/terminal.rs
+index d480e5d..6e93d69 100644
+--- a/src/terminal.rs
++++ b/src/terminal.rs
+@@ -842,9 +842,15 @@ impl TerminalView {
+                 };
+                 let mode = match args.get("mode") {
+                     None => "cell",
+-                    Some(value) => value.as_str().ok_or("terminal.select mode is cell, word or line")?,
++                    Some(value) => value.as_str().ok_or("terminal.select mode is cell, word, line or block")?,
+                 };
+-                grid.vt.select_at(at, mode)?;
++                if mode == "block" {
++                    let end = args.get("end").map(|value| serde_json::from_value::<vt::CellPosition>(value.clone())
++                        .map_err(|_| "terminal.select end is {row, col} with nonnegative whole numbers")).transpose()?;
++                    grid.vt.select_block(at, end)?;
++                } else {
++                    grid.vt.select_at(at, mode)?;
++                }
+             }
+             "terminal.adjust_selection" => {
+                 let direction = args.get("direction").and_then(serde_json::Value::as_str).ok_or("terminal.adjust_selection needs a direction")?;
+diff --git a/src/vt.rs b/src/vt.rs
+index 4c63bf6..955d302 100644
+--- a/src/vt.rs
++++ b/src/vt.rs
+@@ -1109,6 +1109,17 @@ impl Vt {
+         Ok(())
+     }
+ 
++    /// A rectangular selection with `at` and `end` as opposite corners; either may be an empty cell.
++    pub fn select_block(&mut self, at: Option<CellPosition>, end: Option<CellPosition>) -> Result<(), String> {
++        let at = at.unwrap_or_else(|| self.cursor_position());
++        let end = end.unwrap_or(at);
++        let start = self.grid_ref(GHOSTTY_POINT_TAG_SCREEN, at.col, at.row).ok_or("terminal.select at is outside the screen and history")?;
++        let end = self.grid_ref(GHOSTTY_POINT_TAG_SCREEN, end.col, end.row).ok_or("terminal.select end is outside the screen and history")?;
++        let selection = GhosttySelection { size: std::mem::size_of::<GhosttySelection>(), start, end, rectangle: true, ..Default::default() };
++        unsafe { ghostty_terminal_set(self.term, GHOSTTY_TERMINAL_OPT_SELECTION, &selection as *const _ as *const c_void); }
++        Ok(())
++    }
++
+     pub fn adjust_selection(&mut self, direction: &str) -> Result<(), String> {
+         let adjustment = match direction {
+             "left" => GHOSTTY_SELECTION_ADJUST_LEFT,
+@@ -2058,6 +2069,26 @@ mod tests {
+         assert_eq!(vt.selection_positions().unwrap().end.row, 0);
+     }
+ 
++    #[test]
++    fn block_selection_copies_a_column_range_from_each_row() {
++        let mut vt = Vt::new(30, 4);
++        vt.write(b"ab one\r\ncd two\r\n\r\nef three");
++        let corner = |row, col| Some(CellPosition { row, col });
++        vt.select_block(corner(0, 3), corner(1, 5)).unwrap();
++        assert_eq!(vt.selection_text().as_deref(), Some("one\ntwo"));
++        let frame = vt.frame();
++        assert_ne!(frame.rows[0][6].bg, Some(theme().selection_bg));
++        assert_ne!(frame.rows[1][0].bg, Some(theme().selection_bg));
++        assert_eq!(frame.rows[1][3].bg, Some(theme().selection_bg));
++        // The moving end may sit on an empty cell and precede the anchor.
++        vt.select_block(corner(3, 4), corner(2, 3)).unwrap();
++        assert_eq!(vt.selection_positions(), Some(SelectionPositions { start: CellPosition { row: 3, col: 4 }, end: CellPosition { row: 2, col: 3 } }));
++        assert_eq!(vt.selection_text().as_deref(), Some("\nth"));
++        vt.select_block(None, None).unwrap();
++        assert_eq!(vt.selection_positions().map(|s| s.start), Some(vt.cursor_position()));
++        assert!(vt.select_block(corner(0, 0), corner(100, 0)).is_err());
++    }
++
+     fn finish_search(vt: &mut Vt) {
+         for _ in 0..100_000 {
+             if vt.search_progress().complete {
+-- 
+2.56.0
+

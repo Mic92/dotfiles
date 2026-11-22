@@ -44,6 +44,10 @@ let
   # (tmux's automatic-rename). The layout using them is vendored in
   # home/.config/herdr-app/layouts/mic92.json.
   herdrAppSrc = aiTools.herdr-app.src;
+  # mods/copy-mode's ctrl-v needs a rectangular terminal.select.
+  herdrApp = aiTools.herdr-app.overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [ ./herdr-app-block-selection.patch ];
+  });
   herdrTabs = pkgs.runCommand "herdr-app-tabs-auto" { } ''
     cp -r ${herdrAppSrc}/defaults/mods/tabs $out
     chmod -R u+w $out
@@ -177,7 +181,7 @@ in
     aiTools.git-surgeon
     aiTools.agent-slack
     aiTools.jscpd
-    aiTools.herdr-app
+    herdrApp
     # hc: herdr-app only puts it on its own PATH
     aiTools.herdr-core
     pkgs.pueue
