@@ -552,11 +552,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794385027,
-        "narHash": "sha256-YFfGtsQEw5MQECnyIQqfMC1Wp51Tz/8oPD062mptAbE=",
+        "lastModified": 1795109202,
+        "narHash": "sha256-w8V5NoLC9IBv/ZnWGUOuXUgw6iXqdCLB8TF8zTZxEAs=",
         "owner": "numtide",
         "repo": "iets",
-        "rev": "9157ca1a2a50c085bcd7fd0004d9ba71e2b7c1e0",
+        "rev": "4911f734e2d8e7fb97c63a06791d026010c8fbf4",
         "type": "github"
       },
       "original": {
