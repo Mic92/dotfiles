@@ -9,7 +9,7 @@ let
   # DID of the operator account on pds.thalheim.io. It only exists once the
   # account has been created (`pdsadmin account create`), so the knot and tack
   # stay off until it is filled in.
-  ownerDid = null;
+  ownerDid = "did:plc:h2dscnnfszyr2kugjcmmxof7";
 
   # Accounts get <name>.thalheim.io handles, which atproto verifies by
   # fetching /.well-known/atproto-did from that host.
