@@ -101,6 +101,18 @@
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
+    tangled.url = "git+https://tangled.org/tangled.org/core?shallow=1";
+    tangled.inputs.nixpkgs.follows = "nixpkgs";
+    tangled.inputs.nixpkgs-pds.follows = "nixpkgs";
+    tangled.inputs.fenix.follows = "fenix";
+    tangled.inputs.microvm.follows = "";
+    tangled.inputs.gomod2nix.inputs.flake-utils.follows = "flake-utils";
+
+    # Fork carrying TACK_BUILDKITE_API_URL until it is upstream.
+    tack.url = "github:Mic92/tack/buildkite-api-url";
+    tack.inputs.nixpkgs.follows = "nixpkgs";
+    tack.inputs.flake-utils.follows = "flake-utils";
+
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 

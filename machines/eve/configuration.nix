@@ -70,6 +70,7 @@
     ./modules/storagebox.nix
     ./modules/step-ca/default.nix
     ./modules/syncthing.nix
+    ./modules/tangled.nix
     ./modules/teamspeak.nix
     ./modules/telegraf.nix
     ./modules/freshrss
