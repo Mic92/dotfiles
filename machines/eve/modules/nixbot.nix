@@ -247,7 +247,7 @@ in
             webhook_url = "https://tack.thalheim.io/webhooks/buildkite";
             webhook_secret_file = "tangled-webhook-secret";
             # Keyed by the pipeline slug the workflow names.
-            repositories.nixbot-test.url = "https://knot.thalheim.io/did:plc:vukgqkb7pxtibaiu5asdf3pv";
+            repositories.nixbot-demo.url = "https://knot.thalheim.io/did:plc:llxvtar4e5tg7lkmpiy57ywc";
           };
           workload_identity = {
             enable = true;
