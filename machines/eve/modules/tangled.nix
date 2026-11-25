@@ -58,6 +58,22 @@ in
     '';
   };
 
+  # Shared between tack and nixbot, which tack drives as its Buildkite.
+  clan.core.vars.generators.tangled-nixbot = {
+    files.api-token = { };
+    files.webhook-secret = { };
+    files.tack-env = { };
+    runtimeInputs = [ pkgs.openssl ];
+    script = ''
+      openssl rand -hex 32 | tr -d '\n' > "$out/api-token"
+      openssl rand -hex 32 | tr -d '\n' > "$out/webhook-secret"
+      {
+        echo "TACK_BUILDKITE_TOKEN=$(cat "$out/api-token")"
+        echo "TACK_BUILDKITE_WEBHOOK_SECRET=$(cat "$out/webhook-secret")"
+      } > "$out/tack-env"
+    '';
+  };
+
   services.bluesky-pds = {
     enable = true;
     pdsadmin.enable = true;
@@ -99,7 +115,13 @@ in
     listenAddr = tackAddr;
     inherit ownerDid;
     contactEmail = "joerg@thalheim.io";
+    environmentFile = config.clan.core.vars.generators.tangled-nixbot.files.tack-env.path;
+    buildkite = {
+      org = "nixbot";
+      webhookMode = "signature";
+    };
   };
+  systemd.services.tack.environment.TACK_BUILDKITE_API_URL = "https://nixbot.thalheim.io/buildkite";
 
   services.nginx.virtualHosts = {
     "pds.thalheim.io" = {

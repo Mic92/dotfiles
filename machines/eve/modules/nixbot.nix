@@ -133,7 +133,7 @@ in
   services.flakelets = {
     enable = true;
     services.nixbot = {
-      flake = "github:Mic92/nixbot";
+      flake = "github:Mic92/nixbot/tangled";
       autoUpdate.enable = true;
       settings = {
         user = "nixbot";
@@ -146,6 +146,9 @@ in
           "gitea-token" = config.clan.core.vars.generators.buildbot-gitea.files.token.path;
           "gitea-oauth-secret" = config.clan.core.vars.generators.buildbot-gitea.files.oauth-secret.path;
           "oidc-client-secret" = config.clan.core.vars.generators.buildbot-oidc.files.client-secret.path;
+          "tangled-api-token" = config.clan.core.vars.generators.tangled-nixbot.files.api-token.path;
+          "tangled-webhook-secret" =
+            config.clan.core.vars.generators.tangled-nixbot.files.webhook-secret.path;
           "codecov-token" = config.clan.core.vars.generators.codecov-token.files.token.path;
           "effects-secret__github_colon_nix-community_slash_harmonia" =
             config.clan.core.vars.generators.harmonia-effects-secrets.files.secrets.path;
@@ -237,6 +240,14 @@ in
               ssh_known_hosts_file = null;
             };
             poll_spread = null;
+          };
+          tangled = {
+            organization = "nixbot";
+            api_token_file = "tangled-api-token";
+            webhook_url = "https://tack.thalheim.io/webhooks/buildkite";
+            webhook_secret_file = "tangled-webhook-secret";
+            # Keyed by the pipeline slug the workflow names.
+            repositories = { };
           };
           workload_identity = {
             enable = true;
