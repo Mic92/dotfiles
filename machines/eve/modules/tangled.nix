@@ -128,7 +128,13 @@ in
       forceSSL = true;
       useACMEHost = "thalheim.io";
       locations."/" = proxy "127.0.0.1:${toString pdsPort}";
-      extraConfig = "client_max_body_size 300m;";
+      # The firehose is a websocket that stays silent between commits;
+      # the default 60s read timeout made every relay reconnect in a loop.
+      extraConfig = ''
+        client_max_body_size 300m;
+        proxy_read_timeout 1d;
+        proxy_send_timeout 1d;
+      '';
     };
   }
   // lib.genAttrs handles (_: {
