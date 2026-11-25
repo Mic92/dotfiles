@@ -5,6 +5,10 @@
     "*.dos.cit.tum.de"
   ];
   programs.ssh.extraConfig = ''
+    # Port 22 is eve's own sshd; Tangled shows clone URLs without a port.
+    Host knot.thalheim.io
+      Port 2222
+
     Host *.dse.in.tum.de !login.dse.in.tum.de
       ProxyJump tunnel@login.dse.in.tum.de
 
