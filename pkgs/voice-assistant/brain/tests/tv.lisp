@@ -19,7 +19,9 @@
   :parent va-tests
   (with-focus ()
     (parses-as "Tv(~a)"
-               '(("Turn on the TV" "On") ("switch the television on" "On") ("tv on" "On")
+               '(("Turn on the TV" "On") ("turn on the T V" "On") ("Turn off the T.V." "Off")
+                 ("pause T. V." "Pause")
+                 ("switch the television on" "On") ("tv on" "On")
                  ("put the tv on" "On") ("start the tv" "On") ("fire up the tv" "On")
                  ("watch tv" "On") ("let's watch some tv" "On") ("I want to watch TV" "On")
                  ("Turn off the TV." "Off") ("TV off" "Off") ("shut down the tv" "Off")

@@ -74,8 +74,10 @@ and five\", \"two thousand\", \"minus three\", \"3.5\"."
 
 (defparameter *symbol-words*
   '(("(?<=\\d),(?=\\d)" "") ("," " , ") ("(?<=\\d)/(?=\\d)" " over ") ("\\+" " plus ")
-    ("[*×]" " times ") ("÷" " divided by ") ("%" " percent ") ("=" " "))
-  "Regex and replacement, in order: digits around a comma or slash keep it a number.")
+    ("[*×]" " times ") ("÷" " divided by ") ("%" " percent ") ("=" " ")
+    ("\\bt[. ]{1,2}v\\b" "tv"))
+  "Regex and replacement, in order: digits around a comma or slash keep it a number.
+The speech recogniser spells TV as \"T V\" or \"T.V.\" at times.")
 
 (defn spell-symbols ((text string)) string
   "Arithmetic symbols as words and commas as their own token. \"1,000\" and

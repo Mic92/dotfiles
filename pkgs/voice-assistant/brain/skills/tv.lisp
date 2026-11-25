@@ -253,7 +253,8 @@ naming the TV, which only count right after another TV command: \"louder\"."
        :examples ("Next episode on the TV."))
 
 (deftv tv-previous ("KEYCODE_MEDIA_PREVIOUS") *tv-previous*
-       ("[play] [the] (previous|last) [episode|video|one|song|track] on [the|my] (tv|television|telly)"
+       ((:join "[play] [the] (previous|last) [episode|video|one|song|track]"
+               "on [the|my] (tv|television|telly)")
         "go back [a|one|an] [episode|video|song|track] on [the|my] (tv|television|telly)"
         "!(tv|television|telly) (previous|back)")
        ("![play] [the] previous [episode|video|one]" "!go back")
