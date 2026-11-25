@@ -97,6 +97,8 @@ in
         admins = [ ownerDid ];
         listen_addr = knotAddr;
       };
+      # Nix cannot open SHA-256 repositories, so nixbot could not build them.
+      git.object_format = "sha1";
       atproto.plc_directory = "https://plc.directory";
       contact.email = "joerg@thalheim.io";
       xrpc = {
