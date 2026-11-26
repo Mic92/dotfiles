@@ -1,11 +1,14 @@
 {
-  "zoom": 0.9,
+  "zoom": 0.800000011920929,
   "sounds": {
     "enabled": true
   },
   "font": "JetBrainsMono Nerd Font",
   "font_size": 11.5,
   "font_ligatures": true,
+  "terminal_line_height": 1.0,
+  "terminal_cell_width": 1.0,
+  "terminal_scroll_speed": 1.0,
   "telemetry": false,
   "minimum_contrast": 1.0,
   "theme": "tokyo-night"
