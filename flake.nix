@@ -105,9 +105,16 @@
     tangled.inputs.nixpkgs.follows = "nixpkgs";
     tangled.inputs.nixpkgs-pds.follows = "nixpkgs";
     tangled.inputs.fenix.follows = "fenix";
+    # Only knot-rs is used; the stubbed inputs feed tangled's other packages.
     tangled.inputs.microvm.follows = "";
     tangled.inputs.flake-compat.follows = "";
-    tangled.inputs.gomod2nix.inputs.flake-utils.follows = "flake-utils";
+    tangled.inputs.hydrant.follows = "";
+    tangled.inputs.hydrant-dev.follows = "";
+    tangled.inputs.indigo.follows = "";
+    tangled.inputs.timeless-fonts-src.follows = "";
+    tangled.inputs.ibm-plex-mono-src.follows = "";
+    tangled.inputs.sqlite-lib-src.follows = "";
+    tangled.inputs.gomod2nix.follows = "";
 
     # Fork carrying TACK_BUILDKITE_API_URL until it is upstream.
     tack.url = "github:Mic92/tack/buildkite-api-url";

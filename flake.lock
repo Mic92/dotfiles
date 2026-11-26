@@ -463,30 +463,6 @@
         "type": "github"
       }
     },
-    "gomod2nix": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "tangled",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1763982521,
-        "narHash": "sha256-ur4QIAHwgFc0vXiaxn5No/FuZicxBr2p0gmT54xZkUQ=",
-        "owner": "nix-community",
-        "repo": "gomod2nix",
-        "rev": "02e63a239d6eabd595db56852535992c898eba72",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "gomod2nix",
-        "type": "github"
-      }
-    },
     "harmonia": {
       "inputs": {
         "crane": [
@@ -587,51 +563,6 @@
         "type": "github"
       }
     },
-    "hydrant": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792544679,
-        "narHash": "sha256-fm0cuIyHjJTSvleJyLbT4E5KugtanuysL/oMOnGhN3I=",
-        "ref": "refs/heads/main",
-        "rev": "0128352f6b73d26e7ffaa5a79446ef556e452617",
-        "revCount": 811,
-        "type": "git",
-        "url": "https://tangled.org/ptr.pet/hydrant"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://tangled.org/ptr.pet/hydrant"
-      }
-    },
-    "hydrant-dev": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792544679,
-        "narHash": "sha256-fm0cuIyHjJTSvleJyLbT4E5KugtanuysL/oMOnGhN3I=",
-        "ref": "refs/heads/main",
-        "rev": "0128352f6b73d26e7ffaa5a79446ef556e452617",
-        "revCount": 811,
-        "type": "git",
-        "url": "https://tangled.org/ptr.pet/hydrant"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://tangled.org/ptr.pet/hydrant"
-      }
-    },
-    "ibm-plex-mono-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1731402384,
-        "narHash": "sha256-OwUmrPfEehLDz0fl2ChYLK8FQM2p0G1+EMrGsYEq+6g=",
-        "type": "tarball",
-        "url": "https://github.com/IBM/plex/releases/download/@ibm%2Fplex-mono@1.1.0/ibm-plex-mono.zip"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/IBM/plex/releases/download/@ibm%2Fplex-mono@1.1.0/ibm-plex-mono.zip"
-      }
-    },
     "iets": {
       "inputs": {
         "crane": [
@@ -652,22 +583,6 @@
       "original": {
         "owner": "numtide",
         "repo": "iets",
-        "type": "github"
-      }
-    },
-    "indigo": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1753693716,
-        "narHash": "sha256-DMIKnCJRODQXEHUxA+7mLzRALmnZhkkbHlFT2rCQYrE=",
-        "owner": "oppiliappan",
-        "repo": "indigo",
-        "rev": "5f170569da9360f57add450a278d73538092d8ca",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oppiliappan",
-        "repo": "indigo",
         "type": "github"
       }
     },
@@ -1181,19 +1096,6 @@
         "type": "github"
       }
     },
-    "sqlite-lib-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1706631843,
-        "narHash": "sha256-bJoMjirsBjm2Qk9KPiy3yV3+8b/POlYe76/FQbciHro=",
-        "type": "tarball",
-        "url": "https://sqlite.org/2024/sqlite-amalgamation-3450100.zip"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://sqlite.org/2024/sqlite-amalgamation-3450100.zip"
-      }
-    },
     "srvos": {
       "inputs": {
         "nixpkgs": [
@@ -1286,11 +1188,11 @@
         ],
         "fetch-tangled": "fetch-tangled",
         "flake-compat": [],
-        "gomod2nix": "gomod2nix",
-        "hydrant": "hydrant",
-        "hydrant-dev": "hydrant-dev",
-        "ibm-plex-mono-src": "ibm-plex-mono-src",
-        "indigo": "indigo",
+        "gomod2nix": [],
+        "hydrant": [],
+        "hydrant-dev": [],
+        "ibm-plex-mono-src": [],
+        "indigo": [],
         "microvm": [],
         "nixpkgs": [
           "nixpkgs"
@@ -1298,8 +1200,8 @@
         "nixpkgs-pds": [
           "nixpkgs"
         ],
-        "sqlite-lib-src": "sqlite-lib-src",
-        "timeless-fonts-src": "timeless-fonts-src"
+        "sqlite-lib-src": [],
+        "timeless-fonts-src": []
       },
       "locked": {
         "lastModified": 1795626292,
@@ -1314,19 +1216,6 @@
         "shallow": true,
         "type": "git",
         "url": "https://tangled.org/tangled.org/core"
-      }
-    },
-    "timeless-fonts-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1791052084,
-        "narHash": "sha256-zYpoDkE/YrICzYaHF4/NSuINczFWB41YymTxaL6KqLY=",
-        "type": "tarball",
-        "url": "https://media.timeless.co/type/Timeless-Type-Family-1.094.zip"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://media.timeless.co/type/Timeless-Type-Family-1.094.zip"
       }
     },
     "tincr": {
