@@ -106,6 +106,7 @@
     tangled.inputs.nixpkgs-pds.follows = "nixpkgs";
     tangled.inputs.fenix.follows = "fenix";
     tangled.inputs.microvm.follows = "";
+    tangled.inputs.flake-compat.follows = "";
     tangled.inputs.gomod2nix.inputs.flake-utils.follows = "flake-utils";
 
     # Fork carrying TACK_BUILDKITE_API_URL until it is upstream.
