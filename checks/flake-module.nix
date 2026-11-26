@@ -7,10 +7,8 @@
 }:
 let
   machinesPerSystem = {
-    aarch64-linux = [
-      "blob64"
-    ];
     x86_64-linux = [
+      "blob64"
       "eve"
       "eva"
       "turingmachine"

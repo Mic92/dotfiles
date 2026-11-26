@@ -9,7 +9,7 @@
     enable = true;
     localUdp = "127.0.0.1:51821"; # Local UDP endpoint for eve
     remoteAddress = "135.181.61.171:4567"; # Eve's public IP (phantun uses TCP)
-    interface = "end0"; # blob64's network interface
+    interface = "enp6s0"; # 2.5G port
     tun = "phantun0";
     tunLocalAddress = "192.168.200.1";
     tunPeerAddress = "192.168.200.2";
@@ -20,7 +20,7 @@
     enable = true;
     localUdp = "127.0.0.1:51822"; # Local UDP endpoint for eva
     remoteAddress = "116.203.179.132:4568"; # Eva's public IP (phantun uses TCP)
-    interface = "end0"; # blob64's network interface
+    interface = "enp6s0"; # 2.5G port
     tun = "phantun1";
     tunLocalAddress = "192.168.202.1";
     tunPeerAddress = "192.168.202.2";

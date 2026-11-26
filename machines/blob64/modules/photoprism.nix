@@ -28,6 +28,7 @@
     options = [
       "bind"
       "nofail"
+      "x-systemd.requires=zfs-mount.service"
     ];
   };
 

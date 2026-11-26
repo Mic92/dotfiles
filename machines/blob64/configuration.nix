@@ -7,6 +7,7 @@
   imports = [
     self.nixosModules.default
     self.inputs.srvos.nixosModules.server
+    self.inputs.srvos.nixosModules.mixins-systemd-boot
     ../../nixosModules/users.nix
     ../../nixosModules/minimal-docs.nix
     ../../nixosModules/networkd.nix
@@ -17,29 +18,13 @@
     ./modules/phantun.nix
   ];
 
-  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.aarch64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   networking.hostName = "blob64";
 
   clan.core.networking.buildHost = "root@eve.i";
 
   system.stateVersion = "23.11";
-
-  # Fan speed adjustment
-  systemd.services.fans =
-    let
-      fancontrol = pkgs.rustPlatform.buildRustPackage {
-        name = "fancontrol";
-        src = ./fancontrol;
-        fetchCargoVendor = true;
-        cargoLock.lockFile = ./fancontrol/Cargo.lock;
-      };
-    in
-    {
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig.ExecStart = "${fancontrol}/bin/fancontrol";
-      serviceConfig.Restart = "always";
-    };
 
   services.openssh.enable = true;
 
@@ -50,7 +35,13 @@
     networkConfig.DHCP = "yes";
   };
 
-  boot.supportedFilesystems = [ "zfs" ];
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Same id as the previous blob64 hardware, so zdata imports without force.
   networking.hostId = "ac174b52";
+
+  # The HDD pool is not managed by disko: it predates this machine.
+  # Mounted by zfs-mount.service; an additional fstab entry races with it.
+  boot.zfs.extraPools = [ "zdata" ];
 
 }
