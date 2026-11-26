@@ -13,7 +13,10 @@ let
 
   # Accounts get <name>.thalheim.io handles, which atproto verifies by
   # fetching /.well-known/atproto-did from that host.
-  handles = [ "joerg.thalheim.io" ];
+  handles = [
+    "joerg.thalheim.io"
+    "mic92.thalheim.io"
+  ];
 
   pdsPort = 3000;
   knotAddr = "127.0.0.1:5555";
