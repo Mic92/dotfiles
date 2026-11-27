@@ -67,19 +67,19 @@ in
   imports = [
     inputs.mics-skills.homeModules.default
     ./librewolf.nix
-    ./herdr
+    #./herdr
   ];
 
-  programs.herdr = {
-    enable = true;
-    package = herdrPackage;
-    plugins = [
-      selfPkgs.herdr-pluck
-      selfPkgs.herdr-sesh
-      selfPkgs.herdr-autoname
-      selfPkgs.herdr-autospace
-    ];
-  };
+  #programs.herdr = {
+  #  enable = true;
+  #  package = herdrPackage;
+  #  plugins = [
+  #    selfPkgs.herdr-pluck
+  #    selfPkgs.herdr-sesh
+  #    selfPkgs.herdr-autoname
+  #    selfPkgs.herdr-autospace
+  #  ];
+  #};
 
   xdg.configFile."herdr/autoname-hook.zsh".source = "${selfPkgs.herdr-autoname}/shell/hook.zsh";
 

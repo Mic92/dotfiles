@@ -19,14 +19,15 @@ fi
 # - not in linux ttys
 # - no nested tmux sessions
 if [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ -z "$HERDR_ENV" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
-  if [[ -n ${commands[herdr]} ]]; then
-    herdr
-  elif [[ -n ${commands[tmux]} ]]; then
-    if [[ -n "$SSH_AUTH_SOCK" ]]; then
-      tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
-    fi
-    tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
-  fi
+  #if [[ -n ${commands[herdr]} ]]; then
+  #  herdr
+  #elif [[ -n ${commands[tmux]} ]]; then
+  #if [[ -n ${commands[tmux]} ]]; then
+  #  if [[ -n "$SSH_AUTH_SOCK" ]]; then
+  #    tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
+  #  fi
+  #  tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
+  #fi
 fi
 for _hm_profile in ~/.nix-profile ~/.local/state/nix/profile; do
   if [[ -f $_hm_profile/etc/profile.d/hm-session-vars.sh ]]; then
@@ -934,9 +935,9 @@ fi
 if [[ -f ~/.zsh-autopair/autopair.zsh ]]; then
   source ~/.zsh-autopair/autopair.zsh
 fi
-if [[ -f ~/.config/herdr/autoname-hook.zsh ]]; then
-  source ~/.config/herdr/autoname-hook.zsh
-fi
+#if [[ -f ~/.config/herdr/autoname-hook.zsh ]]; then
+#  source ~/.config/herdr/autoname-hook.zsh
+#fi
 
 if [[ "$TERM" == "linux" ]]; then # solarized-light
   echo -en "\e]PB839496" # S_base00
